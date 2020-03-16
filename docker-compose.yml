@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:
+  mongoDndTool:
+    container_name: mongoDndTool
+    image: mongo
+    restart: always
+    networks:
+      - web
+    ports: 
+      - 27017:27017
+    expose:
+      - 27017
+
+networks:
+  web:
+    external: true

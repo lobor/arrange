@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "esModuleInterop": true,
+    "outFile": "./dist",
+    "sourceMap": true
+  },
+  "include": ["src/**/*"]
+}
