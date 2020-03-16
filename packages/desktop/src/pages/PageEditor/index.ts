@@ -1,1 +1,1 @@
-export * from './PageEditor'
+export * from './PageEditor';

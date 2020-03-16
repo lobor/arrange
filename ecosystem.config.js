@@ -4,7 +4,7 @@ module.exports = {
       instances: 1,
       name: 'mongo',
       namespace: 'default',
-      script: 'docker-compose up mongo'
+      script: 'docker-compose up mongoDndTool'
     },
     {
       instances: 1,

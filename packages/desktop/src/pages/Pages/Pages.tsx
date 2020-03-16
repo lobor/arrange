@@ -98,7 +98,7 @@ const Pages = () => {
       {data.length > 0 && (
         <List component="nav" aria-label="secondary mailbox folders">
           {data.map(({ _id, name }) => (
-            <ListItem button component={Link} key={_id} to={`/datasources/${_id}`}>
+            <ListItem button component={Link} key={_id} to={`/pages/editor/${_id}`}>
               <ListItemText primary={name} />
             </ListItem>
           ))}
