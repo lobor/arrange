@@ -1,32 +1,36 @@
-import axios, { AxiosRequestConfig } from 'axios'
-import axiosHooks, { Options, makeUseAxios } from 'axios-hooks'
+import axios, { AxiosRequestConfig } from 'axios';
+import { Options, makeUseAxios } from 'axios-hooks';
 
 const API_URL = 'http://localhost:8080';
 
-const axiosInstance = axios.create({ baseURL: API_URL })
+const axiosInstance = axios.create({ baseURL: API_URL });
 
 const useAxiosInstance = makeUseAxios({
   axios: axiosInstance
-})
+});
 
 const keys: {
   [key: string]: string;
 } = {
+  updateComponent: '/updateComponent',
+  deleteComponent: '/deleteComponent',
+  getComponentPage: '/getComponentPage',
+  insertComponent: '/insertComponent',
   getPage: '/getPage',
   createPage: '/createPage',
   pages: '/pages',
   listDatasource: '/datasources',
-  getDatasource: '/datasources/:id',
+  getDatasource: '/datasources/:id'
 };
 
-function useAxios<T = any> (config: string | AxiosRequestConfig, options?: Options | undefined) {
+function useAxios<T = any>(config: string | AxiosRequestConfig, options?: Options | undefined) {
   if (typeof config === 'string') {
-    config = keys[config]
+    config = keys[config];
   } else if (config.url) {
-    config.url = keys[config.url]
+    config.url = keys[config.url];
   }
 
-  return useAxiosInstance<T>(config, options)
+  return useAxiosInstance<T>(config, options);
 }
 
-export { useAxios }
+export { useAxios };

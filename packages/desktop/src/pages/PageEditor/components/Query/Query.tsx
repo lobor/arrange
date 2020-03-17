@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Card } from '../../styles';
-import { queryContext } from '../../context';
+import { queryContext} from '../../../../context/query'
 
 const Query = () => {
   const { open } = React.useContext(queryContext);

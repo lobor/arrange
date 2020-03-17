@@ -12,4 +12,17 @@ const Card = styled(CardMui)`
   }
 `;
 
-export { Card };
+const Container = styled.div`
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 64px;
+  .content-edit {
+    background-color: #f4f4f4;
+  }
+`;
+
+export { Card, Container };

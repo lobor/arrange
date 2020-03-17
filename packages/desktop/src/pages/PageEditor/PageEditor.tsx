@@ -1,28 +1,14 @@
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Button from '@material-ui/core/Button';
 import Alert from '@material-ui/lab/Alert';
-import styled from 'styled-components';
 
 import { useAxios } from '../../hooks/useAxios';
 import { Components } from './components/Components'
 import { Query } from './components/Query'
-import { Card } from './styles';
-import { componentContext, queryContext } from './context'
-
-const Container = styled.div`
-  bottom: 0;
-  display: flex;
-  flex-direction: row;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 64px;
-  .content-edit {
-    background-color: #f4f4f4;
-  }
-`;
+import { Container } from './styles';
+import { navBarContext } from '../../context/navBar';
+import { Editor } from './components/Editor';
 
 const PageEditor = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,9 +17,18 @@ const PageEditor = () => {
     params: { id }
   });
 
-  const { toggle: toggleComponent } = React.useContext(componentContext);
-  const { toggle: toggleQuery } = React.useContext(queryContext);
+  const { toggle: toggleNavBar, edit } = React.useContext(navBarContext);
 
+  React.useEffect(() => {
+    if (!edit) {
+      toggleNavBar()
+    }
+    return () => {
+      if (edit) {
+        toggleNavBar()
+      }
+    }
+  })
   if (loading) {
     return <CircularProgress />;
   }
@@ -50,10 +45,7 @@ const PageEditor = () => {
     <Container>
       <Components />
       <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
-        <Card className="card content-edit" style={{ flex: 1 }}>
-          <Button onClick={toggleComponent}>Components</Button>
-          <Button onClick={toggleQuery}>Query</Button>
-        </Card>
+        <Editor />
         <Query />
       </div>
     </Container>

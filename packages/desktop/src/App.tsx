@@ -1,12 +1,16 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { DndProvider } from 'react-dnd'
+import Backend from 'react-dnd-html5-backend'
 
 import { NavBar } from './components/NavBar';
 import { DataSources } from './pages/DataSources';
 import { DataSourceCreate } from './pages/DataSourceCreate';
 import { Pages } from './pages/Pages';
 import { PageEditor } from './pages/PageEditor';
-import { ComponentProvider, QueryProvider } from './pages/PageEditor/context';
+import { QueryProvider } from './context/query';
+import { ComponentProvider } from './context/component';
+import { NavBarProvider } from './context/navBar';
 
 const styleDiv = {
   margin: 'auto',
@@ -16,30 +20,34 @@ function App() {
   return (
     <ComponentProvider>
       <QueryProvider>
-        {React.useMemo(
-          () => (
-            <Router>
-              <NavBar />
-              <div style={styleDiv}>
-                <Switch>
-                  <Route exact path="/pages">
-                    <Pages />
-                  </Route>
-                  <Route exact path="/pages/editor/:id">
-                    <PageEditor />
-                  </Route>
-                  <Route exact path="/datasources">
-                    <DataSources />
-                  </Route>
-                  <Route exact path="/datasources/create">
-                    <DataSourceCreate />
-                  </Route>
-                </Switch>
-              </div>
-            </Router>
-          ),
-          []
-        )}
+        <NavBarProvider>
+          {React.useMemo(
+            () => (
+              <Router>
+                <NavBar />
+                <div style={styleDiv}>
+                  <Switch>
+                    <Route exact path="/pages">
+                      <Pages />
+                    </Route>
+                    <Route exact path="/pages/editor/:id">
+                      <DndProvider backend={Backend}>
+                        <PageEditor />
+                      </DndProvider>
+                    </Route>
+                    <Route exact path="/datasources">
+                      <DataSources />
+                    </Route>
+                    <Route exact path="/datasources/create">
+                      <DataSourceCreate />
+                    </Route>
+                  </Switch>
+                </div>
+              </Router>
+            ),
+            []
+          )}
+        </NavBarProvider>
       </QueryProvider>
     </ComponentProvider>
   );

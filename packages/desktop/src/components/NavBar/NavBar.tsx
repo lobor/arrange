@@ -5,10 +5,10 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import { navBarContext } from '../../context/navBar'
+import { queryContext} from '../../context/query'
+import { componentContext} from '../../context/component'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -23,21 +23,22 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const NavBar = () => {
+  const { edit } = React.useContext(navBarContext)
+  const { toggle: toggleComponent } = React.useContext(componentContext);
+  const { toggle: toggleQuery } = React.useContext(queryContext);
   const classes = useStyles();
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton> */}
-          {/* <Typography variant="h6" className={classes.title}>
-            News
-          </Typography> */}
-          <Button component={Link} color="inherit" to="/pages">Pages</Button>
+          {!edit && <>
+            <Button component={Link} color="inherit" to="/pages">Pages</Button>
           <Button component={Link} color="inherit" to="/datasources">Data sources</Button>
-          {/* <Button color="inherit">Login</Button>
-          <Button color="inherit">Login</Button> */}
+          </>}
+          {edit && <>
+            <Button onClick={toggleComponent}>Components</Button>
+            <Button onClick={toggleQuery}>Query</Button>
+          </>}
         </Toolbar>
       </AppBar>
     </div>
