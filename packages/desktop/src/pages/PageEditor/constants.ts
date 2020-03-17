@@ -1,5 +1,6 @@
 const TYPE_DRAG = {
-  component: 'component'
+  component: 'component',
+  move: 'move'
 };
 
 const COMPONENT = {

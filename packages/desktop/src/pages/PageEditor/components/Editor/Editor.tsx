@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classnames from 'classnames';
 import { useParams } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
@@ -7,9 +6,9 @@ import Alert from '@material-ui/lab/Alert';
 import { Item, componentContext } from '../../../../context/component';
 import { useAxios } from '../../../../hooks/useAxios';
 import { Card } from '../../styles';
-import { TextField } from '../../../../components/TextField';
-import { Container, GridContainer, OverlayComponent } from './styles';
+import { Container, GridContainer } from './styles';
 import { CellGrid } from './components/CellGrid';
+import { IsolateComponent } from './components/IsolateComponent';
 import { useComponent } from '../../hooks/useComponent';
 
 const Editor = () => {
@@ -19,7 +18,6 @@ const Editor = () => {
     { manual: true }
   );
   const [{ data, loading, error }, setCells] = useComponent(id);
-  const { item, toggleItem } = React.useContext(componentContext);
 
   const addCells = React.useCallback(
     async (cell: Item) => {
@@ -44,26 +42,13 @@ const Editor = () => {
   return (
     <Container>
       <GridContainer>
-        {new Array(250).fill(5).map((e, i) => (
+        {new Array(300).fill(5).map((e, i) => (
           <CellGrid addCells={addCells} key={i} />
         ))}
       </GridContainer>
       <Card className="card content-edit" style={{ flex: 1 }}>
-        {data.map(({ name, position, ...other }, i) => {
-          if (!position) return null;
-          const style = { left: position.x, top: position.y };
-          return (
-            <OverlayComponent
-              style={style}
-              onClick={() => toggleItem({ name, position, ...other })}
-              key={`${name}-${i}`}
-            >
-              <TextField
-                size="small"
-                className={classnames({ active: item && item.name === name })}
-              />
-            </OverlayComponent>
-          );
+        {data.map((comp, i) => {
+          return <IsolateComponent component={comp} key={comp.name} />;
         })}
       </Card>
     </Container>

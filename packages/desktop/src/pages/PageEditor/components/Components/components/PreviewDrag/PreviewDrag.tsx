@@ -66,7 +66,7 @@ const PreviewDrag = DragLayer(monitor => ({
   }
   return (
     <div style={layerStyles}>
-      <div style={getItemStyles(props)}>{renderItem()}</div>
+      <div style={getItemStyles(props)}>{item.component && renderItem()}</div>
     </div>
   );
 });
