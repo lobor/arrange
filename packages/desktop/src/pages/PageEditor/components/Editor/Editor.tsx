@@ -3,22 +3,20 @@ import { useParams } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
 
-import { createComponent, getComponent } from '../../../../interfaces/Components';
+import { Component as Item, createComponent } from '../../../../interfaces/Components';
 import { getPages } from '../../../../interfaces/Pages';
-import { Item } from '../../../../context/component';
 import { Card } from '../../styles';
 import { Container, GridContainer } from './styles';
 import { CellGrid } from './components/CellGrid';
 import { IsolateComponent } from './components/IsolateComponent';
-// import { useComponent } from '../../hooks/useComponent';
 
 const Editor = () => {
   const { id } = useParams<{ id: string }>();
-  const [insertComponent] = createComponent(id);
+  const [insertComponent] = createComponent();
   const { data, status, error } = getPages(id);
 
   const addCells = React.useCallback(
-    (cell: Omit<Item, 'pageId'>) => {
+    (cell: Omit<Item, 'page'>) => {
       insertComponent({
         ...cell,
         pageId: id

@@ -1,14 +1,42 @@
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, queryCache } from 'react-query';
 import { client } from '../../interfaces/Fetch';
 
 export interface DataSource {
   _id: string;
   name: string;
+  dbHost: string;
+  dbPort: number;
+  dbName: string;
+  dbUsername: string;
+  dbPassword: string;
 }
 
-function getDataSources<T = any, R = any>() {
+function getDataSources() {
   // eslint-disable-next-line
   return useQuery<{ data: DataSource[] }, {}>('datasources', () => client.get('/datasources'));
 }
 
-export { getDataSources };
+function checkConnexion() {
+  // eslint-disable-next-line
+  return useMutation<{ data: DataSource[] }, Omit<DataSource, '_id' | 'name'>>(
+    (params) => {
+      return client.post('/datasources/check', params)
+    }
+  );
+}
+
+function createDataSources() {
+  // eslint-disable-next-line
+  return useMutation(
+    data => {
+      return client.post('/datasources', data);
+    },
+    {
+      onSuccess: data => {
+        queryCache.refetchQueries(`datasources`);
+      }
+    }
+  );
+}
+
+export { getDataSources, createDataSources, checkConnexion };

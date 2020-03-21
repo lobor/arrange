@@ -1,21 +1,12 @@
 import React, { createContext } from 'react';
 
-export interface Item {
-  _id?: string;
-  name: string;
-  pageId: string;
-  position: {
-    x: number;
-    y: number;
-  } | null;
-  type: string;
-}
+import { Component } from '../interfaces/Components'
 
 const componentContext = createContext<{
   open: boolean;
   toggle: () => void;
-  toggleItem: (item?: Item) => void;
-  item?: Item;
+  toggleItem: (item?: Component) => void;
+  item?: Component;
 }>({
   open: false,
   toggle: () => {},
@@ -27,13 +18,13 @@ interface ComponentProviderProps {
 }
 const ComponentProvider: React.FC<ComponentProviderProps> = ({ children }) => {
   const [open, setOpen] = React.useState<boolean>(true);
-  const [item, setItem] = React.useState<Item>();
+  const [item, setItem] = React.useState<Component>();
 
   const toggle = React.useCallback(() => {
     setOpen(!open);
   }, [open]);
   const toggleItem = React.useCallback(
-    (item?: Item) => {
+    (item?: Component) => {
       setItem(item);
     },
     [setItem]

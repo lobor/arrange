@@ -20,9 +20,8 @@ const useStyles = makeStyles(theme => ({
 
 const DataSources = () => {
   const classes = useStyles();
-  const { status, data, error } = getDataSources<{ _id: string }[]>();
+  const { status, data, error } = getDataSources();
 
-  // const [{ data, loading, error }] = useAxios<{ _id: string }[]>({ url: 'listDatasource' });
   if (!data || status === 'loading') {
     return <CircularProgress />;
   }
@@ -40,9 +39,9 @@ const DataSources = () => {
       {data.data.length === 0 && <Alert severity="warning">You should create datasources</Alert>}
       {data.data.length > 0 && (
         <List component="nav" aria-label="secondary mailbox folders">
-          {data.data.map(({ _id }) => (
+          {data.data.map(({ _id, name }) => (
             <ListItem button component={Link} key={_id} to={`/datasources/${_id}`}>
-              <ListItemText primary="Trash" />
+              <ListItemText primary={name} />
             </ListItem>
           ))}
         </List>

@@ -1,20 +1,17 @@
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
-// import { useParams } from 'react-router-dom';
 import omit from 'lodash/omit';
 import styled from 'styled-components';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
 import { CollapseMenu } from '../../../../../../components/CollapseMenu';
 import { TextField } from '../../../../../../components/TextField';
-import { deleteComponent, putComponent } from '../../../../../../interfaces/Components';
-// import { useComponent } from '../../../../hooks/useComponent';
-import { Item, componentContext } from '../../../../../../context/component';
+import { Component as Item, deleteComponent, putComponent } from '../../../../../../interfaces/Components';
+import { componentContext } from '../../../../../../context/component';
 
 const Container = styled.div`
   .MuiFormControl-root {
@@ -23,16 +20,8 @@ const Container = styled.div`
 `;
 
 const EditComponent = () => {
-  // const { id } = useParams<{ id: string }>();
-
   const { item, toggleItem } = React.useContext(componentContext);
   const [values, setValue] = React.useState<Item | undefined>(item);
-  React.useEffect(() => {
-    if (item) {
-      setValue(item);
-    }
-  }, [item]);
-  // const [, refetch] = useComponent(id);
 
   const [removeComponent] = deleteComponent();
   const [updateComponent] = putComponent();
@@ -49,19 +38,20 @@ const EditComponent = () => {
 
   const handleChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.currentTarget;
-      setValue({ ...values!, [name]: value });
+      const name = e.currentTarget.name ? e.currentTarget.name : 'inputType'
+      const value = e.currentTarget.value ? e.currentTarget.value : e.currentTarget.getAttribute('data-value')
+      setValue({ ...values!, [name]: value || '' });
     },
     [values]
   );
 
-  const [open, setOpen] = React.useState(true);
+  React.useEffect(() => {
+    if (item) {
+      setValue(item);
+    }
+  }, [item]);
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
-
-  if (!item || !values) return null;
+  if (!values || !item) return null;
 
   return (
     <Container>
@@ -82,12 +72,25 @@ const EditComponent = () => {
         <CollapseMenu label="Basic">
           <List component="div" disablePadding>
             <ListItem>
-              <TextField label="Label" name="label" />
+              <TextField
+                label="Label"
+                value={values.label}
+                name="label"
+                onChange={handleChange}
+                onBlur={handleUpdateComponent}
+              />
             </ListItem>
           </List>
           <List component="div" disablePadding>
             <ListItem>
-              <TextField select label="Type" name="type">
+              <TextField
+                select
+                label="Type"
+                name="inputType"
+                value={values.inputType}
+                onChange={handleChange}
+                onBlur={handleUpdateComponent}
+              >
                 <MenuItem value="text">Text</MenuItem>
                 <MenuItem value="password">Password</MenuItem>
                 <MenuItem value="date">Date</MenuItem>
@@ -98,12 +101,24 @@ const EditComponent = () => {
           </List>
           <List component="div" disablePadding>
             <ListItem>
-              <TextField label="Default value" name="defaultValue" />
+              <TextField
+                label="Default value"
+                name="defaultValue"
+                value={values.defaultValue || ''}
+                onChange={handleChange}
+                onBlur={handleUpdateComponent}
+              />
             </ListItem>
           </List>
           <List component="div" disablePadding>
             <ListItem>
-              <TextField label="Placeholder text" name="placeholder" />
+              <TextField
+                label="Placeholder text"
+                name="placeholder"
+                value={values.placeholder}
+                onChange={handleChange}
+                onBlur={handleUpdateComponent}
+              />
             </ListItem>
           </List>
         </CollapseMenu>
@@ -127,35 +142,37 @@ const EditComponent = () => {
           </List>
         </CollapseMenu>
 
-        {/* <CollapseMenu label="Options">
-          <List component="div" disablePadding>
-            <ListItem>
-              <TextField select label="Left icon" name="type">
-                <MenuItem value="text">Text</MenuItem>
-                <MenuItem value="password">Password</MenuItem>
-                <MenuItem value="date">Date</MenuItem>
-                <MenuItem value="email">Email</MenuItem>
-                <MenuItem value="number">Number</MenuItem>
-              </TextField>
-            </ListItem>
-          </List>
-        </CollapseMenu> */}
         <CollapseMenu label="Advanced">
           <List component="div" disablePadding>
             <ListItem>
-              <TextField select label="On blur run (query)" name="onBlur" />
+              <TextField
+                label="On blur run (query)"
+                name="onBlur"
+                onChange={handleChange}
+                onBlur={handleUpdateComponent}
+              />
             </ListItem>
           </List>
           <List component="div" disablePadding>
             <ListItem>
-              <TextField label="Disable when true" name="disableWhen" />
+              <TextField
+                label="Disable when true"
+                name="disableWhen"
+                onChange={handleChange}
+                onBlur={handleUpdateComponent}
+              />
             </ListItem>
           </List>
         </CollapseMenu>
         <CollapseMenu label="Display">
           <List component="div" disablePadding>
             <ListItem>
-              <TextField label="Hide when true" name="whenHide" />
+              <TextField
+                label="Hide when true"
+                name="whenHide"
+                onChange={handleChange}
+                onBlur={handleUpdateComponent}
+              />
             </ListItem>
           </List>
         </CollapseMenu>

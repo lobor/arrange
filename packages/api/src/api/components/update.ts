@@ -7,6 +7,14 @@ server.put(
   '/components',
   celebrate({
     [Segments.BODY]: Joi.object().keys({
+      defaultValue: Joi.string().allow(''),
+      disableWhen: Joi.string(),
+      label: Joi.string(),
+      onBlur: Joi.string(),
+      placeholder: Joi.string().allow(''),
+      required: Joi.boolean(),
+      validation: Joi.boolean(),
+      whenHide: Joi.string(),
       id: Joi.string().required(),
       name: Joi.string().required(),
       position: Joi.object()
@@ -15,7 +23,7 @@ server.put(
           y: Joi.number().required()
         })
         .required(),
-      type: Joi.string().required(),
+      inputType: Joi.string().required(),
       page: Joi.string().required()
     })
   }),

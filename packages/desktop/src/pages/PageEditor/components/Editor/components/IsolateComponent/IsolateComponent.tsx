@@ -2,7 +2,8 @@ import * as React from 'react';
 import classnames from 'classnames';
 import { useDrag } from 'react-dnd';
 
-import { Item, componentContext } from '../../../../../../context/component';
+import { componentContext } from '../../../../../../context/component';
+import { Component as Item } from '../../../../../../interfaces/Components';
 import { OverlayComponent } from '../../styles';
 import { TextField } from '../../../../../../components/TextField';
 import { TYPE_DRAG } from '../../../../constants';
@@ -27,7 +28,15 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
 
   return (
     <OverlayComponent style={style} onClick={() => toggleItem(component)} ref={dragRef}>
-      <TextField size="small" className={classnames({ active: item && item.name === name })} />
+      <TextField
+        size="small"
+        label={component.label}
+        placeholder={component.placeholder}
+        name={component.name}
+        type={component.inputType}
+        value={component.defaultValue || undefined}
+        className={classnames({ active: item && item.name === name })}
+      />
     </OverlayComponent>
   );
 };

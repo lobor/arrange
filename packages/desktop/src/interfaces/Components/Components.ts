@@ -1,19 +1,28 @@
-import { useContext } from 'react';
-import { useMutation, useQuery, queryCache } from 'react-query';
-import { Item } from '../../context/component';
+import { useMutation, queryCache } from 'react-query';
 import { client } from '../Fetch';
+import omit from 'lodash/omit'
 
-export interface Component extends Item {
-  _id: string;
+export interface Component {
+  _id?: string;
+  defaultValue?: string | number;
+  disableWhen?: string;
+  label?: string;
+  inputType: string;
+  name: string;
+  onBlur?: string;
+  page: string;
+  placeholder?: string;
+  position: {
+    x: number;
+    y: number;
+  } | null;
+  required: boolean;
+  type: string;
+  validation: boolean;
+  whenHide?: string;
 }
 
-const actions = {
-  getComponent: (pageId?: string) => ({
-    endpoint: `/components${pageId ? `/${pageId}` : ''}`,
-    method: 'GET'
-  })
-};
-function createComponent(pageId: string) {
+function createComponent() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useMutation(
     (data) => {
@@ -39,22 +48,12 @@ function deleteComponent() {
     }
   );
 }
-function getComponent(pageId?: string) {
-  // if (pageId) {
-  //   return useQuery<Item[]>(actions.getComponent(pageId) as Action<any, any>);
-  // }
-  // return useQuery<Item[]>(actions.getComponent() as Action<any, any>);
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  // return useQuery<Item[]>('getComponent', () => {
 
-  // });
-  return { payload: [], loading: false, error: false };
-}
 function putComponent() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useMutation(
     (data) => {
-      return client.put('/components', data);
+      return client.put('/components', omit(data, ['type']));
     },
     {
       onSuccess: (data) => {
@@ -64,4 +63,4 @@ function putComponent() {
   );
 }
 
-export { createComponent, deleteComponent, getComponent, putComponent };
+export { createComponent, deleteComponent, putComponent };

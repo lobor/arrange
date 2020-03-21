@@ -13,6 +13,15 @@ export interface ComponentMongo extends Document {
 const Components = mongoose.model<ComponentMongo>(
   'Components',
   new mongoose.Schema({
+    defaultValue: String,
+    disableWhen: String,
+    label: String,
+    inputType: String,
+    onBlur: String,
+    placeholder: String,
+    required: Boolean,
+    validation: Boolean,
+    whenHide: String,
     name: String,
     position: {
       x: Number,

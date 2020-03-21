@@ -6,11 +6,10 @@ import omit from 'lodash/omit';
 
 import { CellStyled } from '../../styles';
 import { TYPE_DRAG } from '../../../../constants';
-import { putComponent } from '../../../../../../interfaces/Components';
-import { Item } from '../../../../../../context/component';
+import { Component as Item, putComponent } from '../../../../../../interfaces/Components';
 
 export interface CellGridProps {
-  addCells: (cell: Omit<Item, 'pageId'>) => void;
+  addCells: (cell: Omit<Item, 'page'>) => void;
 }
 
 function getName(name: string) {
@@ -44,6 +43,9 @@ const CellGrid: React.FC<CellGridProps> = ({ addCells }) => {
           });
         } else if (item.type === TYPE_DRAG.component) {
           addCells({
+            inputType: 'text',
+            required: false,
+            validation: false,
             name: getName(item.component.type),
             position: {
               x,
