@@ -6,9 +6,12 @@ import styled from 'styled-components';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import MenuItem from '@material-ui/core/MenuItem';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
-import { CollapseMenu } from 'components/CollapseMenu';
-import { TextField } from 'components/TextField';
+import { CollapseMenu } from '../../../../../../components/CollapseMenu';
+import { TextField } from '../../../../../../components/TextField';
 import { deleteComponent, putComponent } from '../../../../../../interfaces/Components';
 // import { useComponent } from '../../../../hooks/useComponent';
 import { Item, componentContext } from '../../../../../../context/component';
@@ -75,6 +78,7 @@ const EditComponent = () => {
             Delete
           </Button>
         </ListItem>
+
         <CollapseMenu label="Basic">
           <List component="div" disablePadding>
             <ListItem>
@@ -99,7 +103,59 @@ const EditComponent = () => {
           </List>
           <List component="div" disablePadding>
             <ListItem>
-              <TextField label="Placeholder text" name="defaultValue" />
+              <TextField label="Placeholder text" name="placeholder" />
+            </ListItem>
+          </List>
+        </CollapseMenu>
+
+        <CollapseMenu label="Validation">
+          <List component="div" disablePadding>
+            <ListItem>
+              <FormControlLabel
+                control={<Switch name="validation" color="primary" />}
+                label="Enable validation type"
+              />
+            </ListItem>
+          </List>
+          <List component="div" disablePadding>
+            <ListItem>
+              <FormControlLabel
+                control={<Switch name="required" color="primary" />}
+                label="Required field"
+              />
+            </ListItem>
+          </List>
+        </CollapseMenu>
+
+        {/* <CollapseMenu label="Options">
+          <List component="div" disablePadding>
+            <ListItem>
+              <TextField select label="Left icon" name="type">
+                <MenuItem value="text">Text</MenuItem>
+                <MenuItem value="password">Password</MenuItem>
+                <MenuItem value="date">Date</MenuItem>
+                <MenuItem value="email">Email</MenuItem>
+                <MenuItem value="number">Number</MenuItem>
+              </TextField>
+            </ListItem>
+          </List>
+        </CollapseMenu> */}
+        <CollapseMenu label="Advanced">
+          <List component="div" disablePadding>
+            <ListItem>
+              <TextField select label="On blur run (query)" name="onBlur" />
+            </ListItem>
+          </List>
+          <List component="div" disablePadding>
+            <ListItem>
+              <TextField label="Disable when true" name="disableWhen" />
+            </ListItem>
+          </List>
+        </CollapseMenu>
+        <CollapseMenu label="Display">
+          <List component="div" disablePadding>
+            <ListItem>
+              <TextField label="Hide when true" name="whenHide" />
             </ListItem>
           </List>
         </CollapseMenu>

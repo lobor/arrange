@@ -10,6 +10,9 @@ const Card = styled(CardMui)`
     border-left: 0;
     border-top: 0;
   }
+  display: flex;
+  flex-direction: column;
+  width: 15%;
 `;
 
 const Container = styled.div`

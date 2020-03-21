@@ -9,7 +9,7 @@ import Alert from '@material-ui/lab/Alert';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { getDataSources } from '../../interfaces/DataSources'
+import { getDataSources } from '../../interfaces/DataSources';
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -20,10 +20,10 @@ const useStyles = makeStyles(theme => ({
 
 const DataSources = () => {
   const classes = useStyles();
-  const { loading, payload, error } = getDataSources<{ _id: string }[]>()
+  const { status, data, error } = getDataSources<{ _id: string }[]>();
 
   // const [{ data, loading, error }] = useAxios<{ _id: string }[]>({ url: 'listDatasource' });
-  if (!payload || loading) {
+  if (!data || status === 'loading') {
     return <CircularProgress />;
   }
   if (error) {
@@ -37,10 +37,10 @@ const DataSources = () => {
           New data sources
         </Button>
       </Typography>
-      {payload.length === 0 && <Alert severity="warning">You should create datasources</Alert>}
-      {payload.length > 0 && (
+      {data.data.length === 0 && <Alert severity="warning">You should create datasources</Alert>}
+      {data.data.length > 0 && (
         <List component="nav" aria-label="secondary mailbox folders">
-          {payload.map(({ _id }) => (
+          {data.data.map(({ _id }) => (
             <ListItem button component={Link} key={_id} to={`/datasources/${_id}`}>
               <ListItemText primary="Trash" />
             </ListItem>

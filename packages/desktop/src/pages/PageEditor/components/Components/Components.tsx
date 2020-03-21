@@ -1,12 +1,18 @@
 import * as React from 'react';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import styled from 'styled-components';
 
 // import { PreviewDrag } from './components/PreviewDrag';
 import { Card } from '../../styles';
 import { componentContext } from '../../../../context/component';
 import { ListComponent } from './components/ListComponent';
 import { EditComponent } from './components/EditComponent';
+
+const ContainerTabContent = styled.div`
+  flex: 1;
+  overflow: auto;
+`;
 
 const Components = () => {
   const { open } = React.useContext(componentContext);
@@ -23,13 +29,15 @@ const Components = () => {
   if (!open) return null;
 
   return (
-    <Card style={{ width: '15%' }}>
+    <Card>
       <Tabs textColor="primary" indicatorColor="primary" value={tabIndex} onChange={toggleTab}>
         <Tab label="Inspector" />
         <Tab label="Components" />
       </Tabs>
-      {tabIndex === 0 && <EditComponent />}
-      {tabIndex === 1 && <ListComponent />}
+      <ContainerTabContent>
+        {tabIndex === 0 && <EditComponent />}
+        {tabIndex === 1 && <ListComponent />}
+      </ContainerTabContent>
     </Card>
   );
 };

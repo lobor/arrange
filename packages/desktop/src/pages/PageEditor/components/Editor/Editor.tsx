@@ -19,19 +19,12 @@ const Editor = () => {
 
   const addCells = React.useCallback(
     (cell: Omit<Item, 'pageId'>) => {
-      insertComponent(
-        {
-          ...cell,
-          pageId: id
-        }
-      );
+      insertComponent({
+        ...cell,
+        pageId: id
+      });
     },
     [id, insertComponent]
-  );
-
-  const grids = React.useMemo(
-    () => new Array(300).fill(5).map((e, i) => <CellGrid addCells={addCells} key={i} />),
-    [addCells]
   );
 
   if (!data || status === 'loading') {
@@ -43,7 +36,11 @@ const Editor = () => {
   }
   return (
     <Container>
-      <GridContainer id="contentEditor">{grids}</GridContainer>
+      <GridContainer id="contentEditor">
+        {new Array(300).fill(5).map((e, i) => (
+          <CellGrid addCells={addCells} key={i} />
+        ))}
+      </GridContainer>
       <Card className="card content-edit" style={{ flex: 1 }}>
         {data.data.components.map(comp => {
           return <IsolateComponent component={comp} key={comp._id} />;
