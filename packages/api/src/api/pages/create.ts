@@ -4,7 +4,7 @@ import { Pages } from '../../models/Pages';
 import { server } from '../../setup/server';
 
 server.post(
-  '/createPage',
+  '/pages',
   celebrate({
     [Segments.BODY]: Joi.object().keys({
       name: Joi.string().required()

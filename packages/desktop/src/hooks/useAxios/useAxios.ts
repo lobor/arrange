@@ -1,3 +1,4 @@
+import * as React from 'react';
 import axios, { AxiosRequestConfig } from 'axios';
 import { Options, makeUseAxios } from 'axios-hooks';
 
@@ -23,14 +24,27 @@ const keys: {
   getDatasource: '/datasources/:id'
 };
 
-function useAxios<T = any>(config: string | AxiosRequestConfig, options?: Options | undefined) {
-  if (typeof config === 'string') {
-    config = keys[config];
-  } else if (config.url) {
-    config.url = keys[config.url];
-  }
+const cache: { [key: string]: any } = {}
 
-  return useAxiosInstance<T>(config, options);
+const getCacheKey = (url: string, variables: {}) => {
+  return `${url}::${JSON.stringify(variables)}`;
+}
+
+function useAxios<T = any>(config: AxiosRequestConfig, options?: Options | undefined) {
+  const [caheState, setCache] = React.useState<{ [key: string]: any }>(cache)
+  config.url = keys[config.url!];
+
+  const [{ data, loading, error }, refetch] = useAxiosInstance<T>(config, options)
+
+  React.useEffect(() => {
+    if (data) {
+      cache[getCacheKey(config.url!, config.params || config.data)] = data
+      setCache(cache)
+    }
+  }, [data, caheState, config])
+
+
+  return [{ data: caheState[getCacheKey(config.url!, config.params || config.data)] as T, loading, error }, refetch];
 }
 
 export { useAxios };

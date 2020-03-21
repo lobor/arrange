@@ -6,11 +6,11 @@ import omit from 'lodash/omit';
 
 import { CellStyled } from '../../styles';
 import { TYPE_DRAG } from '../../../../constants';
-import { useAxios } from '../../../../../../hooks/useAxios';
+import { putComponent } from '../../../../../../interfaces/Components';
 import { Item } from '../../../../../../context/component';
 
 export interface CellGridProps {
-  addCells: (cell: Item) => void;
+  addCells: (cell: Omit<Item, 'pageId'>) => void;
 }
 
 function getName(name: string) {
@@ -18,10 +18,7 @@ function getName(name: string) {
 }
 
 const CellGrid: React.FC<CellGridProps> = ({ addCells }) => {
-  const [, updateComponent] = useAxios<{ _id: string }>(
-    { url: 'updateComponent', method: 'POST' },
-    { manual: true }
-  );
+  const [updateComponent] = putComponent();
 
   const [{ isOver, position }, drop] = useDrop<
     { type: string; component: Item },
@@ -31,16 +28,19 @@ const CellGrid: React.FC<CellGridProps> = ({ addCells }) => {
     accept: [TYPE_DRAG.component, TYPE_DRAG.move],
     drop: (item, monitor) => {
       if (position) {
-        const x = position.x - (window.innerWidth * 15) / 100 - 5;
-        const y = position.y - 64 - 5;
-        console.log('type', item);
+        const container = document.getElementById('contentEditor')!
+        const width = container.offsetWidth / 10
+
+        const rest = Math.floor(position.x / width) - 1
+        const x = width * rest - 5;
+
+        const restHeight = Math.floor(position.y / 40) - 1
+        const y = restHeight * 40 - 5;
         if (item.type === TYPE_DRAG.move) {
           updateComponent({
-            data: {
-              ...omit(item.component, ['_id', '__v']),
-              id: item.component!._id,
-              position: { x, y }
-            }
+            ...omit(item.component, ['_id', '__v']),
+            id: item.component!._id,
+            position: { x, y }
           });
         } else if (item.type === TYPE_DRAG.component) {
           addCells({

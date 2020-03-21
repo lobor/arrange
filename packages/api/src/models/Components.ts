@@ -1,6 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
-const Components = mongoose.model(
+export interface ComponentMongo extends Document {
+  name: string;
+  page: string;
+  position: {
+    x: number;
+    y: number;
+  };
+  type: string;
+}
+
+const Components = mongoose.model<ComponentMongo>(
   'Components',
   new mongoose.Schema({
     name: String,
@@ -8,7 +18,7 @@ const Components = mongoose.model(
       x: Number,
       y: Number
     },
-    pageId: String,
+    page: { type: mongoose.Schema.Types.ObjectId, ref: 'Pages' },
     type: String
   })
 );

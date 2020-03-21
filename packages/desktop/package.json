@@ -21,8 +21,12 @@
     "react-dnd": "^10.0.2",
     "react-dnd-html5-backend": "^10.0.2",
     "react-dom": "^16.13.0",
+    "react-fetching-library": "^1.7.0",
+    "react-query": "^1.0.33",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
+    "react-virtualized": "^9.21.2",
+    "react-window": "^1.8.5",
     "styled-components": "^5.0.1",
     "throttle": "^1.0.3",
     "typescript": "^3.7.5"

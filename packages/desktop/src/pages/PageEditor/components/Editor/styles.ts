@@ -4,6 +4,7 @@ const Container = styled.div`
   position: relative;
   display: flex;
   flex: 1;
+  overflow: auto;
 `;
 
 const GridContainer = styled.div`
@@ -22,8 +23,7 @@ const GridContainer = styled.div`
 const CellStyled = styled.div`
   width: 10%;
   height: 40px;
-  background: url(/cell.jpg) top left, url(/cell.jpg) bottom left, url(/cell.jpg) top right,
-    url(/cell.jpg) bottom right;
+  background: url(/cell.jpg) top left, url(/cell.jpg) bottom left, url(/cell.jpg) top right, url(/cell.jpg) bottom right;
   background-repeat: no-repeat;
   &.isOver {
     background-color: red;

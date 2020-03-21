@@ -2,15 +2,24 @@ import { celebrate, Joi, Segments } from 'celebrate';
 
 import { Pages } from '../../models/Pages';
 import { server } from '../../setup/server';
+import { Components } from '../../models/Components';
 
 server.get(
-  '/getPage',
+  '/pages/:id',
   celebrate({
-    [Segments.QUERY]: Joi.object().keys({
+    [Segments.PARAMS]: Joi.object().keys({
       id: Joi.string().required()
     })
   }),
   async (req, res) => {
-    res.json(await Pages.findOne({ _id: req.query.id }));
+    const page = await Pages.findOne({ _id: req.params.id })
+      .populate('components')
+      .exec();
+      console.log(page)
+    if (!page) {
+      res.json({ error: 'notFound' });
+      return;
+    }
+    res.json(page);
   }
 );

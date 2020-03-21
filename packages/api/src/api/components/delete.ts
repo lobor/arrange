@@ -1,17 +1,21 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 
 import { Components } from '../../models/Components';
+import { Pages } from '../../models/Pages';
 import { server } from '../../setup/server';
 
-server.post(
-  '/deleteComponent',
+server.delete(
+  '/components',
   celebrate({
     [Segments.BODY]: Joi.object().keys({
       id: Joi.string().required()
     })
   }),
   async (req, res) => {
-    await Components.deleteOne({ _id: req.body.id });
-    res.json({});
+    const component = await Components.findOneAndDelete({ _id: req.body.id });
+    await Pages.findByIdAndUpdate(component.page, {
+      $pull: { components: component._id }
+    });
+    res.json(component);
   }
 );

@@ -2,7 +2,7 @@ import * as React from 'react';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import { PreviewDrag } from './components/PreviewDrag';
+// import { PreviewDrag } from './components/PreviewDrag';
 import { Card } from '../../styles';
 import { componentContext } from '../../../../context/component';
 import { ListComponent } from './components/ListComponent';
@@ -24,7 +24,6 @@ const Components = () => {
 
   return (
     <Card style={{ width: '15%' }}>
-      <PreviewDrag />
       <Tabs textColor="primary" indicatorColor="primary" value={tabIndex} onChange={toggleTab}>
         <Tab label="Components" />
         <Tab label="Inspector" />

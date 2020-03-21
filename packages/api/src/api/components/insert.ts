@@ -2,9 +2,10 @@ import { celebrate, Joi, errors, Segments } from 'celebrate';
 
 import { Components } from '../../models/Components';
 import { server } from '../../setup/server';
+import { Pages } from '../../models/Pages';
 
 server.post(
-  '/insertComponent',
+  '/components',
   celebrate({
     [Segments.BODY]: Joi.object().keys({
       name: Joi.string().required(),
@@ -23,10 +24,13 @@ server.post(
     const component = new Components({
       name: `${req.body.name}${count + 1}`,
       position: req.body.position,
-      pageId: req.body.pageId,
+      page: req.body.pageId,
       type: req.body.type
     });
     await component.save();
+
+    // eslint-disable-next-line no-underscore-dangle
+    await Pages.findByIdAndUpdate(req.body.pageId, { $push: { components: component._id } });
     res.json(component);
   }
 );

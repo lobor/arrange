@@ -3,8 +3,8 @@ import { celebrate, Joi, Segments } from 'celebrate';
 import { Components } from '../../models/Components';
 import { server } from '../../setup/server';
 
-server.post(
-  '/updateComponent',
+server.put(
+  '/components',
   celebrate({
     [Segments.BODY]: Joi.object().keys({
       id: Joi.string().required(),
@@ -16,7 +16,7 @@ server.post(
         })
         .required(),
       type: Joi.string().required(),
-      pageId: Joi.string().required()
+      page: Joi.string().required()
     })
   }),
   async (req, res) => {

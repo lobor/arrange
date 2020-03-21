@@ -4,13 +4,13 @@ import { Components } from '../../models/Components';
 import { server } from '../../setup/server';
 
 server.get(
-  '/getComponentPage',
+  '/components/:id',
   celebrate({
-    [Segments.QUERY]: Joi.object().keys({
+    [Segments.PARAMS]: Joi.object().keys({
       id: Joi.string().required()
     })
   }),
   async (req, res) => {
-    res.json(await Components.find({ pageId: req.query.id }));
+    res.json(await Components.find({ pageId: req.params.id }));
   }
 );

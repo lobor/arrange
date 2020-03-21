@@ -4,12 +4,12 @@ import { useParams } from 'react-router-dom';
 import omit from 'lodash/omit';
 
 import { TextField } from '../../../../../../components/TextField';
-import { useComponent } from '../../../../hooks/useComponent';
-import { useAxios } from '../../../../../../hooks/useAxios';
+import { deleteComponent, putComponent } from '../../../../../../interfaces/Components';
+// import { useComponent } from '../../../../hooks/useComponent';
 import { Item, componentContext } from '../../../../../../context/component';
 
 const EditComponent = () => {
-  const { id } = useParams<{ id: string }>();
+  // const { id } = useParams<{ id: string }>();
 
   const { item, toggleItem } = React.useContext(componentContext);
   const [values, setValue] = React.useState<Item | undefined>(item);
@@ -18,26 +18,18 @@ const EditComponent = () => {
       setValue(item);
     }
   }, [item]);
-  const [, refetch] = useComponent(id);
+  // const [, refetch] = useComponent(id);
 
-  const [, executePut] = useAxios<{ _id: string }>(
-    { url: 'deleteComponent', method: 'POST' },
-    { manual: true }
-  );
-
-  const [, updateComponent] = useAxios<{ _id: string }>(
-    { url: 'updateComponent', method: 'POST' },
-    { manual: true }
-  );
+  const [removeComponent] = deleteComponent()
+  const [updateComponent] = putComponent()
 
   const handleDelete = React.useCallback(async () => {
-    await executePut({ data: { id: item!._id } });
-    await refetch();
+    await removeComponent({ data: { id: item!._id } });
     toggleItem();
-  }, [executePut, item, toggleItem, refetch]);
+  }, [removeComponent, item, toggleItem]);
 
   const handleUpdateComponent = React.useCallback(
-    () => updateComponent({ data: { ...omit(values, ['_id', '__v']), id: values!._id } }),
+    () => updateComponent({ ...omit(values, ['_id', '__v']), id: values!._id }),
     [updateComponent, values]
   );
 

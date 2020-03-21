@@ -16,6 +16,7 @@ const styleDiv = {
   margin: 'auto',
   maxWidth: '1280px'
 };
+
 function App() {
   return (
     <ComponentProvider>

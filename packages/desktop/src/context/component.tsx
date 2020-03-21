@@ -3,6 +3,7 @@ import React, { createContext } from 'react';
 export interface Item {
   _id?: string;
   name: string;
+  pageId: string;
   position: {
     x: number;
     y: number;
