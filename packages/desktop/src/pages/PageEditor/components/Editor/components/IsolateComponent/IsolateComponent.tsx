@@ -5,7 +5,7 @@ import { useDrag } from 'react-dnd';
 import { Item, componentContext } from '../../../../../../context/component';
 import { OverlayComponent } from '../../styles';
 import { TextField } from '../../../../../../components/TextField';
-import { COMPONENT, TYPE_DRAG } from '../../../../constants';
+import { TYPE_DRAG } from '../../../../constants';
 
 interface IsolateComponentProps {
   component: Item;

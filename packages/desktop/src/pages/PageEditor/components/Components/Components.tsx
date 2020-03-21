@@ -25,11 +25,11 @@ const Components = () => {
   return (
     <Card style={{ width: '15%' }}>
       <Tabs textColor="primary" indicatorColor="primary" value={tabIndex} onChange={toggleTab}>
-        <Tab label="Components" />
         <Tab label="Inspector" />
+        <Tab label="Components" />
       </Tabs>
-      {tabIndex === 0 && <ListComponent />}
-      {tabIndex === 1 && <EditComponent />}
+      {tabIndex === 0 && <EditComponent />}
+      {tabIndex === 1 && <ListComponent />}
     </Card>
   );
 };

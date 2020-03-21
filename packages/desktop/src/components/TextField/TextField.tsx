@@ -8,7 +8,7 @@ const TextFieldMUIStyled = styled(TextFieldMUI)`
   }
 `;
 const TextField: React.FC<TextFieldProps> = props => {
-  return <TextFieldMUIStyled {...props} size="small" label="Outlined" variant="outlined" />;
+  return <TextFieldMUIStyled {...props} size="small" variant="outlined" />;
 };
 
 export { TextField };
