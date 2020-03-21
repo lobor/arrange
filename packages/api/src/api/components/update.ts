@@ -7,14 +7,19 @@ server.put(
   '/components',
   celebrate({
     [Segments.BODY]: Joi.object().keys({
-      defaultValue: Joi.string().allow(''),
-      disableWhen: Joi.string(),
+      defaultValue: Joi.string()
+        .allow('')
+        .optional(),
+      disableWhen: Joi.string().optional(),
       label: Joi.string(),
-      onBlur: Joi.string(),
-      placeholder: Joi.string().allow(''),
+      onBlur: Joi.string().optional(),
+      placeholder: Joi.string()
+        .allow('')
+        .optional(),
       required: Joi.boolean(),
       validation: Joi.boolean(),
-      whenHide: Joi.string(),
+      whenHide: Joi.string().optional(),
+      style: Joi.object().optional(),
       id: Joi.string().required(),
       name: Joi.string().required(),
       position: Joi.object()
@@ -23,11 +28,11 @@ server.put(
           y: Joi.number().required()
         })
         .required(),
-      inputType: Joi.string().required(),
-      page: Joi.string().required()
+      inputType: Joi.string().required()
     })
   }),
   async (req, res) => {
+    console.log(req.body);
     res.json(await Components.findOneAndUpdate({ _id: req.body.id }, req.body, { new: true }));
   }
 );

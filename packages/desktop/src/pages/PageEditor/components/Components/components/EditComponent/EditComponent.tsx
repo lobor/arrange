@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import omit from 'lodash/omit';
+import debounce from 'lodash/debounce';
 import styled from 'styled-components';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -10,7 +11,11 @@ import Switch from '@material-ui/core/Switch';
 
 import { CollapseMenu } from '../../../../../../components/CollapseMenu';
 import { TextField } from '../../../../../../components/TextField';
-import { Component as Item, deleteComponent, putComponent } from '../../../../../../interfaces/Components';
+import {
+  Component as Item,
+  deleteComponent,
+  putComponent
+} from '../../../../../../interfaces/Components';
 import { componentContext } from '../../../../../../context/component';
 
 const Container = styled.div`
@@ -32,18 +37,25 @@ const EditComponent = () => {
   }, [removeComponent, item, toggleItem]);
 
   const handleUpdateComponent = React.useCallback(
-    () => updateComponent({ ...omit(values, ['_id', '__v']), id: values!._id }),
+    () => updateComponent({ ...omit(values, ['_id', '__v', 'page']), id: values!._id }),
     [updateComponent, values]
   );
 
   const handleChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const name = e.currentTarget.name ? e.currentTarget.name : 'inputType'
-      const value = e.currentTarget.value ? e.currentTarget.value : e.currentTarget.getAttribute('data-value')
+      const name = e.currentTarget.name ? e.currentTarget.name : 'inputType';
+      const value = e.currentTarget.value
+        ? e.currentTarget.value
+        : e.currentTarget.getAttribute('data-value');
       setValue({ ...values!, [name]: value || '' });
     },
     [values]
   );
+
+  const handleChangeChecked = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue({ ...values!, [e.currentTarget.name]: !e.currentTarget.checked });
+    handleUpdateComponent();
+  };
 
   React.useEffect(() => {
     if (item) {
@@ -51,7 +63,7 @@ const EditComponent = () => {
     }
   }, [item]);
 
-  if (!values || !item) return null;
+  if (!values || !item) return null;
 
   return (
     <Container>
@@ -124,18 +136,25 @@ const EditComponent = () => {
         </CollapseMenu>
 
         <CollapseMenu label="Validation">
-          <List component="div" disablePadding>
+          {/* <List component="div" disablePadding>
             <ListItem>
               <FormControlLabel
                 control={<Switch name="validation" color="primary" />}
                 label="Enable validation type"
               />
             </ListItem>
-          </List>
+          </List> */}
           <List component="div" disablePadding>
             <ListItem>
               <FormControlLabel
-                control={<Switch name="required" color="primary" />}
+                control={
+                  <Switch
+                    onChange={handleChangeChecked}
+                    checked={!values.required}
+                    name="required"
+                    color="primary"
+                  />
+                }
                 label="Required field"
               />
             </ListItem>

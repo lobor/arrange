@@ -15,9 +15,9 @@ const ContainerTabContent = styled.div`
 `;
 
 const Components = () => {
-  const { open } = React.useContext(componentContext);
+  const { item, open } = React.useContext(componentContext);
 
-  const [tabIndex, setTabIndex] = React.useState<number>(0);
+  const [tabIndex, setTabIndex] = React.useState<number>(1);
 
   const toggleTab = React.useCallback(
     (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -25,6 +25,10 @@ const Components = () => {
     },
     [setTabIndex]
   );
+
+  React.useEffect(() => {
+    setTabIndex(item ? 0 : 1);
+  }, [item]);
 
   if (!open) return null;
 

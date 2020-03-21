@@ -1,6 +1,6 @@
 import { useMutation, queryCache } from 'react-query';
 import { client } from '../Fetch';
-import omit from 'lodash/omit'
+import omit from 'lodash/omit';
 
 export interface Component {
   _id?: string;
@@ -16,6 +16,7 @@ export interface Component {
     x: number;
     y: number;
   } | null;
+  style: { [key: string]: string | number };
   required: boolean;
   type: string;
   validation: boolean;
@@ -25,12 +26,12 @@ export interface Component {
 function createComponent() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useMutation(
-    (data) => {
+    data => {
       return client.post('/components', data);
     },
     {
-      onSuccess: (data) => {
-        queryCache.refetchQueries(`pages:${data.data.page}`)
+      onSuccess: data => {
+        queryCache.refetchQueries(`pages:${data.data.page}`);
       }
     }
   );
@@ -38,12 +39,12 @@ function createComponent() {
 function deleteComponent() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useMutation(
-    (data) => {
+    data => {
       return client.delete('/components', data);
     },
     {
-      onSuccess: (data) => {
-        queryCache.refetchQueries(`pages:${data.data.page}`)
+      onSuccess: data => {
+        queryCache.refetchQueries(`pages:${data.data.page}`);
       }
     }
   );
@@ -52,12 +53,12 @@ function deleteComponent() {
 function putComponent() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useMutation(
-    (data) => {
-      return client.put('/components', omit(data, ['type']));
+    data => {
+      return client.put('/components', omit(data, ['page', 'type']));
     },
     {
-      onSuccess: (data) => {
-        queryCache.refetchQueries(`pages:${data.data.page}`)
+      onSuccess: data => {
+        queryCache.refetchQueries(`pages:${data.data.page}`);
       }
     }
   );

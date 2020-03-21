@@ -15,7 +15,6 @@ server.get(
     const page = await Pages.findOne({ _id: req.params.id })
       .populate('components')
       .exec();
-      console.log(page)
     if (!page) {
       res.json({ error: 'notFound' });
       return;

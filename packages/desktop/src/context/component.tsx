@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
 
-import { Component } from '../interfaces/Components'
+import { Component } from '../interfaces/Components';
 
 const componentContext = createContext<{
   open: boolean;
@@ -24,10 +24,12 @@ const ComponentProvider: React.FC<ComponentProviderProps> = ({ children }) => {
     setOpen(!open);
   }, [open]);
   const toggleItem = React.useCallback(
-    (item?: Component) => {
-      setItem(item);
+    (itemToSelect?: Component) => {
+      if (!itemToSelect || !item || itemToSelect._id === item._id) {
+        setItem(itemToSelect);
+      }
     },
-    [setItem]
+    [setItem, item]
   );
 
   return (

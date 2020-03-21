@@ -24,10 +24,18 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
 
   if (!position) return null;
 
+  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    toggleItem(component);
+  };
   const style = { left: position.x, top: position.y, opacity };
 
   return (
-    <OverlayComponent style={style} onClick={() => toggleItem(component)} ref={dragRef}>
+    <OverlayComponent
+      style={{ ...style, ...(component.style || {}) }}
+      onClick={handleClick}
+      ref={dragRef}
+    >
       <TextField
         size="small"
         label={component.label}
@@ -35,6 +43,7 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
         name={component.name}
         type={component.inputType}
         value={component.defaultValue || undefined}
+        required={component.required}
         className={classnames({ active: item && item.name === name })}
       />
     </OverlayComponent>

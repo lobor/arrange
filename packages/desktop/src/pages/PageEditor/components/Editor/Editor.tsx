@@ -5,12 +5,14 @@ import Alert from '@material-ui/lab/Alert';
 
 import { Component as Item, createComponent } from '../../../../interfaces/Components';
 import { getPages } from '../../../../interfaces/Pages';
+import { componentContext } from '../../../../context/component';
 import { Card } from '../../styles';
 import { Container, GridContainer } from './styles';
 import { CellGrid } from './components/CellGrid';
 import { IsolateComponent } from './components/IsolateComponent';
 
 const Editor = () => {
+  const { toggleItem } = React.useContext(componentContext);
   const { id } = useParams<{ id: string }>();
   const [insertComponent] = createComponent();
   const { data, status, error } = getPages(id);
@@ -19,7 +21,7 @@ const Editor = () => {
     (cell: Omit<Item, 'page'>) => {
       insertComponent({
         ...cell,
-        pageId: id
+        page: id
       });
     },
     [id, insertComponent]
@@ -32,9 +34,10 @@ const Editor = () => {
   if (status === 'error' && error) {
     return <Alert severity="error">{error.toString()}</Alert>;
   }
+  const handleClick = () => toggleItem();
   return (
     <Container>
-      <GridContainer id="contentEditor">
+      <GridContainer id="contentEditor" onClick={handleClick}>
         {new Array(300).fill(5).map((e, i) => (
           <CellGrid addCells={addCells} key={i} />
         ))}

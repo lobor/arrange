@@ -27,25 +27,29 @@ const CellGrid: React.FC<CellGridProps> = ({ addCells }) => {
     accept: [TYPE_DRAG.component, TYPE_DRAG.move],
     drop: (item, monitor) => {
       if (position) {
-        const container = document.getElementById('contentEditor')!
-        const width = container.offsetWidth / 10
+        const container = document.getElementById('contentEditor')!;
+        const cellGrid = document.getElementsByClassName('cellGrid')!;
+        const width = container.offsetWidth / 10;
 
-        const rest = Math.floor(position.x / width) - 1
+        const rest = Math.floor(position.x / width) - 1;
         const x = width * rest - 5;
 
-        const restHeight = Math.floor(position.y / 40) - 1
+        const restHeight = Math.floor(position.y / 40) - 1;
         const y = restHeight * 40 - 5;
         if (item.type === TYPE_DRAG.move) {
           updateComponent({
             ...omit(item.component, ['_id', '__v']),
+            style: { width: `${((cellGrid[0] as unknown) as HTMLDivElement).offsetWidth}px` },
             id: item.component!._id,
             position: { x, y }
           });
         } else if (item.type === TYPE_DRAG.component) {
           addCells({
             inputType: 'text',
+            label: 'Label',
             required: false,
             validation: false,
+            style: { width: `${((cellGrid[0] as unknown) as HTMLDivElement).offsetWidth}px` },
             name: getName(item.component.type),
             position: {
               x,
@@ -63,7 +67,7 @@ const CellGrid: React.FC<CellGridProps> = ({ addCells }) => {
       };
     }
   });
-  return <CellStyled className={classnames({ isOver })} ref={drop} />;
+  return <CellStyled className={classnames('cellGrid', { isOver })} ref={drop} />;
 };
 
 export { CellGrid };
