@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 
 import { CollapseMenu } from 'components/CollapseMenu';
 import { Card } from '../../styles';
-import { scopeContext } from '../../../../context/scope';
+import { scopeContext } from '../../context/scope';
 
 const theme = {
   scheme: 'default',

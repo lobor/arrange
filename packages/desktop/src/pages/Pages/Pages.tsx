@@ -14,7 +14,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 
-import { pages, createPage } from '../../interfaces/Pages';
+import { pages, createPage } from 'interfaces/Pages';
 
 const useStyles = makeStyles(theme => ({
   title: {

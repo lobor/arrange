@@ -5,8 +5,8 @@ import Handlebars from 'handlebars'
 
 import { Component as Item } from 'interfaces/Components';
 import { TextField } from 'components/TextField';
-import { componentContext } from '../../../../../../context/component';
-import { scopeContext } from '../../../../../../context/scope';
+import { componentContext } from '../../../../context/component';
+import { scopeContext } from '../../../../context/scope';
 import { OverlayComponent } from '../../styles';
 import { TYPE_DRAG } from '../../../../constants';
 

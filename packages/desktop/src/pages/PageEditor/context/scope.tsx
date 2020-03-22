@@ -2,8 +2,8 @@ import React, { createContext } from 'react';
 import keyBy from 'lodash/keyBy';
 import omit from 'lodash/omit';
 
-import { Component } from '../interfaces/Components';
-import { Scope } from '../interfaces/Scopes';
+import { Component } from 'interfaces/Components';
+import { Scope } from 'interfaces/Scopes';
 
 interface ScopeProviderProps {
   children: React.ReactNode;

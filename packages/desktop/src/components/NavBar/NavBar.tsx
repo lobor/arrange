@@ -4,10 +4,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
-import { navBarContext } from '../../context/navBar';
-import { queryContext } from '../../context/query';
-import { componentContext } from '../../context/component';
-import { scopeContext } from '../../context/scope';
+import { navBarContext } from '../../pages/PageEditor/context/navBar';
+import { queryContext } from '../../pages/PageEditor/context/query';
+import { componentContext } from '../../pages/PageEditor/context/component';
+import { scopeContext } from '../../pages/PageEditor/context/scope';
 
 const useStyles = makeStyles(theme => ({
   root: {

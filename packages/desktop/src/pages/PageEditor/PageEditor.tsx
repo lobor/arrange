@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Components } from './components/Components'
 import { Query } from './components/Query'
 import { Container } from './styles';
-import { navBarContext } from '../../context/navBar';
+import { navBarContext } from './context/navBar';
 import { Editor } from './components/Editor';
 import { Scope } from './components/Scope';
 

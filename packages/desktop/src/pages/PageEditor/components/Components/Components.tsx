@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 // import { PreviewDrag } from './components/PreviewDrag';
 import { Card } from '../../styles';
-import { componentContext } from '../../../../context/component';
+import { componentContext } from '../../context/component';
 import { ListComponent } from './components/ListComponent';
 import { EditComponent } from './components/EditComponent';
 

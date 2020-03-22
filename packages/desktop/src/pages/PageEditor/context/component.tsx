@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
 
-import { Component } from '../interfaces/Components';
+import { Component } from 'interfaces/Components';
 
 const componentContext = createContext<{
   open: boolean;

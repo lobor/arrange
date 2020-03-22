@@ -3,7 +3,7 @@ import * as React from 'react'
 import { useMutation, useQuery, queryCache } from 'react-query';
 import { client } from '../Fetch'
 import { Component } from '../Components'
-import { scopeContext } from '../../context/scope'
+import { scopeContext } from '../../pages/PageEditor/context/scope'
 
 interface Page {
   _id: string;

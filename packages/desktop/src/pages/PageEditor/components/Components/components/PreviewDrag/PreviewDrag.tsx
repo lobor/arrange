@@ -3,8 +3,8 @@ import { DragLayer } from 'react-dnd';
 import { Identifier } from 'dnd-core';
 import { XYCoord } from 'react-dnd';
 
-import { TextField } from '../../../../../../components/TextField';
-import { Component as Item } from '../../../../../../interfaces/Components';
+import { TextField } from 'components/TextField';
+import { Component as Item } from 'interfaces/Components';
 import { COMPONENT } from '../../../../constants';
 
 interface PreviewDragProps {

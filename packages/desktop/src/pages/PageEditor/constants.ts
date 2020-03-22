@@ -6,6 +6,9 @@ const TYPE_DRAG = {
 const COMPONENT = {
   textField: {
     type: 'textField'
+  },
+  text: {
+    type: 'text'
   }
 };
 

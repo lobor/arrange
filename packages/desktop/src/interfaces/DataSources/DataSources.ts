@@ -1,5 +1,5 @@
 import { useMutation, useQuery, queryCache } from 'react-query';
-import { client } from '../../interfaces/Fetch';
+import { client } from 'interfaces/Fetch';
 
 export interface DataSource {
   _id: string;

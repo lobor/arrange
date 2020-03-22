@@ -8,10 +8,10 @@ import { DataSources } from './pages/DataSources';
 import { DataSourceCreate } from './pages/DataSourceCreate';
 import { Pages } from './pages/Pages';
 import { PageEditor } from './pages/PageEditor';
-import { QueryProvider } from './context/query';
-import { ComponentProvider } from './context/component';
-import { NavBarProvider } from './context/navBar';
-import { ScopeProvider } from './context/scope';
+import { QueryProvider } from './pages/PageEditor/context/query';
+import { ComponentProvider } from './pages/PageEditor/context/component';
+import { NavBarProvider } from './pages/PageEditor/context/navBar';
+import { ScopeProvider } from './pages/PageEditor/context/scope';
 
 const styleDiv = {
   margin: 'auto',

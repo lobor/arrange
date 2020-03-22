@@ -6,7 +6,7 @@ import omit from 'lodash/omit';
 
 import { CellStyled } from '../../styles';
 import { TYPE_DRAG } from '../../../../constants';
-import { Component as Item, putComponent } from '../../../../../../interfaces/Components';
+import { Component as Item, putComponent } from 'interfaces/Components';
 
 export interface CellGridProps {
   addCells: (cell: Omit<Item, 'page'>) => void;

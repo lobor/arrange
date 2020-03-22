@@ -9,7 +9,7 @@ import Alert from '@material-ui/lab/Alert';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { getDataSources } from '../../interfaces/DataSources';
+import { getDataSources } from 'interfaces/DataSources';
 
 const useStyles = makeStyles(theme => ({
   title: {

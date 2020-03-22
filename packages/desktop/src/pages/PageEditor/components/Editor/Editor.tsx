@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
 
-import { Component as Item, createComponent } from '../../../../interfaces/Components';
-import { getPages } from '../../../../interfaces/Pages';
-import { componentContext } from '../../../../context/component';
+import { Component as Item, createComponent } from 'interfaces/Components';
+import { getPages } from 'interfaces/Pages';
+import { componentContext } from '../../context/component';
 import { Card } from '../../styles';
 import { Container, GridContainer } from './styles';
 import { CellGrid } from './components/CellGrid';

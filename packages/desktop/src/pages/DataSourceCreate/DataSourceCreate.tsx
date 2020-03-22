@@ -7,8 +7,8 @@ import { useForm } from 'react-hook-form';
 import omit from 'lodash/omit';
 import { useHistory } from 'react-router-dom';
 
-import { TextField } from '../../components/TextField';
-import { DataSource, createDataSources, checkConnexion } from '../../interfaces/DataSources';
+import { TextField } from 'components/TextField';
+import { DataSource, createDataSources, checkConnexion } from 'interfaces/DataSources';
 
 const useStyles = makeStyles(theme => ({
   root: {

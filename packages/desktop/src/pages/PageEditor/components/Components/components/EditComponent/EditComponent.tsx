@@ -8,14 +8,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
-import { CollapseMenu } from '../../../../../../components/CollapseMenu';
-import { TextField } from '../../../../../../components/TextField';
+import { CollapseMenu } from 'components/CollapseMenu';
+import { TextField } from 'components/TextField';
 import {
   Component as Item,
   deleteComponent,
   putComponent
-} from '../../../../../../interfaces/Components';
-import { componentContext } from '../../../../../../context/component';
+} from 'interfaces/Components';
+import { componentContext } from '../../../../context/component';
 
 const Container = styled.div`
   .MuiFormControl-root {
