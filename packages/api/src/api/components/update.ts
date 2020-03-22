@@ -28,7 +28,7 @@ server.put(
           y: Joi.number().required()
         })
         .required(),
-      inputType: Joi.string().required()
+      inputType: Joi.string().optional()
     })
   }),
   async (req, res) => {

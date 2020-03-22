@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "./scripts/build.sh",
     "lint": "eslint **/*.ts **/*.tsx",
     "postinstall": "lerna bootstrap",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,6 +12,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lobor/dnd-tool.git"
+  },
+  "engines": {
+    "node": "12.x"
   },
   "keywords": [],
   "author": "",

@@ -33,7 +33,7 @@ function createPage() {
 
 function getPages (id: string) {
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { scopes, addScopes } = React.useContext(scopeContext)
+  const { addScopes } = React.useContext(scopeContext)
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useQuery<{ data: Page }, any>(`pages:${id}`, async () => {
     const pages = await client.get<{}, { data: Page }>(`/pages/${id}`)

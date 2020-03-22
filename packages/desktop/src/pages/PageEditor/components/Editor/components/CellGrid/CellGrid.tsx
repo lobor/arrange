@@ -5,22 +5,18 @@ import { XYCoord } from 'react-dnd';
 import omit from 'lodash/omit';
 
 import { CellStyled } from '../../styles';
-import { TYPE_DRAG } from '../../../../constants';
-import { Component as Item, putComponent } from 'interfaces/Components';
+import { TYPE_DRAG, COMPONENT } from '../../../../constants';
+import { Component, putComponent, ComponentText } from 'interfaces/Components';
 
 export interface CellGridProps {
-  addCells: (cell: Omit<Item, 'page'>) => void;
-}
-
-function getName(name: string) {
-  return name;
+  addCells: (cell: Omit<Component, 'page'> | Omit<ComponentText, 'page'>) => void;
 }
 
 const CellGrid: React.FC<CellGridProps> = ({ addCells }) => {
   const [updateComponent] = putComponent();
 
   const [{ isOver, position }, drop] = useDrop<
-    { type: string; component: Item },
+    { type: string; component: Component },
     void,
     { isOver: boolean; position: XYCoord | null }
   >({
@@ -44,19 +40,40 @@ const CellGrid: React.FC<CellGridProps> = ({ addCells }) => {
             position: { x, y }
           });
         } else if (item.type === TYPE_DRAG.component) {
-          addCells({
-            inputType: 'text',
-            label: 'Label',
-            required: false,
-            validation: false,
-            style: { width: `${((cellGrid[0] as unknown) as HTMLDivElement).offsetWidth}px` },
-            name: getName(item.component.type),
-            position: {
-              x,
-              y
-            },
-            type: item.component.type
-          });
+          let params: Omit<Component, 'page'> | Omit<ComponentText, 'page'> | undefined
+
+          switch (item.component.type) {
+            case COMPONENT.text.type:
+              params = {
+                style: { width: `${((cellGrid[0] as unknown) as HTMLDivElement).offsetWidth}px` },
+                name: item.component.type,
+                defaultValue: 'Name',
+                position: {
+                  x,
+                  y
+                },
+                type: item.component.type
+              }
+              break;
+            case COMPONENT.textField.type:
+              params = {
+                inputType: 'text',
+                label: 'Label',
+                required: false,
+                validation: false,
+                style: { width: `${((cellGrid[0] as unknown) as HTMLDivElement).offsetWidth}px` },
+                name: item.component.type,
+                position: {
+                  x,
+                  y
+                },
+                type: item.component.type
+              }
+              break;
+            }
+            if (params) {
+              addCells(params);
+            }
         }
       }
     },

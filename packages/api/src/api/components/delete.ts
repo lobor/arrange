@@ -13,6 +13,10 @@ server.delete(
   }),
   async (req, res) => {
     const component = await Components.findOneAndDelete({ _id: req.body.id });
+    if (!component) {
+      res.status(500).end();
+      return;
+    }
     await Pages.findByIdAndUpdate(component.page, {
       $pull: { components: component._id }
     });

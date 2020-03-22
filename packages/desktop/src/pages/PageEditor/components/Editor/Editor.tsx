@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
 
-import { Component as Item, createComponent } from 'interfaces/Components';
+import { Component, ComponentText, createComponent } from 'interfaces/Components';
 import { getPages } from 'interfaces/Pages';
 import { componentContext } from '../../context/component';
 import { Card } from '../../styles';
@@ -18,7 +18,7 @@ const Editor = () => {
   const { data, status, error } = getPages(id);
 
   const addCells = React.useCallback(
-    (cell: Omit<Item, 'page'>) => {
+    (cell: Omit<Component, 'page'> | Omit<ComponentText, 'page'>) => {
       insertComponent({
         ...cell,
         page: id

@@ -45,6 +45,7 @@ const ScopeProvider: React.FC<ScopeProviderProps> = ({ children }) => {
         scopesTmp[name] = scopes[name];
       }
     });
+    console.log(scopesTmp)
     setScopes(scopesTmp);
   };
   const addScopes = (scopesParam: Component[]) => {

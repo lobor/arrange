@@ -8,10 +8,11 @@ server.post(
   '/components',
   celebrate({
     [Segments.BODY]: Joi.object().keys({
-      label: Joi.string().required(),
-      inputType: Joi.string().required(),
+      label: Joi.string().optional(),
+      inputType: Joi.string().optional(),
       name: Joi.string().required(),
       style: Joi.object().optional(),
+      defaultValue: Joi.string().optional(),
       position: Joi.object()
         .keys({
           x: Joi.number().required(),
@@ -19,8 +20,8 @@ server.post(
         })
         .required(),
       page: Joi.string().required(),
-      required: Joi.boolean().required(),
-      validation: Joi.boolean().required(),
+      required: Joi.boolean().optional(),
+      validation: Joi.boolean().optional(),
       type: Joi.string().required()
     })
   }),

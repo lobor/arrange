@@ -1,11 +1,18 @@
 {
   "compilerOptions": {
     "module": "CommonJS",
+    "lib": ["es6"],
+    "outDir": "./build",
+    "rootDir": "src",
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "target": "ES5",
     "noImplicitAny": true,
     "removeComments": true,
     "esModuleInterop": true,
-    "outFile": "./dist",
     "sourceMap": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
