@@ -17,7 +17,7 @@ interface ComponentProviderProps {
   children: React.ReactNode;
 }
 const ComponentProvider: React.FC<ComponentProviderProps> = ({ children }) => {
-  const [open, setOpen] = React.useState<boolean>(true);
+  const [open, setOpen] = React.useState<boolean>(false);
   const [item, setItem] = React.useState<Component>();
 
   const toggle = React.useCallback(() => {
@@ -25,7 +25,7 @@ const ComponentProvider: React.FC<ComponentProviderProps> = ({ children }) => {
   }, [open]);
   const toggleItem = React.useCallback(
     (itemToSelect?: Component) => {
-      if (!itemToSelect || !item || itemToSelect._id === item._id) {
+      if (!itemToSelect || !item || itemToSelect._id !== item._id) {
         setItem(itemToSelect);
       }
     },

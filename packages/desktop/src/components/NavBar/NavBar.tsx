@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import { navBarContext } from '../../context/navBar';
 import { queryContext } from '../../context/query';
 import { componentContext } from '../../context/component';
+import { scopeContext } from '../../context/scope';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,6 +25,7 @@ const NavBar = () => {
   const { edit } = React.useContext(navBarContext);
   const { toggle: toggleComponent } = React.useContext(componentContext);
   const { toggle: toggleQuery } = React.useContext(queryContext);
+  const { toggle: toggleScope } = React.useContext(scopeContext);
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -43,6 +45,7 @@ const NavBar = () => {
             <>
               <Button onClick={toggleComponent}>Components</Button>
               <Button onClick={toggleQuery}>Query</Button>
+              <Button onClick={toggleScope}>Scope</Button>
             </>
           )}
         </Toolbar>

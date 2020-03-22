@@ -11,6 +11,7 @@ import { PageEditor } from './pages/PageEditor';
 import { QueryProvider } from './context/query';
 import { ComponentProvider } from './context/component';
 import { NavBarProvider } from './context/navBar';
+import { ScopeProvider } from './context/scope';
 
 const styleDiv = {
   margin: 'auto',
@@ -22,32 +23,34 @@ function App() {
     <ComponentProvider>
       <QueryProvider>
         <NavBarProvider>
-          {React.useMemo(
-            () => (
-              <Router>
-                <NavBar />
-                <div style={styleDiv}>
-                  <Switch>
-                    <Route exact path="/pages">
-                      <Pages />
-                    </Route>
-                    <Route exact path="/pages/editor/:id">
-                      <DndProvider backend={Backend}>
-                        <PageEditor />
-                      </DndProvider>
-                    </Route>
-                    <Route exact path="/datasources">
-                      <DataSources />
-                    </Route>
-                    <Route exact path="/datasources/create">
-                      <DataSourceCreate />
-                    </Route>
-                  </Switch>
-                </div>
-              </Router>
-            ),
-            []
-          )}
+          <ScopeProvider>
+            {React.useMemo(
+              () => (
+                <Router>
+                  <NavBar />
+                  <div style={styleDiv}>
+                    <Switch>
+                      <Route exact path="/pages">
+                        <Pages />
+                      </Route>
+                      <Route exact path="/pages/editor/:id">
+                        <DndProvider backend={Backend}>
+                          <PageEditor />
+                        </DndProvider>
+                      </Route>
+                      <Route exact path="/datasources">
+                        <DataSources />
+                      </Route>
+                      <Route exact path="/datasources/create">
+                        <DataSourceCreate />
+                      </Route>
+                    </Switch>
+                  </div>
+                </Router>
+              ),
+              []
+            )}
+          </ScopeProvider>
         </NavBarProvider>
       </QueryProvider>
     </ComponentProvider>

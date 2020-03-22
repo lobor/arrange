@@ -1,6 +1,7 @@
 import * as React from 'react';
 import classnames from 'classnames';
 import { useDrag } from 'react-dnd';
+import Handlebars from 'handlebars'
 
 import { componentContext } from '../../../../../../context/component';
 import { Component as Item } from '../../../../../../interfaces/Components';
@@ -28,7 +29,9 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
     e.stopPropagation();
     toggleItem(component);
   };
+
   const style = { left: position.x, top: position.y, opacity };
+  var templateValue = Handlebars.compile(component.defaultValue || '')
 
   return (
     <OverlayComponent
@@ -42,7 +45,7 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
         placeholder={component.placeholder}
         name={component.name}
         type={component.inputType}
-        value={component.defaultValue || undefined}
+        value={templateValue({})}
         required={component.required}
         className={classnames({ active: item && item.name === name })}
       />

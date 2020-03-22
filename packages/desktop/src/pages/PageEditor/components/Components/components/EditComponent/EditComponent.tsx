@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import omit from 'lodash/omit';
-import debounce from 'lodash/debounce';
 import styled from 'styled-components';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';

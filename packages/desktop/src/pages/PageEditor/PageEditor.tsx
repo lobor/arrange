@@ -1,14 +1,11 @@
 import * as React from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Alert from '@material-ui/lab/Alert';
-import { useParams } from 'react-router-dom';
 
-import { getPages } from '../../interfaces/Pages';
 import { Components } from './components/Components'
 import { Query } from './components/Query'
 import { Container } from './styles';
 import { navBarContext } from '../../context/navBar';
 import { Editor } from './components/Editor';
+import { Scope } from './components/Scope';
 
 const PageEditor = () => {
   const { toggle: toggleNavBar, edit } = React.useContext(navBarContext);
@@ -31,6 +28,7 @@ const PageEditor = () => {
         <Editor />
         <Query />
       </div>
+      <Scope />
     </Container>
   );
 };
