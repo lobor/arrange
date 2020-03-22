@@ -32,7 +32,6 @@ server.put(
     })
   }),
   async (req, res) => {
-    console.log(req.body);
     res.json(await Components.findOneAndUpdate({ _id: req.body.id }, req.body, { new: true }));
   }
 );

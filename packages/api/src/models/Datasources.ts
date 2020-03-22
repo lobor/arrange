@@ -1,6 +1,6 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose from 'mongoose';
 
-interface DatasourceType extends Document {
+export interface DatasourceType extends mongoose.Document {
   name: string;
   dbHost: string;
   dbPort: number;
@@ -23,4 +23,4 @@ const Datasources = mongoose.model<DatasourceType>(
   })
 );
 
-export { Datasources };
+export { Datasources as default, Datasources };

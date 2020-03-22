@@ -2,12 +2,8 @@ import * as React from 'react';
 import List from '@material-ui/core/List';
 import JSONTree from 'react-json-tree';
 import { useParams } from 'react-router-dom';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Alert from '@material-ui/lab/Alert';
 
 import { CollapseMenu } from 'components/CollapseMenu';
-import { getPages } from '../../../../interfaces/Pages';
-import { componentToScope } from '../../../../interfaces/Scopes';
 import { Card } from '../../styles';
 import { scopeContext } from '../../../../context/scope';
 
@@ -33,17 +29,7 @@ const theme = {
 };
 
 const Scope = () => {
-  const { id } = useParams();
-  const { open } = React.useContext(scopeContext);
-  const { status, data, error } = getPages(id!);
-
-  if (!data || status === 'loading') {
-    return <CircularProgress />;
-  }
-
-  if (error) {
-    return <Alert severity="error">{error.toString()}</Alert>;
-  }
+  const { scopes, open } = React.useContext(scopeContext);
 
   if (!open) return null;
 
@@ -51,14 +37,18 @@ const Scope = () => {
     <Card>
       <List component="nav">
         <CollapseMenu label="Components">
-          {data.data.components.map(({ _id, name, ...other }) => (
-            <JSONTree
-              key={_id}
-              keyPath={[name]}
-              data={componentToScope({ _id, name, ...other })}
-              theme={theme}
-            />
-          ))}
+          {Object.keys(scopes).map((name, i) => {
+            const scope = scopes[name];
+            if (!scope) return null;
+            return (
+              <JSONTree
+                key={`${name}-${i}`}
+                keyPath={[name]}
+                data={scope}
+                theme={theme}
+              />
+            );
+          })}
         </CollapseMenu>
         {/* <CollapseMenu label="Queries">
           <JSONTree data={json} theme={theme} />

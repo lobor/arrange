@@ -2,7 +2,6 @@ import { celebrate, Joi, Segments } from 'celebrate';
 
 import { Pages } from '../../models/Pages';
 import { server } from '../../setup/server';
-import { Components } from '../../models/Components';
 
 server.get(
   '/pages/:id',

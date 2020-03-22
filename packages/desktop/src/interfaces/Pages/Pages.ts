@@ -1,6 +1,9 @@
+import * as React from 'react'
+
 import { useMutation, useQuery, queryCache } from 'react-query';
 import { client } from '../Fetch'
 import { Component } from '../Components'
+import { scopeContext } from '../../context/scope'
 
 interface Page {
   _id: string;
@@ -30,8 +33,12 @@ function createPage() {
 
 function getPages (id: string) {
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  return useQuery<{ data: Page }, any>(`pages:${id}`, () => {
-    return client.get(`/pages/${id}`)
+  const { scopes, addScopes } = React.useContext(scopeContext)
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useQuery<{ data: Page }, any>(`pages:${id}`, async () => {
+    const pages = await client.get<{}, { data: Page }>(`/pages/${id}`)
+    addScopes(pages.data.components)
+    return pages
   });
 }
 

@@ -17,7 +17,7 @@ interface ComponentProviderProps {
   children: React.ReactNode;
 }
 const ComponentProvider: React.FC<ComponentProviderProps> = ({ children }) => {
-  const [open, setOpen] = React.useState<boolean>(false);
+  const [open, setOpen] = React.useState<boolean>(true);
   const [item, setItem] = React.useState<Component>();
 
   const toggle = React.useCallback(() => {

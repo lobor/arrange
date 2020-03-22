@@ -1,6 +1,6 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose from 'mongoose';
 
-export interface ComponentMongo extends Document {
+export interface ComponentMongo extends mongoose.Document {
   name: string;
   page: string;
   position: {

@@ -8,4 +8,4 @@ server.use(cors());
 server.use(BodyParser.json());
 server.use(morgan('tiny'));
 
-export { server };
+export { server as default, server };

@@ -1,5 +1,5 @@
 import { celebrate, Joi, Segments } from 'celebrate';
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
 import { server } from '../../setup/server';
 
@@ -15,32 +15,29 @@ server.post(
     })
   }),
   async (req, res) => {
-    console.log(req.body)
     const { dbHost, dbName, dbUsername, dbPassword } = req.body;
-      const config: {
-        dbName: string;
-        useNewUrlParser: boolean;
-        useUnifiedTopology: boolean;
-        user?: string;
-        pass?: string;
-      } = {
-        dbName,
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-      };
-      if (dbUsername) {
-        config.user = dbUsername;
-      }
-      if (dbPassword) {
-        config.pass = dbPassword;
-      }
-      console.log(config)
+    const config: {
+      dbName: string;
+      useNewUrlParser: boolean;
+      useUnifiedTopology: boolean;
+      user?: string;
+      pass?: string;
+    } = {
+      dbName,
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    };
+    if (dbUsername) {
+      config.user = dbUsername;
+    }
+    if (dbPassword) {
+      config.pass = dbPassword;
+    }
     try {
       const con = await mongoose.createConnection(dbHost, config);
       res.status(200).end();
       con.close();
     } catch (e) {
-      console.log(e.toString());
       res.status(500).end();
     }
   }

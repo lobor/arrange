@@ -7,17 +7,19 @@ module.exports = {
     'plugin:import/typescript'
   ],
 
-  plugins: ['prettier', 'import'],
-
+  plugins: ['prettier', 'import', '@typescript-eslint'],
+  parser: '@typescript-eslint/parser',
   rules: {
     'no-underscore-dangle': 0,
+    'import/extensions': 0,
+    'react-hooks/rules-of-hooks': 0,
     'prettier/prettier': 'error'
   },
   settings: {
     'import/extensions': ['.ts', '.tsx', '.d.ts'],
-    'import/parsers': {
-      '@typescript-eslint/parser': ['.ts', '.tsx', '.d.ts']
-    },
+    // 'import/parsers': {
+    //   '@typescript-eslint/parser': ['.ts', '.tsx', '.d.ts']
+    // },
     'import/resolver': {
       alias: {
         map: [['^components', './packages/desktop/src/components']],

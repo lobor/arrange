@@ -3,10 +3,11 @@ import classnames from 'classnames';
 import { useDrag } from 'react-dnd';
 import Handlebars from 'handlebars'
 
+import { Component as Item } from 'interfaces/Components';
+import { TextField } from 'components/TextField';
 import { componentContext } from '../../../../../../context/component';
-import { Component as Item } from '../../../../../../interfaces/Components';
+import { scopeContext } from '../../../../../../context/scope';
 import { OverlayComponent } from '../../styles';
-import { TextField } from '../../../../../../components/TextField';
 import { TYPE_DRAG } from '../../../../constants';
 
 interface IsolateComponentProps {
@@ -15,6 +16,7 @@ interface IsolateComponentProps {
 const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
   const { name, position } = component;
   const { item, toggleItem } = React.useContext(componentContext);
+  const { scopes } = React.useContext(scopeContext);
 
   const [{ opacity }, dragRef] = useDrag({
     item: { type: TYPE_DRAG.move, component },
@@ -32,7 +34,6 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
 
   const style = { left: position.x, top: position.y, opacity };
   var templateValue = Handlebars.compile(component.defaultValue || '')
-
   return (
     <OverlayComponent
       style={{ ...style, ...(component.style || {}) }}
@@ -45,7 +46,7 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
         placeholder={component.placeholder}
         name={component.name}
         type={component.inputType}
-        value={templateValue({})}
+        value={templateValue(scopes) || undefined}
         required={component.required}
         className={classnames({ active: item && item.name === name })}
       />

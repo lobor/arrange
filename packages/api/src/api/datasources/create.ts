@@ -1,4 +1,4 @@
-import { celebrate, Joi, errors, Segments } from 'celebrate';
+import { celebrate, Joi, Segments } from 'celebrate';
 
 import { Datasources } from '../../models/Datasources';
 import { server } from '../../setup/server';
