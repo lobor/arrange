@@ -82,6 +82,7 @@ function getClientEnvironment(publicUrl) {
         // They are used as the connection `hostname`, `pathname` and `port`
         // in webpackHotDevClient. They are used as the `sockHost`, `sockPath`
         // and `sockPort` options in webpack-dev-server.
+        SERVER_URL: process.env.SERVER_URL || 'http://localhost:8080',
         WDS_SOCKET_HOST: process.env.WDS_SOCKET_HOST,
         WDS_SOCKET_PATH: process.env.WDS_SOCKET_PATH,
         WDS_SOCKET_PORT: process.env.WDS_SOCKET_PORT,

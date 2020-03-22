@@ -8,7 +8,9 @@ import './api';
 
 const port = process.env.PORT || 8080;
 
-mongoose.connect('mongodb://localhost:27017/test', {
+const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017/test';
+
+mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
