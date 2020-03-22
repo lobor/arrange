@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "./scripts/build.sh",
+    "start": "node ./packages/api/build/index.js",
+    "build": "NODE_ENV=production ./scripts/build.sh",
     "lint": "eslint **/*.ts **/*.tsx",
     "postinstall": "lerna bootstrap",
     "test": "echo \"Error: no test specified\" && exit 1"
