@@ -18,12 +18,14 @@ const scopeContext = createContext<{
   toggle: () => void;
   addScopes: (scopes: Component[]) => void;
   removeScope: (nameParams: string) => void;
+  updateScope: (scopeName: string, scopesParam: Component & { value?: string | number }) => void;
   scopes: ScopeState;
 }>({
   open: false,
   toggle: () => {},
   addScopes: () => {},
   removeScope: () => {},
+  updateScope: () => {},
   scopes: {}
 });
 
@@ -45,7 +47,7 @@ const ScopeProvider: React.FC<ScopeProviderProps> = ({ children }) => {
         scopesTmp[name] = scopes[name];
       }
     });
-    console.log(scopesTmp)
+    console.log(scopesTmp);
     setScopes(scopesTmp);
   };
   const addScopes = (scopesParam: Component[]) => {
@@ -55,9 +57,12 @@ const ScopeProvider: React.FC<ScopeProviderProps> = ({ children }) => {
     }
     setScopes({ ...scopes, ...scopesToAdd });
   };
+  const updateScope = (scopeName: string, scopesParam: Component & { value?: string | number }) => {
+    setScopes({ ...scopes, [scopeName]: formatComponentToScope(scopesParam) });
+  };
 
   return (
-    <scopeContext.Provider value={{ open, toggle, scopes, removeScope, addScopes }}>
+    <scopeContext.Provider value={{ open, toggle, scopes, removeScope, addScopes, updateScope }}>
       {React.useMemo(() => children, [children])}
     </scopeContext.Provider>
   );

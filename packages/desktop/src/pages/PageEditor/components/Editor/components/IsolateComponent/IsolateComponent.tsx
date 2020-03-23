@@ -17,7 +17,7 @@ interface IsolateComponentProps {
 const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
   const { name, position, type } = component;
   const { item, toggleItem } = React.useContext(componentContext);
-  const { scopes } = React.useContext(scopeContext);
+  const { scopes, updateScope } = React.useContext(scopeContext);
 
   const [{ opacity }, dragRef] = useDrag({
     item: { type: TYPE_DRAG.move, component },
@@ -35,6 +35,7 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
 
   const style = { left: position.x, top: position.y, opacity };
   var templateValue = Handlebars.compile(component.defaultValue || '');
+
   return (
     <OverlayComponent
       style={{ ...style, ...(component.style || {}) }}
@@ -48,6 +49,9 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
           placeholder={component.placeholder}
           name={component.name}
           type={component.inputType}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            updateScope(component.name, { ...component, value: e.currentTarget.value })
+          }
           value={templateValue(scopes) || undefined}
           required={component.required}
           className={classnames({ active: item && item.name === name })}
