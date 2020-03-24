@@ -27,13 +27,6 @@ const Editor = () => {
     [id, insertComponent]
   );
 
-  if (!data || status === 'loading') {
-    return <CircularProgress />;
-  }
-
-  if (status === 'error' && error) {
-    return <Alert severity="error">{error.toString()}</Alert>;
-  }
   const handleClick = () => toggleItem();
   return (
     <Container>
@@ -43,9 +36,12 @@ const Editor = () => {
         ))}
       </GridContainer>
       <Card className="card content-edit" style={{ flex: 1 }}>
-        {data.data.components.map(comp => {
-          return <IsolateComponent component={comp} key={comp._id} />;
-        })}
+        {status === 'error' && error && <Alert severity="error">{error.toString()}</Alert>}
+        {status === 'loading' && <CircularProgress />}
+        {data &&
+          data.data.components.map(comp => {
+            return <IsolateComponent component={comp} key={comp._id} />;
+          })}
       </Card>
     </Container>
   );

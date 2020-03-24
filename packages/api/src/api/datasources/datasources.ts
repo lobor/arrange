@@ -1,6 +1,6 @@
 import { Datasources } from '../../models/Datasources';
-import { server } from '../../setup/server';
+import { router } from '../router';
 
-server.get('/datasources', async (req, res) => {
+router.get('/datasources', async (req, res) => {
   res.json(await Datasources.find());
 });

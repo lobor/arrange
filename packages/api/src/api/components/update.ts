@@ -1,9 +1,9 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 
 import { Components } from '../../models/Components';
-import { server } from '../../setup/server';
+import { router } from '../router';
 
-server.put(
+router.put(
   '/components',
   celebrate({
     [Segments.BODY]: Joi.object().keys({

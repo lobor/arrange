@@ -22,7 +22,7 @@ const Container = styled.div`
   left: 0;
   position: absolute;
   right: 0;
-  top: 64px;
+  top: 48px;
   .content-edit {
     background-color: #f4f4f4;
   }

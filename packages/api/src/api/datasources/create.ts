@@ -1,9 +1,9 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 
 import { Datasources } from '../../models/Datasources';
-import { server } from '../../setup/server';
+import { router } from '../router';
 
-server.post(
+router.post(
   '/datasources',
   celebrate({
     [Segments.BODY]: Joi.object().keys({

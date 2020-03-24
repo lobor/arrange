@@ -1,10 +1,10 @@
-import axios from 'axios'
+import axios from 'axios';
 
 const API_URL = process.env.SERVER_URL;
 
 const client = axios.create({
-  baseURL: API_URL,
+  baseURL: `${API_URL}/api`,
   timeout: 1000
 });
 
-export { client }
+export { client };

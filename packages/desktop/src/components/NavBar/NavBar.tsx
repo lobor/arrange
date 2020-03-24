@@ -30,7 +30,7 @@ const NavBar = () => {
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar variant="dense">
           {!edit && (
             <>
               <Button component={Link} color="inherit" to="/pages">

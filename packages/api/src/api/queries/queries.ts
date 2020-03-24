@@ -1,6 +1,6 @@
 import { Queries } from '../../models/Queries';
-import { server } from '../../setup/server';
+import { router } from '../router';
 
-server.get('/queries', async (req, res) => {
+router.get('/queries', async (req, res) => {
   res.json(await Queries.find());
 });

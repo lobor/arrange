@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { DndProvider } from 'react-dnd'
-import Backend from 'react-dnd-html5-backend'
+import { DndProvider } from 'react-dnd';
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import Backend from 'react-dnd-html5-backend';
 
 import { NavBar } from './components/NavBar';
 import { DataSources } from './pages/DataSources';
@@ -18,42 +19,63 @@ const styleDiv = {
   maxWidth: '1280px'
 };
 
+const theme = createMuiTheme({
+  props: {
+    MuiButton: {
+      size: 'small'
+    },
+    MuiTextField: {
+      size: 'small'
+    }
+  },
+  overrides: {
+    MuiAppBar: {},
+    MuiCardHeader: {
+      action: {
+        marginTop: '0'
+      }
+    }
+  }
+});
+
 function App() {
   return (
-    <ComponentProvider>
-      <QueryProvider>
-        <NavBarProvider>
-          <ScopeProvider>
-            {React.useMemo(
-              () => (
-                <Router>
-                  <NavBar />
-                  <div style={styleDiv}>
-                    <Switch>
-                      <Route exact path="/pages">
-                        <Pages />
-                      </Route>
-                      <Route exact path="/pages/editor/:id">
-                        <DndProvider backend={Backend}>
-                          <PageEditor />
-                        </DndProvider>
-                      </Route>
-                      <Route exact path="/datasources">
-                        <DataSources />
-                      </Route>
-                      <Route exact path="/datasources/create">
-                        <DataSourceCreate />
-                      </Route>
-                    </Switch>
-                  </div>
-                </Router>
-              ),
-              []
-            )}
-          </ScopeProvider>
-        </NavBarProvider>
-      </QueryProvider>
-    </ComponentProvider>
+    <ThemeProvider theme={theme}>
+      <ComponentProvider>
+        <QueryProvider>
+          <NavBarProvider>
+            <ScopeProvider>
+              {React.useMemo(
+                () => (
+                  <Router>
+                    <NavBar />
+                    <div style={styleDiv}>
+                      <Switch>
+                        <Route exact path="/pages">
+                          <Pages />
+                        </Route>
+                        <Route exact path="/pages/editor/:id">
+                          <DndProvider backend={Backend}>
+                            <PageEditor />
+                          </DndProvider>
+                        </Route>
+                        <Route exact path="/datasources">
+                          <DataSources />
+                        </Route>
+                        <Route exact path="/datasources/create">
+                          <DataSourceCreate />
+                        </Route>
+                      </Switch>
+                    </div>
+                  </Router>
+                ),
+                []
+              )}
+            </ScopeProvider>
+          </NavBarProvider>
+        </QueryProvider>
+      </ComponentProvider>
+    </ThemeProvider>
   );
 }
 

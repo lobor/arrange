@@ -1,9 +1,9 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 
 import { Pages } from '../../models/Pages';
-import { server } from '../../setup/server';
+import { router } from '../router';
 
-server.get(
+router.get(
   '/pages/:id',
   celebrate({
     [Segments.PARAMS]: Joi.object().keys({
@@ -15,7 +15,7 @@ server.get(
       .populate('components')
       .exec();
     if (!page) {
-      res.json({ error: 'notFound' });
+      res.status(404).json({ error: 'notFound' });
       return;
     }
     res.json(page);

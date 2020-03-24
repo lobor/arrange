@@ -1,10 +1,10 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 
 import { Components } from '../../models/Components';
-import { server } from '../../setup/server';
 import { Pages } from '../../models/Pages';
+import { router } from '../router';
 
-server.post(
+router.post(
   '/components',
   celebrate({
     [Segments.BODY]: Joi.object().keys({

@@ -1,6 +1,7 @@
 import { Pages } from '../../models/Pages';
-import { server } from '../../setup/server';
 
-server.get('/pages', async (req, res) => {
+import { router } from '../router';
+
+router.get('/pages', async (req, res) => {
   res.json(await Pages.find());
 });

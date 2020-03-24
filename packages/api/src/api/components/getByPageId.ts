@@ -1,9 +1,9 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 
 import { Components } from '../../models/Components';
-import { server } from '../../setup/server';
+import { router } from '../router';
 
-server.get(
+router.get(
   '/components/:id',
   celebrate({
     [Segments.PARAMS]: Joi.object().keys({

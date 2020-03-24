@@ -13,8 +13,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton, { IconButtonProps } from '@material-ui/core/IconButton';
 
-import { pages, createPage } from 'interfaces/Pages';
+import { pages, createPage, deletePage } from 'interfaces/Pages';
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -32,6 +35,7 @@ const Pages = () => {
 
   const { status, data, error } = pages();
   const [insertPage, { status: statusCreate, error: errorCreate }] = createPage();
+  const [onDeletePage] = deletePage();
 
   const handleClickOpen = React.useCallback(() => setOpen(true), [setOpen]);
   const handleClose = React.useCallback(() => setOpen(false), [setOpen]);
@@ -39,21 +43,25 @@ const Pages = () => {
     (e: React.ChangeEvent<HTMLInputElement>) => setName(e.currentTarget.value),
     [setName]
   );
+  const handleDelete = (id: string) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    onDeletePage({ id });
+  };
   const validate = React.useCallback(async () => {
     try {
       await insertPage({ name: name! });
-      handleClose()
+      handleClose();
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
-  }, [insertPage, name]);
-
-  if (!data || status === 'loading') {
-    return <CircularProgress />;
-  }
+  }, [insertPage, name, handleClose]);
 
   if (error && status === 'error') {
     return <Alert severity="error">{error.message}</Alert>;
+  }
+
+  if (!data || status === 'loading') {
+    return <CircularProgress />;
   }
 
   return (
@@ -101,6 +109,11 @@ const Pages = () => {
           {data.data.map(({ _id, name }) => (
             <ListItem button component={Link} key={_id} to={`/pages/editor/${_id}`}>
               <ListItemText primary={name} />
+              <ListItemIcon>
+                <IconButton onClick={handleDelete(_id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemIcon>
             </ListItem>
           ))}
         </List>

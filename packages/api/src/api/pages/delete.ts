@@ -5,21 +5,15 @@ import { Pages } from '../../models/Pages';
 import { router } from '../router';
 
 router.delete(
-  '/components',
+  '/pages',
   celebrate({
     [Segments.BODY]: Joi.object().keys({
       id: Joi.string().required()
     })
   }),
   async (req, res) => {
-    const component = await Components.findOneAndDelete({ _id: req.body.id });
-    if (!component) {
-      res.status(500).end();
-      return;
-    }
-    await Pages.findByIdAndUpdate(component.page, {
-      $pull: { components: component._id }
-    });
-    res.json(component);
+    await Components.deleteMany({ page: req.body.id });
+    const pages = await Pages.findOneAndDelete({ _id: req.body.id });
+    res.json(pages);
   }
 );

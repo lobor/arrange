@@ -1,45 +1,60 @@
-import * as React from 'react'
+import * as React from 'react';
 
 import { useMutation, useQuery, queryCache } from 'react-query';
-import { client } from '../Fetch'
-import { Component } from '../Components'
-import { scopeContext } from '../../pages/PageEditor/context/scope'
+import { client } from '../Fetch';
+import { Component } from '../Components';
+import { scopeContext } from '../../pages/PageEditor/context/scope';
+import { AxiosResponse } from 'axios';
 
 interface Page {
   _id: string;
   name: string;
   components: Component[];
 }
-function pages () {
+function pages() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useQuery<{ data: Omit<Page, 'Component'>[] }, any>('pages', () => {
-    return client.get('/pages')
+    return client.get('/pages');
   });
 }
 
 function createPage() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useMutation<Page, Pick<Page, 'name'>>(
-    (data) => {
+    data => {
       return client.post('/pages', data);
     },
     {
       onSuccess: () => {
-        queryCache.refetchQueries(`pages`)
+        queryCache.refetchQueries(`pages`);
       }
     }
   );
 }
 
-function getPages (id: string) {
+function deletePage() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { addScopes } = React.useContext(scopeContext)
+  return useMutation(
+    (data: { id: string }) => {
+      return client.delete<{ id: string }, AxiosResponse<Page>>('/pages', { data });
+    },
+    {
+      onSuccess: () => {
+        queryCache.refetchQueries(`pages`);
+      }
+    }
+  );
+}
+
+function getPages(id: string) {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { addScopes } = React.useContext(scopeContext);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useQuery<{ data: Page }, any>(`pages:${id}`, async () => {
-    const pages = await client.get<{}, { data: Page }>(`/pages/${id}`)
-    addScopes(pages.data.components)
-    return pages
+    const pages = await client.get<{}, { data: Page }>(`/pages/${id}`);
+    addScopes(pages.data.components);
+    return pages;
   });
 }
 
-export { createPage, pages, getPages }
+export { createPage, pages, getPages, deletePage };

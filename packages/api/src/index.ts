@@ -1,9 +1,10 @@
 import { errors } from 'celebrate';
 import mongoose from 'mongoose';
 import express from 'express';
-import path from 'path'
+import path from 'path';
 
 import { server } from './setup/server';
+import { router } from './api/router';
 import './api';
 
 const port = process.env.PORT || 8080;
@@ -15,12 +16,12 @@ mongoose.connect(MONGO_URL, {
   useUnifiedTopology: true
 });
 
+server.use('/api', router);
 server.use(express.static(path.resolve(__dirname, '..', 'build', 'public')));
 server.get('*', (req, res) => {
   res.sendfile(path.resolve(__dirname, '..', 'build', 'public', 'index.html'));
 });
 server.use(errors());
-
 
 server.listen(port, () => {
   console.log('server started');

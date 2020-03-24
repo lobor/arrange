@@ -1,9 +1,9 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 import mongoose from 'mongoose';
 
-import { server } from '../../setup/server';
+import { router } from '../router';
 
-server.post(
+router.post(
   '/datasources/check',
   celebrate({
     [Segments.BODY]: Joi.object().keys({
