@@ -1,20 +1,11 @@
 import * as React from 'react';
-import Button from '@material-ui/core/Button';
 import omit from 'lodash/omit';
 import styled from 'styled-components';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import { Popconfirm, Switch, Select, Collapse, Form, Input } from 'antd';
+import { SelectValue } from 'antd/lib/select';
+import { DeleteOutlined } from '@ant-design/icons';
 
-import { CollapseMenu } from 'components/CollapseMenu';
-import { TextField } from 'components/TextField';
-import {
-  Component as Item,
-  deleteComponent,
-  putComponent
-} from 'interfaces/Components';
+import { Component as Item, deleteComponent, putComponent } from 'interfaces/Components';
 import { componentContext } from '../../../../context/component';
 
 const Container = styled.div`
@@ -36,12 +27,14 @@ const EditComponent = () => {
   }, [removeComponent, item, toggleItem]);
 
   const handleUpdateComponent = React.useCallback(
+    // () => console.log(values),
     () => updateComponent({ ...omit(values, ['_id', '__v', 'page']), id: values!._id }),
     [updateComponent, values]
   );
 
   const handleChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      console.log(e.currentTarget.name);
       const name = e.currentTarget.name ? e.currentTarget.name : 'inputType';
       const value = e.currentTarget.value
         ? e.currentTarget.value
@@ -51,10 +44,18 @@ const EditComponent = () => {
     [values]
   );
 
-  const handleChangeChecked = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue({ ...values!, [e.currentTarget.name]: !e.currentTarget.checked });
-    handleUpdateComponent();
-  };
+  const handleChangeInputType = React.useCallback(
+    (value: SelectValue) => setValue({ ...values!, inputType: value as Item['inputType'] }),
+    [values]
+  );
+
+  const handleChangeRequired = React.useCallback(
+    (checked: boolean) => {
+      setValue({ ...values!, required: checked });
+      handleUpdateComponent();
+    },
+    [values, handleUpdateComponent]
+  );
 
   React.useEffect(() => {
     if (item) {
@@ -63,138 +64,72 @@ const EditComponent = () => {
   }, [item]);
 
   if (!values || !item) return null;
-
+  console.log(values);
   return (
     <Container>
-      <List component="nav">
-        <ListItem>
-          <TextField
-            label="Name"
-            value={values!.name}
-            name="name"
+      <Form layout="vertical" initialValues={values}>
+        <Form.Item label="Name" name="name" rules={[{ required: true }]}>
+          <Input.Search
             onChange={handleChange}
             onBlur={handleUpdateComponent}
-          />
-          <Button onClick={handleDelete} variant="contained" color="secondary">
-            Delete
-          </Button>
-        </ListItem>
-
-        <CollapseMenu label="Basic">
-          <List component="div" disablePadding>
-            <ListItem>
-              <TextField
-                label="Label"
-                value={values.label}
-                name="label"
-                onChange={handleChange}
-                onBlur={handleUpdateComponent}
-              />
-            </ListItem>
-          </List>
-          <List component="div" disablePadding>
-            <ListItem>
-              <TextField
-                select
-                label="Type"
-                name="inputType"
-                value={values.inputType}
-                onChange={handleChange}
-                onBlur={handleUpdateComponent}
+            onSearch={handleDelete}
+            enterButton={
+              <Popconfirm
+                title="Are you sure delete this component?"
+                onConfirm={handleDelete}
+                okText="Yes"
+                cancelText="No"
               >
-                <MenuItem value="text">Text</MenuItem>
-                <MenuItem value="password">Password</MenuItem>
-                <MenuItem value="date">Date</MenuItem>
-                <MenuItem value="email">Email</MenuItem>
-                <MenuItem value="number">Number</MenuItem>
-              </TextField>
-            </ListItem>
-          </List>
-          <List component="div" disablePadding>
-            <ListItem>
-              <TextField
-                label="Default value"
-                name="defaultValue"
-                value={values.defaultValue || ''}
-                onChange={handleChange}
-                onBlur={handleUpdateComponent}
-              />
-            </ListItem>
-          </List>
-          <List component="div" disablePadding>
-            <ListItem>
-              <TextField
-                label="Placeholder text"
-                name="placeholder"
-                value={values.placeholder}
-                onChange={handleChange}
-                onBlur={handleUpdateComponent}
-              />
-            </ListItem>
-          </List>
-        </CollapseMenu>
-
-        <CollapseMenu label="Validation">
-          {/* <List component="div" disablePadding>
-            <ListItem>
-              <FormControlLabel
-                control={<Switch name="validation" color="primary" />}
-                label="Enable validation type"
-              />
-            </ListItem>
-          </List> */}
-          <List component="div" disablePadding>
-            <ListItem>
-              <FormControlLabel
-                control={
-                  <Switch
-                    onChange={handleChangeChecked}
-                    checked={!values.required}
-                    name="required"
-                    color="primary"
-                  />
-                }
-                label="Required field"
-              />
-            </ListItem>
-          </List>
-        </CollapseMenu>
-
-        <CollapseMenu label="Advanced">
-          <List component="div" disablePadding>
-            <ListItem>
-              <TextField
-                label="On blur run (query)"
-                name="onBlur"
-                onChange={handleChange}
-                onBlur={handleUpdateComponent}
-              />
-            </ListItem>
-          </List>
-          <List component="div" disablePadding>
-            <ListItem>
-              <TextField
-                label="Disable when true"
-                name="disableWhen"
-                onChange={handleChange}
-                onBlur={handleUpdateComponent}
-              />
-            </ListItem>
-          </List>
-        </CollapseMenu>
-        <CollapseMenu label="Display">
-          <List component="div" disablePadding>
-            <ListItem>
-              <TextField
-                label="Hide when true"
-                name="whenHide"
-                onChange={handleChange}
-                onBlur={handleUpdateComponent}
-              />
-            </ListItem>
-          </List>
-        </CollapseMenu>
-      </List>
+                <DeleteOutlined />
+              </Popconfirm>
+            }
+          />
+        </Form.Item>
+        <Collapse defaultActiveKey={['Basic']} bordered={false}>
+          <Collapse.Panel header="Basic" key="Basic">
+            <Form.Item label="Label" name="label" rules={[{ required: true }]}>
+              <Input onChange={handleChange} name="label" onBlur={handleUpdateComponent} />
+            </Form.Item>
+            <Form.Item label="Type" name="inputType" rules={[{ required: true }]}>
+              <Select
+                defaultValue={values.inputType}
+                style={{ width: 120 }}
+                onChange={handleChangeInputType}
+              >
+                <Select.Option value="text">Text</Select.Option>
+                <Select.Option value="password">Password</Select.Option>
+                <Select.Option value="date">Date</Select.Option>
+                <Select.Option value="email">Email</Select.Option>
+                <Select.Option value="number">Number</Select.Option>
+              </Select>
+            </Form.Item>
+            <Form.Item label="Default value" name="defaultValue">
+              <Input onChange={handleChange} name="defaultValue" onBlur={handleUpdateComponent} />
+            </Form.Item>
+            <Form.Item label="Placeholder text" name="placeholder">
+              <Input onChange={handleChange} name="placeholder" onBlur={handleUpdateComponent} />
+            </Form.Item>
+          </Collapse.Panel>
+          <Collapse.Panel header="Validation" key="Validation">
+            <Form.Item label="Required field" name="required">
+              <Switch onChange={handleChangeRequired} />
+            </Form.Item>
+          </Collapse.Panel>
+          <Collapse.Panel header="Advanced" key="Advanced">
+            <Form.Item label="On blur run (query)">
+              <Input onChange={handleChange} name="onBlur" onBlur={handleUpdateComponent} />
+            </Form.Item>
+            <Form.Item label="Disable when true" name="disableWhen">
+              <Input onChange={handleChange} name="disableWhen" onBlur={handleUpdateComponent} />
+            </Form.Item>
+          </Collapse.Panel>
+          <Collapse.Panel header="Display" key="Display">
+            <Form.Item label="Hide when true" name="whenHide">
+              <Input onChange={handleChange} name="whenHide" onBlur={handleUpdateComponent} />
+            </Form.Item>
+          </Collapse.Panel>
+        </Collapse>
+      </Form>
     </Container>
   );
 };

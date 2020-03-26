@@ -1,34 +1,24 @@
 import * as React from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Alert from '@material-ui/lab/Alert';
-import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import TextField from '@material-ui/core/TextField';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import DeleteIcon from '@material-ui/icons/Delete';
-import IconButton, { IconButtonProps } from '@material-ui/core/IconButton';
+import {
+  Popconfirm,
+  List,
+  Empty,
+  Alert,
+  Modal,
+  Form,
+  Input,
+  Row,
+  Col,
+  PageHeader,
+  Button,
+  Spin
+} from 'antd';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 
 import { pages, createPage, deletePage } from 'interfaces/Pages';
 
-const useStyles = makeStyles(theme => ({
-  title: {
-    display: 'flex',
-    justifyContent: 'space-between'
-  }
-}));
-
 const Pages = () => {
-  const classes = useStyles();
-
   const [open, setOpen] = React.useState<boolean>(false);
 
   const [name, setName] = React.useState<string>();
@@ -43,8 +33,7 @@ const Pages = () => {
     (e: React.ChangeEvent<HTMLInputElement>) => setName(e.currentTarget.value),
     [setName]
   );
-  const handleDelete = (id: string) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
+  const handleDelete = (id: string) => () => {
     onDeletePage({ id });
   };
   const validate = React.useCallback(async () => {
@@ -57,67 +46,86 @@ const Pages = () => {
   }, [insertPage, name, handleClose]);
 
   if (error && status === 'error') {
-    return <Alert severity="error">{error.message}</Alert>;
+    return <Alert message="Error" description={error.message} type="error" showIcon />;
   }
 
   if (!data || status === 'loading') {
-    return <CircularProgress />;
+    return <Spin size="large" />;
   }
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Create new page</DialogTitle>
-        {statusCreate === 'loading' ? (
-          <CircularProgress />
-        ) : (
-          <>
-            <DialogContent>
-              {errorCreate && <Alert severity="error">{errorCreate.toString()}</Alert>}
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="App name"
-                type="email"
-                value={name}
-                onChange={onChange}
-                required
-                fullWidth
+      <Modal
+        title="Create new page"
+        visible={open}
+        onOk={validate}
+        onCancel={handleClose}
+        confirmLoading={statusCreate === 'loading'}
+      >
+        <Form>
+          {errorCreate && (
+            <Alert message="Error" description={errorCreate.toString()} type="error" showIcon />
+          )}
+          <Form.Item
+            label="App name"
+            name="name"
+            rules={[{ required: true, message: 'Please input page name' }]}
+          >
+            <Input autoFocus onChange={onChange} />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Row>
+        <Col span="12" offset="6">
+          <PageHeader
+            title="Pages"
+            extra={[
+              <Button onClick={handleClickOpen} type="link" icon={<PlusOutlined />}>
+                New pages
+              </Button>
+            ]}
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col span="12" offset="6">
+          {data.data.length === 0 && (
+            <>
+              <Alert
+                message="Warning"
+                description="You should create pages"
+                type="warning"
+                showIcon
               />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={validate} variant="contained" color="primary">
-                Create
-              </Button>
-            </DialogActions>
-          </>
-        )}
-      </Dialog>
-      <Typography className={classes.title} variant="h4">
-        <div>Pages</div>
-        <Button onClick={handleClickOpen} variant="contained" color="primary">
-          New pages
-        </Button>
-      </Typography>
-      {data.data.length === 0 && <Alert severity="warning">You should pages</Alert>}
-      {data.data.length > 0 && (
-        <List component="nav" aria-label="secondary mailbox folders">
-          {data.data.map(({ _id, name }) => (
-            <ListItem button component={Link} key={_id} to={`/pages/editor/${_id}`}>
-              <ListItemText primary={name} />
-              <ListItemIcon>
-                <IconButton onClick={handleDelete(_id)}>
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemIcon>
-            </ListItem>
-          ))}
-        </List>
-      )}
+              <Empty />
+            </>
+          )}
+          {data.data.length > 0 && (
+            <List
+              bordered
+              dataSource={data.data}
+              renderItem={({ _id, name }) => (
+                <List.Item
+                  actions={[
+                    <Popconfirm
+                      title="Are you sure delete this page?"
+                      onConfirm={handleDelete(_id)}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <Button type="link" icon={<DeleteOutlined />}>
+                        Delete
+                      </Button>
+                    </Popconfirm>
+                  ]}
+                >
+                  <Link to={`/pages/editor/${_id}`}>{name}</Link>
+                </List.Item>
+              )}
+            />
+          )}
+        </Col>
+      </Row>
     </>
   );
 };

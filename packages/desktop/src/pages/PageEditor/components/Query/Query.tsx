@@ -1,22 +1,13 @@
 import * as React from 'react';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import styled from 'styled-components';
-import Button from '@material-ui/core/Button';
-import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import MenuItem from '@material-ui/core/MenuItem';
-import Alert from '@material-ui/lab/Alert';
+import { Alert, Select, Button, Form, Menu, Input, Spin, PageHeader } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
-import { TextField } from 'components/TextField';
 import { Method, Queries, createQueries, queries } from 'interfaces/Queries';
 import { getDataSources } from 'interfaces/DataSources';
-import { Card } from '../../styles';
 import { queryContext } from '../../context/query';
 
-const CardStyled = styled(Card)`
+const CardStyled = styled.div`
   height: 40%;
   min-height: 200px;
   display: flex;
@@ -33,16 +24,7 @@ const CardContentSettingsQuery = styled.div`
   flex: 1;
 `;
 
-const CardHeaderStyled = styled(CardHeader)`
-  border-bottom: 1px solid #dedede;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
-
-const CardContentStyled = styled(CardContent)`
+const CardContentStyled = styled.div`
   overflow: auto;
   max-height: 100%;
 `;
@@ -64,8 +46,8 @@ const Query = () => {
     createQuery({ name: 'query' });
   };
 
-  const handleChangeType = (e: any) => {
-    setMethod(e.currentTarget.dataset.value);
+  const handleChangeType = (value: Method) => {
+    setMethod(value);
   };
 
   const handleSelectQuery = (query: Queries) => () => setQuerySelected(query);
@@ -81,112 +63,164 @@ const Query = () => {
   return (
     <CardStyled>
       <CardContentQuery>
-        <CardHeaderStyled
+        <PageHeader
           title="Query"
-          titleTypographyProps={{ variant: 'body1' }}
-          action={
-            <Button
-              color="primary"
-              size="small"
-              onClick={handleNew}
-              startIcon={<AddOutlinedIcon />}
-            >
+          extra={[
+            <Button type="link" size="small" onClick={handleNew} icon={<PlusOutlined />}>
               New
             </Button>
-          }
+          ]}
         />
-        {(status === 'loading' || statusDataSources === 'loading') && <CircularProgress />}
+        {(status === 'loading' || statusDataSources === 'loading') && <Spin size="large" />}
         {status === 'error' && error && error.toString()}
         {statusDataSources === 'error' && errorDatasources && errorDatasources.toString()}
         {data && (
-          <List>
-            {data.data.map(query => {
-              const { _id, name } = query;
+          <Menu mode="inline" defaultSelectedKeys={['0']}>
+            {data.data.map((query, i) => {
+              const { name } = query;
               return (
-                <ListItem
-                  onClick={handleSelectQuery(query)}
-                  button
-                  key={_id}
-                  selected={querySelected && querySelected._id === _id}
-                >
+                <Menu.Item key={i} onClick={handleSelectQuery(query)}>
                   {name}
-                </ListItem>
+                </Menu.Item>
               );
             })}
-          </List>
+          </Menu>
         )}
       </CardContentQuery>
       <CardContentSettingsQuery>
-        <CardHeaderStyled title="Settings" titleTypographyProps={{ variant: 'body1' }} />
+        <PageHeader title="Settings" />
         <CardContentStyled>
           {!querySelected && (
-            <Alert severity="info">You should select one query for modify it</Alert>
+            <Alert
+              message="Info"
+              description="You should select one query for modify it"
+              type="info"
+              showIcon
+            />
           )}
           {querySelected && (
             <div>
-              <Form>
-                <TextField label="Name" name="name" value={querySelected.name} />
-                <TextField label="Datasources" select name="datasources">
-                  {dataSources &&
-                    dataSources.data.map(({ _id, name }) => (
-                      <MenuItem key={_id} value={_id}>
-                        {name}
-                      </MenuItem>
-                    ))}
-                </TextField>
-                <TextField label="Collections" select name="collections">
-                  <MenuItem>name</MenuItem>
-                </TextField>
-                <TextField label="Action type" select name="method" onChange={handleChangeType}>
-                  <MenuItem value="find">find</MenuItem>
-                  <MenuItem value="findOne">findOne</MenuItem>
-                  <MenuItem value="count">count</MenuItem>
-                  <MenuItem value="distinct">distinct</MenuItem>
-                  <MenuItem value="aggregate">aggregate</MenuItem>
-                  <MenuItem value="insertOne">insertOne</MenuItem>
-                  <MenuItem value="updateOne">updateOne</MenuItem>
-                  <MenuItem value="deleteOne">deleteOne</MenuItem>
-                  <MenuItem value="updateMany">updateMany</MenuItem>
-                </TextField>
+              <Form layout="horizontal" initialValues={querySelected}>
+                <Form.Item label="Name" name="name" rules={[{ required: true }]}>
+                  <Input />
+                </Form.Item>
+                <Form.Item label="Datasources" name="datasources" rules={[{ required: true }]}>
+                  <Select>
+                    {dataSources &&
+                      dataSources.data.map(({ _id, name }) => (
+                        <Select.Option key={_id} value={_id}>
+                          {name}
+                        </Select.Option>
+                      ))}
+                  </Select>
+                </Form.Item>
+                <Form.Item label="Collections" name="collections" rules={[{ required: true }]}>
+                  <Select>
+                    <Select.Option value={'name'}>name</Select.Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item label="Action type" name="method" rules={[{ required: true }]}>
+                  <Select onChange={handleChangeType}>
+                    <Select.Option value="find">find</Select.Option>
+                    <Select.Option value="findOne">findOne</Select.Option>
+                    <Select.Option value="count">count</Select.Option>
+                    <Select.Option value="distinct">distinct</Select.Option>
+                    <Select.Option value="aggregate">aggregate</Select.Option>
+                    <Select.Option value="insertOne">insertOne</Select.Option>
+                    <Select.Option value="updateOne">updateOne</Select.Option>
+                    <Select.Option value="deleteOne">deleteOne</Select.Option>
+                    <Select.Option value="updateMany">updateMany</Select.Option>
+                  </Select>
+                </Form.Item>
                 {method === 'find' && (
                   <>
-                    <TextField label="Query" name="query" />
-                    <TextField label="Projection" name="projection" />
-                    <TextField label="Sort by" name="sortBy" />
-                    <TextField label="Limit" name="limit" />
-                    <TextField label="Skip" name="skip" />
+                    <Form.Item label="Query" name="query" rules={[{ required: true }]}>
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Projection" name="projection">
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Sort by" name="sortBy">
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Limit" name="limit">
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Skip" name="skip">
+                      <Input />
+                    </Form.Item>
                   </>
                 )}
                 {method === 'findOne' && (
                   <>
-                    <TextField label="Query" name="query" />
-                    <TextField label="Projection" name="projection" />
-                    <TextField label="Skip" name="skip" />
+                    <Form.Item label="Query" name="query" rules={[{ required: true }]}>
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Projection" name="projection">
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Skip" name="skip">
+                      <Input />
+                    </Form.Item>
                   </>
                 )}
-                {method === 'count' && <TextField label="Query" name="query" />}
+                {method === 'count' && (
+                  <Form.Item label="Query" name="query" rules={[{ required: true }]}>
+                    <Input />
+                  </Form.Item>
+                )}
                 {method === 'distinct' && (
                   <>
-                    <TextField label="Query" name="query" />
-                    <TextField label="Field" name="field" />
-                    <TextField label="Options" name="option" />
+                    <Form.Item label="Query" name="query" rules={[{ required: true }]}>
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Field" name="field" rules={[{ required: true }]}>
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Options" name="options" rules={[{ required: true }]}>
+                      <Input />
+                    </Form.Item>
                   </>
                 )}
-                {method === 'aggregate' && <TextField label="Aggregation" name="aggregation" />}
-                {method === 'insertOne' && <TextField label="Insert" name="insert" />}
+                {method === 'aggregate' && (
+                  <Form.Item label="Aggregation" name="aggregation" rules={[{ required: true }]}>
+                    <Input />
+                  </Form.Item>
+                )}
+                {method === 'insertOne' && (
+                  <Form.Item label="Insert" name="insert" rules={[{ required: true }]}>
+                    <Input />
+                  </Form.Item>
+                )}
                 {method === 'updateOne' && (
                   <>
-                    <TextField label="Query" name="query" />
-                    <TextField label="Update" name="update" />
-                    <TextField label="Options" name="option" />
+                    <Form.Item label="Query" name="query" rules={[{ required: true }]}>
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Update" name="update" rules={[{ required: true }]}>
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Options" name="option">
+                      <Input />
+                    </Form.Item>
                   </>
                 )}
-                {method === 'deleteOne' && <TextField label="Query" name="query" />}
+                {method === 'deleteOne' && (
+                  <Form.Item label="Query" name="query" rules={[{ required: true }]}>
+                    <Input />
+                  </Form.Item>
+                )}
                 {method === 'updateMany' && (
                   <>
-                    <TextField label="Query" name="query" />
-                    <TextField label="Update" name="update" />
-                    <TextField label="Options" name="option" />
+                    <Form.Item label="Query" name="query" rules={[{ required: true }]}>
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Update" name="update" rules={[{ required: true }]}>
+                      <Input />
+                    </Form.Item>
+                    <Form.Item label="Options" name="option">
+                      <Input />
+                    </Form.Item>
                   </>
                 )}
               </Form>

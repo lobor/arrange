@@ -1,10 +1,7 @@
 import * as React from 'react';
-import List from '@material-ui/core/List';
 import JSONTree from 'react-json-tree';
-import { useParams } from 'react-router-dom';
+import { Collapse } from 'antd';
 
-import { CollapseMenu } from 'components/CollapseMenu';
-import { Card } from '../../styles';
 import { scopeContext } from '../../context/scope';
 
 const theme = {
@@ -34,32 +31,15 @@ const Scope = () => {
   if (!open) return null;
 
   return (
-    <Card>
-      <List component="nav">
-        <CollapseMenu label="Components">
-          {Object.keys(scopes).map((name, i) => {
-            const scope = scopes[name];
-            if (!scope) return null;
-            return (
-              <JSONTree
-                key={`${name}-${i}`}
-                keyPath={[name]}
-                data={scope}
-                theme={theme}
-              />
-            );
-          })}
-        </CollapseMenu>
-        {/* <CollapseMenu label="Queries">
-          <JSONTree data={json} theme={theme} />
-        </CollapseMenu>
-        <CollapseMenu label="Global">
-          <JSONTree data={json} theme={theme} />
-          <JSONTree data={json} theme={theme} />
-          <JSONTree data={json} theme={theme} />
-        </CollapseMenu> */}
-      </List>
-    </Card>
+    <Collapse defaultActiveKey={['Components']}>
+      <Collapse.Panel header="Components" key="Components">
+        {Object.keys(scopes).map((name, i) => {
+          const scope = scopes[name];
+          if (!scope) return null;
+          return <JSONTree key={`${name}-${i}`} keyPath={[name]} data={scope} theme={theme} />;
+        })}
+      </Collapse.Panel>
+    </Collapse>
   );
 };
 

@@ -1,51 +1,59 @@
 import * as React from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Alert from '@material-ui/lab/Alert';
 import { Link } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { List, Button, PageHeader, Row, Col, Alert, Empty, Spin } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
 import { getDataSources } from 'interfaces/DataSources';
 
-const useStyles = makeStyles(theme => ({
-  title: {
-    display: 'flex',
-    justifyContent: 'space-between'
-  }
-}));
-
 const DataSources = () => {
-  const classes = useStyles();
   const { status, data, error } = getDataSources();
 
   if (!data || status === 'loading') {
-    return <CircularProgress />;
+    return <Spin size="large" />;
   }
   if (error) {
-    return <Alert severity="error">{error.toString()}</Alert>;
+    return <Alert message="Error" description={error.toString()} type="error" showIcon />;
   }
   return (
     <>
-      <Typography className={classes.title} variant="h4">
-        <div>Data sources</div>
-        <Button component={Link} to={`/datasources/create`} variant="contained" color="primary">
-          New data sources
-        </Button>
-      </Typography>
-      {data.data.length === 0 && <Alert severity="warning">You should create datasources</Alert>}
-      {data.data.length > 0 && (
-        <List component="nav" aria-label="secondary mailbox folders">
-          {data.data.map(({ _id, name }) => (
-            <ListItem button component={Link} key={_id} to={`/datasources/${_id}`}>
-              <ListItemText primary={name} />
-            </ListItem>
-          ))}
-        </List>
-      )}
+      <Row>
+        <Col span="12" offset="6">
+          <PageHeader
+            title="Data sources"
+            extra={[
+              <Button type="link" icon={<PlusOutlined />}>
+                <Link to={`/datasources/create`}>New data sources</Link>
+              </Button>
+            ]}
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col span="12" offset="6">
+          {data.data.length === 0 && (
+            <>
+              <Alert
+                message="Warning"
+                description="You should create datasources"
+                type="warning"
+                showIcon
+              />
+              <Empty />
+            </>
+          )}
+          {data.data.length > 0 && (
+            <List
+              bordered
+              dataSource={data.data}
+              renderItem={({ _id, name }) => (
+                <List.Item>
+                  <Link to={`/datasources/${_id}`}>{name}</Link>
+                </List.Item>
+              )}
+            />
+          )}
+        </Col>
+      </Row>
     </>
   );
 };

@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Alert from '@material-ui/lab/Alert';
+import { Card, Alert, Spin } from 'antd';
 
 import { Component, ComponentText, createComponent } from 'interfaces/Components';
 import { getPages } from 'interfaces/Pages';
 import { componentContext } from '../../context/component';
-import { Card } from '../../styles';
 import { Container, GridContainer } from './styles';
 import { CellGrid } from './components/CellGrid';
 import { IsolateComponent } from './components/IsolateComponent';
@@ -36,8 +34,10 @@ const Editor = () => {
         ))}
       </GridContainer>
       <Card className="card content-edit" style={{ flex: 1 }}>
-        {status === 'error' && error && <Alert severity="error">{error.toString()}</Alert>}
-        {status === 'loading' && <CircularProgress />}
+        {status === 'error' && error && (
+          <Alert message="Error" description={error.toString()} type="error" showIcon />
+        )}
+        {status === 'loading' && <Spin size="large" />}
         {data &&
           data.data.components.map(comp => {
             return <IsolateComponent component={comp} key={comp._id} />;

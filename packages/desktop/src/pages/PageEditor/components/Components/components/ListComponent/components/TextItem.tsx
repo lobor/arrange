@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useDrag } from 'react-dnd';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import { List } from 'antd';
 
 import { COMPONENT, TYPE_DRAG } from '../../../../../constants';
 
@@ -14,9 +13,7 @@ const TextItem = () => {
   });
   return (
     <div ref={dragRef} style={{ opacity }}>
-      <ListItem>
-        <ListItemText primary="Text" />
-      </ListItem>
+      <List.Item>Text</List.Item>
     </div>
   );
 };

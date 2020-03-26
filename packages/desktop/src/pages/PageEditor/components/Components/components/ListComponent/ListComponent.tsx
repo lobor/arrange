@@ -1,16 +1,11 @@
 import * as React from 'react';
-import List from '@material-ui/core/List';
+import { List } from 'antd';
 
-import { TextField } from './components/TextField'
-import { TextItem } from './components/TextItem'
+import { TextField } from './components/TextField';
+import { TextItem } from './components/TextItem';
 
 const ListComponent = () => {
-  return (
-    <List>
-      <TextItem />
-      <TextField />
-    </List>
-  );
+  return <List size="small" dataSource={[<TextItem />, <TextField />]} renderItem={item => item} />;
 };
 
 export { ListComponent };
