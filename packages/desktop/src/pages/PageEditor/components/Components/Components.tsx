@@ -40,7 +40,7 @@ const Components = () => {
   if (!open) return null;
 
   return (
-    <Card tabList={tabListNoTitle} activeTabKey={tabIndex} onTabChange={toggleTab}>
+    <Card bordered={false} tabList={tabListNoTitle} activeTabKey={tabIndex} onTabChange={toggleTab}>
       {contentList[tabIndex]}
     </Card>
   );

@@ -5,9 +5,9 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   left: 0;
-  position: absolute;
   right: 0;
   top: 48px;
+  height: 100%;
   .content-edit {
     background-color: #f4f4f4;
   }

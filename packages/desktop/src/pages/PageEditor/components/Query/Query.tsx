@@ -1,15 +1,14 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Alert, Select, Button, Form, Menu, Input, Spin, PageHeader } from 'antd';
+import { Card, Row, Alert, Select, Button, Form, Menu, Input, Spin, PageHeader } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import { Method, Queries, createQueries, queries } from 'interfaces/Queries';
 import { getDataSources } from 'interfaces/DataSources';
 import { queryContext } from '../../context/query';
 
-const CardStyled = styled.div`
-  height: 40%;
-  min-height: 200px;
+const CardStyled = styled(Card)`
+  height: 200px;
   display: flex;
   width: 100%;
   flex-direction: row;
@@ -17,11 +16,15 @@ const CardStyled = styled.div`
 
 const CardContentQuery = styled.div`
   border-right: 1px solid #dedede;
-  width: 200px;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const CardContentSettingsQuery = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
 `;
 
 const CardContentStyled = styled.div`
@@ -61,7 +64,7 @@ const Query = () => {
   if (!open) return null;
 
   return (
-    <CardStyled>
+    <CardStyled bordered={false} bodyStyle={{ display: 'flex', padding: 0, flex: 1 }}>
       <CardContentQuery>
         <PageHeader
           title="Query"
@@ -74,22 +77,26 @@ const Query = () => {
         {(status === 'loading' || statusDataSources === 'loading') && <Spin size="large" />}
         {status === 'error' && error && error.toString()}
         {statusDataSources === 'error' && errorDatasources && errorDatasources.toString()}
-        {data && (
-          <Menu mode="inline" defaultSelectedKeys={['0']}>
-            {data.data.map((query, i) => {
-              const { name } = query;
-              return (
-                <Menu.Item key={i} onClick={handleSelectQuery(query)}>
-                  {name}
-                </Menu.Item>
-              );
-            })}
-          </Menu>
-        )}
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          {data && (
+            <Menu mode="inline" defaultSelectedKeys={['0']}>
+              {data.data.map((query, i) => {
+                const { name } = query;
+                return (
+                  <Menu.Item key={i} onClick={handleSelectQuery(query)}>
+                    {name}
+                  </Menu.Item>
+                );
+              })}
+            </Menu>
+          )}
+        </div>
       </CardContentQuery>
       <CardContentSettingsQuery>
-        <PageHeader title="Settings" />
-        <CardContentStyled>
+        <Row>
+          <PageHeader title="Settings" />
+        </Row>
+        <Row style={{ display: 'flex', flex: 1, overflow: 'auto' }}>
           {!querySelected && (
             <Alert
               message="Info"
@@ -99,134 +106,132 @@ const Query = () => {
             />
           )}
           {querySelected && (
-            <div>
-              <Form layout="horizontal" initialValues={querySelected}>
-                <Form.Item label="Name" name="name" rules={[{ required: true }]}>
+            <Form layout="horizontal" initialValues={querySelected} style={{ width: '100%' }}>
+              <Form.Item label="Name" name="name" rules={[{ required: true }]}>
+                <Input />
+              </Form.Item>
+              <Form.Item label="Datasources" name="datasources" rules={[{ required: true }]}>
+                <Select>
+                  {dataSources &&
+                    dataSources.data.map(({ _id, name }) => (
+                      <Select.Option key={_id} value={_id}>
+                        {name}
+                      </Select.Option>
+                    ))}
+                </Select>
+              </Form.Item>
+              <Form.Item label="Collections" name="collections" rules={[{ required: true }]}>
+                <Select>
+                  <Select.Option value={'name'}>name</Select.Option>
+                </Select>
+              </Form.Item>
+              <Form.Item label="Action type" name="method" rules={[{ required: true }]}>
+                <Select onChange={handleChangeType}>
+                  <Select.Option value="find">find</Select.Option>
+                  <Select.Option value="findOne">findOne</Select.Option>
+                  <Select.Option value="count">count</Select.Option>
+                  <Select.Option value="distinct">distinct</Select.Option>
+                  <Select.Option value="aggregate">aggregate</Select.Option>
+                  <Select.Option value="insertOne">insertOne</Select.Option>
+                  <Select.Option value="updateOne">updateOne</Select.Option>
+                  <Select.Option value="deleteOne">deleteOne</Select.Option>
+                  <Select.Option value="updateMany">updateMany</Select.Option>
+                </Select>
+              </Form.Item>
+              {method === 'find' && (
+                <>
+                  <Form.Item label="Query" name="query" rules={[{ required: true }]}>
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label="Projection" name="projection">
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label="Sort by" name="sortBy">
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label="Limit" name="limit">
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label="Skip" name="skip">
+                    <Input />
+                  </Form.Item>
+                </>
+              )}
+              {method === 'findOne' && (
+                <>
+                  <Form.Item label="Query" name="query" rules={[{ required: true }]}>
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label="Projection" name="projection">
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label="Skip" name="skip">
+                    <Input />
+                  </Form.Item>
+                </>
+              )}
+              {method === 'count' && (
+                <Form.Item label="Query" name="query" rules={[{ required: true }]}>
                   <Input />
                 </Form.Item>
-                <Form.Item label="Datasources" name="datasources" rules={[{ required: true }]}>
-                  <Select>
-                    {dataSources &&
-                      dataSources.data.map(({ _id, name }) => (
-                        <Select.Option key={_id} value={_id}>
-                          {name}
-                        </Select.Option>
-                      ))}
-                  </Select>
-                </Form.Item>
-                <Form.Item label="Collections" name="collections" rules={[{ required: true }]}>
-                  <Select>
-                    <Select.Option value={'name'}>name</Select.Option>
-                  </Select>
-                </Form.Item>
-                <Form.Item label="Action type" name="method" rules={[{ required: true }]}>
-                  <Select onChange={handleChangeType}>
-                    <Select.Option value="find">find</Select.Option>
-                    <Select.Option value="findOne">findOne</Select.Option>
-                    <Select.Option value="count">count</Select.Option>
-                    <Select.Option value="distinct">distinct</Select.Option>
-                    <Select.Option value="aggregate">aggregate</Select.Option>
-                    <Select.Option value="insertOne">insertOne</Select.Option>
-                    <Select.Option value="updateOne">updateOne</Select.Option>
-                    <Select.Option value="deleteOne">deleteOne</Select.Option>
-                    <Select.Option value="updateMany">updateMany</Select.Option>
-                  </Select>
-                </Form.Item>
-                {method === 'find' && (
-                  <>
-                    <Form.Item label="Query" name="query" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Projection" name="projection">
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Sort by" name="sortBy">
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Limit" name="limit">
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Skip" name="skip">
-                      <Input />
-                    </Form.Item>
-                  </>
-                )}
-                {method === 'findOne' && (
-                  <>
-                    <Form.Item label="Query" name="query" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Projection" name="projection">
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Skip" name="skip">
-                      <Input />
-                    </Form.Item>
-                  </>
-                )}
-                {method === 'count' && (
+              )}
+              {method === 'distinct' && (
+                <>
                   <Form.Item label="Query" name="query" rules={[{ required: true }]}>
                     <Input />
                   </Form.Item>
-                )}
-                {method === 'distinct' && (
-                  <>
-                    <Form.Item label="Query" name="query" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Field" name="field" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Options" name="options" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                  </>
-                )}
-                {method === 'aggregate' && (
-                  <Form.Item label="Aggregation" name="aggregation" rules={[{ required: true }]}>
+                  <Form.Item label="Field" name="field" rules={[{ required: true }]}>
                     <Input />
                   </Form.Item>
-                )}
-                {method === 'insertOne' && (
-                  <Form.Item label="Insert" name="insert" rules={[{ required: true }]}>
+                  <Form.Item label="Options" name="options" rules={[{ required: true }]}>
                     <Input />
                   </Form.Item>
-                )}
-                {method === 'updateOne' && (
-                  <>
-                    <Form.Item label="Query" name="query" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Update" name="update" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Options" name="option">
-                      <Input />
-                    </Form.Item>
-                  </>
-                )}
-                {method === 'deleteOne' && (
+                </>
+              )}
+              {method === 'aggregate' && (
+                <Form.Item label="Aggregation" name="aggregation" rules={[{ required: true }]}>
+                  <Input />
+                </Form.Item>
+              )}
+              {method === 'insertOne' && (
+                <Form.Item label="Insert" name="insert" rules={[{ required: true }]}>
+                  <Input />
+                </Form.Item>
+              )}
+              {method === 'updateOne' && (
+                <>
                   <Form.Item label="Query" name="query" rules={[{ required: true }]}>
                     <Input />
                   </Form.Item>
-                )}
-                {method === 'updateMany' && (
-                  <>
-                    <Form.Item label="Query" name="query" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Update" name="update" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Options" name="option">
-                      <Input />
-                    </Form.Item>
-                  </>
-                )}
-              </Form>
-            </div>
+                  <Form.Item label="Update" name="update" rules={[{ required: true }]}>
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label="Options" name="option">
+                    <Input />
+                  </Form.Item>
+                </>
+              )}
+              {method === 'deleteOne' && (
+                <Form.Item label="Query" name="query" rules={[{ required: true }]}>
+                  <Input />
+                </Form.Item>
+              )}
+              {method === 'updateMany' && (
+                <>
+                  <Form.Item label="Query" name="query" rules={[{ required: true }]}>
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label="Update" name="update" rules={[{ required: true }]}>
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label="Options" name="option">
+                    <Input />
+                  </Form.Item>
+                </>
+              )}
+            </Form>
           )}
-        </CardContentStyled>
+        </Row>
       </CardContentSettingsQuery>
     </CardStyled>
   );
