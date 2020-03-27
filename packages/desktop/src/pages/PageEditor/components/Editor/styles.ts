@@ -5,6 +5,9 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   overflow: auto;
+  .content-edit {
+    background-color: transparent;
+  }
 `;
 
 const GridContainer = styled.div`
@@ -13,18 +16,9 @@ const GridContainer = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  & > * {
-    flex: 0 0 auto;
-  }
 `;
 
 const CellStyled = styled.div`
-  width: 10%;
-  height: 40px;
-  background: url(/cell.jpg) top left, url(/cell.jpg) bottom left, url(/cell.jpg) top right, url(/cell.jpg) bottom right;
-  background-repeat: no-repeat;
   &.isOver {
     background-color: red;
   }

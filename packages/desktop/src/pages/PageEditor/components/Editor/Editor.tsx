@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, Alert, Spin } from 'antd';
+import { Row, Card, Alert, Spin } from 'antd';
 
 import { Component, ComponentText, createComponent } from 'interfaces/Components';
 import { getPages } from 'interfaces/Pages';
@@ -28,12 +28,14 @@ const Editor = () => {
   const handleClick = () => toggleItem();
   return (
     <Container>
-      <GridContainer id="contentEditor" onClick={handleClick}>
-        {new Array(300).fill(5).map((e, i) => (
-          <CellGrid addCells={addCells} key={i} />
-        ))}
+      <GridContainer>
+        <Row id="contentEditor" onClick={handleClick}>
+          {new Array(300).fill(5).map((e, i) => (
+            <CellGrid addCells={addCells} key={i} />
+          ))}
+        </Row>
       </GridContainer>
-      <Card className="card content-edit" style={{ flex: 1 }}>
+      {/* <Card className="card content-edit" style={{ flex: 1 }}>
         {status === 'error' && error && (
           <Alert message="Error" description={error.toString()} type="error" showIcon />
         )}
@@ -42,7 +44,7 @@ const Editor = () => {
           data.data.components.map(comp => {
             return <IsolateComponent component={comp} key={comp._id} />;
           })}
-      </Card>
+      </Card> */}
     </Container>
   );
 };

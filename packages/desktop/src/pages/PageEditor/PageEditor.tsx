@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { Components } from './components/Components'
-import { Query } from './components/Query'
+import { Components } from './components/Components';
+import { Query } from './components/Query';
 import { Container } from './styles';
 import { navBarContext } from './context/navBar';
 import { Editor } from './components/Editor';
@@ -12,14 +12,14 @@ const PageEditor = () => {
 
   React.useEffect(() => {
     if (!edit) {
-      toggleNavBar()
+      toggleNavBar();
     }
     return () => {
       if (edit) {
-        toggleNavBar()
+        toggleNavBar();
       }
-    }
-  })
+    };
+  });
 
   return (
     <Container>

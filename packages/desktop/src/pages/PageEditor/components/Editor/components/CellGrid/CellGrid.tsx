@@ -3,6 +3,7 @@ import { useDrop } from 'react-dnd';
 import classnames from 'classnames';
 import { XYCoord } from 'react-dnd';
 import omit from 'lodash/omit';
+import { Col } from 'antd';
 
 import { CellStyled } from '../../styles';
 import { TYPE_DRAG, COMPONENT } from '../../../../constants';
@@ -40,7 +41,7 @@ const CellGrid: React.FC<CellGridProps> = ({ addCells }) => {
             position: { x, y }
           });
         } else if (item.type === TYPE_DRAG.component) {
-          let params: Omit<Component, 'page'> | Omit<ComponentText, 'page'> | undefined
+          let params: Omit<Component, 'page'> | Omit<ComponentText, 'page'> | undefined;
 
           switch (item.component.type) {
             case COMPONENT.text.type:
@@ -53,7 +54,7 @@ const CellGrid: React.FC<CellGridProps> = ({ addCells }) => {
                   y
                 },
                 type: item.component.type
-              }
+              };
               break;
             case COMPONENT.textField.type:
               params = {
@@ -68,12 +69,12 @@ const CellGrid: React.FC<CellGridProps> = ({ addCells }) => {
                   y
                 },
                 type: item.component.type
-              }
+              };
               break;
-            }
-            if (params) {
-              addCells(params);
-            }
+          }
+          if (params) {
+            addCells(params);
+          }
         }
       }
     },
@@ -84,7 +85,21 @@ const CellGrid: React.FC<CellGridProps> = ({ addCells }) => {
       };
     }
   });
-  return <CellStyled className={classnames('cellGrid', { isOver })} ref={drop} />;
+  return (
+    <Col
+      span="2"
+      style={{
+        height: '40px',
+        color: 'transparent',
+        background: !isOver
+          ? 'url(/cell.jpg) top left no-repeat, url(/cell.jpg) bottom left no-repeat, url(/cell.jpg) top right no-repeat, url(/cell.jpg) bottom right no-repeat'
+          : 'red'
+      }}
+    >
+      <div ref={drop}>{'d '}</div>
+    </Col>
+  );
+  // return <CellStyled className={classnames('cellGrid', { isOver })} ref={drop} />;
 };
 
 export { CellGrid };
