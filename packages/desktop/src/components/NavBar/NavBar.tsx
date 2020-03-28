@@ -24,14 +24,14 @@ const NavBar = () => {
           </Menu.Item>
         ]}
         {edit && [
-          <Menu.Item onClick={toggleComponent}>
+          <Menu.Item key="back" onClick={toggleComponent}>
             <Link to="/pages">
               <ArrowLeftOutlined />
             </Link>
           </Menu.Item>,
-          <Menu.Item onClick={toggleComponent}>Components</Menu.Item>,
-          <Menu.Item onClick={toggleQuery}>Query</Menu.Item>,
-          <Menu.Item onClick={toggleScope}>Scope</Menu.Item>
+          <Menu.Item key="components"  onClick={toggleComponent}>Components</Menu.Item>,
+          <Menu.Item key="query"  onClick={toggleQuery}>Query</Menu.Item>,
+          <Menu.Item key="scope"  onClick={toggleScope}>Scope</Menu.Item>
         ]}
       </Menu>
     </Layout.Header>

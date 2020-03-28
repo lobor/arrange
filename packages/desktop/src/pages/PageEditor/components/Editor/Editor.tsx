@@ -30,12 +30,12 @@ const Editor = () => {
     <Container>
       <GridContainer>
         <Row id="contentEditor" onClick={handleClick}>
-          {new Array(300).fill(5).map((e, i) => (
+          {React.useMemo(() => new Array(300).fill(5).map((e, i) => (
             <CellGrid addCells={addCells} key={i} />
-          ))}
+          )), [addCells])}
         </Row>
       </GridContainer>
-      {/* <Card className="card content-edit" style={{ flex: 1 }}>
+      <Card className="card content-edit" style={{ flex: 1, zIndex: 2 }}>
         {status === 'error' && error && (
           <Alert message="Error" description={error.toString()} type="error" showIcon />
         )}
@@ -44,7 +44,7 @@ const Editor = () => {
           data.data.components.map(comp => {
             return <IsolateComponent component={comp} key={comp._id} />;
           })}
-      </Card> */}
+      </Card>
     </Container>
   );
 };

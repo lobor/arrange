@@ -36,8 +36,8 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
 
   return (
     <OverlayComponent
-      style={{ ...style, ...(component.style || {}) }}
-      onClick={handleClick}
+      style={{ ...style, ...(component.style || {}), zIndex: 2 }}
+      // onClick={handleClick}
       ref={dragRef}
     >
       {type === COMPONENT.textField.type && (

@@ -83,7 +83,7 @@ const Query = () => {
               {data.data.map((query, i) => {
                 const { name } = query;
                 return (
-                  <Menu.Item key={i} onClick={handleSelectQuery(query)}>
+                  <Menu.Item key={`${name}-${i}`} onClick={handleSelectQuery(query)}>
                     {name}
                   </Menu.Item>
                 );
