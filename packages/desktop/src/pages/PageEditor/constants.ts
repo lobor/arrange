@@ -1,9 +1,18 @@
+import { ScopeType } from '../../interfaces/Components';
+
 const TYPE_DRAG = {
   component: 'component',
   move: 'move'
 };
 
-const COMPONENT = {
+const COMPONENT: {
+  textField: {
+    type: ScopeType;
+  };
+  text: {
+    type: ScopeType;
+  };
+} = {
   textField: {
     type: 'textField'
   },

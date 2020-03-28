@@ -1,12 +1,12 @@
-import * as React from 'react'
+import * as React from 'react';
 import { useMutation, queryCache } from 'react-query';
 import { client } from '../Fetch';
 import omit from 'lodash/omit';
 
-import { scopeContext } from '../../pages/PageEditor/context/scope'
+import { scopeContext } from '../../pages/PageEditor/context/scope';
 
-export type ScopeType = 'textField' | 'text'
-export type InputType = 'text' | 'password' | 'number'
+export type ScopeType = 'textField' | 'text';
+export type InputType = 'text' | 'password' | 'number';
 export interface Component {
   _id?: string;
   defaultValue?: string | number;
@@ -21,14 +21,16 @@ export interface Component {
     x: number;
     y: number;
   } | null;
-  style: { [key: string]: string | number };
   required: boolean;
   type: ScopeType;
   validation: boolean;
   whenHide?: string;
 }
 
-export type ComponentText = Pick<Component, '_id' | 'defaultValue' | 'type' | 'name' | 'page' | 'whenHide' | 'position' | 'style'>;
+export type ComponentText = Pick<
+  Component,
+  '_id' | 'defaultValue' | 'type' | 'name' | 'page' | 'whenHide' | 'position'
+>;
 
 function createComponent() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -45,7 +47,7 @@ function createComponent() {
 }
 function deleteComponent() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { removeScope } = React.useContext(scopeContext)
+  const { removeScope } = React.useContext(scopeContext);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   return useMutation(
     data => {
@@ -53,7 +55,7 @@ function deleteComponent() {
     },
     {
       onSuccess: data => {
-        removeScope(data.data.name)
+        removeScope(data.data.name);
         queryCache.refetchQueries(`pages:${data.data.page}`);
       }
     }

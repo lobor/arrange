@@ -26,7 +26,9 @@ const Components = mongoose.model<ComponentMongo>(
     style: {},
     position: {
       x: Number,
-      y: Number
+      y: Number,
+      h: Number,
+      w: Number
     },
     page: { type: mongoose.Schema.Types.ObjectId, ref: 'Pages' },
     type: String

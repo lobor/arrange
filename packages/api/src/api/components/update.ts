@@ -25,7 +25,9 @@ router.put(
       position: Joi.object()
         .keys({
           x: Joi.number().required(),
-          y: Joi.number().required()
+          y: Joi.number().required(),
+          h: Joi.number().required(),
+          w: Joi.number().required()
         })
         .required(),
       inputType: Joi.string().optional()
