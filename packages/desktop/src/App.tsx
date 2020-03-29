@@ -20,46 +20,46 @@ const { Content } = Layout;
 
 function App() {
   return (
-    <NavBarProvider>
-      <ScopeProvider>
-        {React.useMemo(
-          () => (
-            <Router>
-              <Layout>
-                <NavBar />
-                {/* <Sider>left sidebar</Sider> */}
-                <Content>
-                  <Switch>
-                    <Route exact path="/pages">
-                      <Pages />
-                    </Route>
-                    <Route exact path="/pages/editor/:id">
-                      <DndProvider backend={Backend}>
-                        <ComponentProvider>
-                          <QueryProvider>
-                            <DragProvider>
+    <ComponentProvider>
+      <QueryProvider>
+        <DragProvider>
+          <NavBarProvider>
+            <ScopeProvider>
+              {React.useMemo(
+                () => (
+                  <Router>
+                    <Layout>
+                      <NavBar />
+                      {/* <Sider>left sidebar</Sider> */}
+                      <Content>
+                        <Switch>
+                          <Route exact path="/pages">
+                            <Pages />
+                          </Route>
+                          <Route exact path="/pages/editor/:id">
+                            <DndProvider backend={Backend}>
                               <PageEditor />
-                            </DragProvider>
-                          </QueryProvider>
-                        </ComponentProvider>
-                      </DndProvider>
-                    </Route>
-                    <Route exact path="/datasources">
-                      <DataSources />
-                    </Route>
-                    <Route exact path="/datasources/create">
-                      <DataSourceCreate />
-                    </Route>
-                  </Switch>
-                </Content>
-                {/* <Sider>right sidebar</Sider> */}
-              </Layout>
-            </Router>
-          ),
-          []
-        )}
-      </ScopeProvider>
-    </NavBarProvider>
+                            </DndProvider>
+                          </Route>
+                          <Route exact path="/datasources">
+                            <DataSources />
+                          </Route>
+                          <Route exact path="/datasources/create">
+                            <DataSourceCreate />
+                          </Route>
+                        </Switch>
+                      </Content>
+                      {/* <Sider>right sidebar</Sider> */}
+                    </Layout>
+                  </Router>
+                ),
+                []
+              )}
+            </ScopeProvider>
+          </NavBarProvider>
+        </DragProvider>
+      </QueryProvider>
+    </ComponentProvider>
   );
 }
 

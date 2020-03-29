@@ -29,9 +29,15 @@ const NavBar = () => {
               <ArrowLeftOutlined />
             </Link>
           </Menu.Item>,
-          <Menu.Item key="components"  onClick={toggleComponent}>Components</Menu.Item>,
-          <Menu.Item key="query"  onClick={toggleQuery}>Query</Menu.Item>,
-          <Menu.Item key="scope"  onClick={toggleScope}>Scope</Menu.Item>
+          <Menu.Item key="components" onClick={toggleComponent}>
+            Components
+          </Menu.Item>,
+          <Menu.Item key="query" onClick={toggleQuery}>
+            Query
+          </Menu.Item>,
+          <Menu.Item key="scope" onClick={toggleScope}>
+            Scope
+          </Menu.Item>
         ]}
       </Menu>
     </Layout.Header>

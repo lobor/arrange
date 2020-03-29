@@ -12,7 +12,8 @@ import {
   Menu,
   Input,
   Spin,
-  PageHeader
+  PageHeader,
+  Empty
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -137,7 +138,8 @@ const Query = () => {
           {status === 'error' && error && error.toString()}
           {statusDataSources === 'error' && errorDatasources && errorDatasources.toString()}
           <div style={{ flex: 1, overflow: 'auto' }}>
-            {data && (
+            {data && data.data.length === 0 && <Empty />}
+            {data && data.data.length > 0 && (
               <Menu mode="inline" defaultSelectedKeys={[data.data[0]._id]}>
                 {data.data.map((query, i) => {
                   const { name } = query;
@@ -162,6 +164,7 @@ const Query = () => {
                 description="You should select one query for modify it"
                 type="info"
                 showIcon
+                style={{ width: '100%' }}
               />
             )}
             {querySelected && (
