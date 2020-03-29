@@ -21,14 +21,12 @@ const EditComponent = () => {
   }, [removeComponent, item, toggleItem]);
 
   const handleUpdateComponent = React.useCallback(
-    // () => console.log(values),
     () => updateComponent({ ...omit(values, ['_id', '__v', 'page']), id: values!._id }),
     [updateComponent, values]
   );
 
   const handleChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log(e.currentTarget.name);
       const name = e.currentTarget.name ? e.currentTarget.name : 'inputType';
       const value = e.currentTarget.value
         ? e.currentTarget.value
@@ -58,7 +56,7 @@ const EditComponent = () => {
   }, [item]);
 
   if (!values || !item) return null;
-  console.log(values);
+
   return (
     <div>
       <Form layout="vertical" initialValues={values}>

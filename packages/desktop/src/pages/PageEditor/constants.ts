@@ -1,24 +1,36 @@
 import { ScopeType } from '../../interfaces/Components';
 
+interface PositionParams {
+  margin: [number, number],
+  containerPadding: [number, number],
+  containerWidth: number,
+  cols: number,
+  rowHeight: number,
+  maxRows: number
+}
+
 const TYPE_DRAG = {
   component: 'component',
   move: 'move'
 };
 
 const COMPONENT: {
-  textField: {
-    type: ScopeType;
-  };
-  text: {
-    type: ScopeType;
-  };
+  table: { type: ScopeType };
+  textField: { type: ScopeType };
+  text: { type: ScopeType };
 } = {
-  textField: {
-    type: 'textField'
-  },
-  text: {
-    type: 'text'
-  }
+  table: { type: 'table' },
+  textField: { type: 'textField' },
+  text: { type: 'text' },
 };
 
-export { COMPONENT, TYPE_DRAG };
+const gridLayout: PositionParams = {
+  margin: [10, 10],
+  containerPadding: [10, 10],
+  containerWidth: 1200,
+  cols: 12,
+  rowHeight: 40,
+  maxRows: Infinity
+}
+
+export { COMPONENT, TYPE_DRAG, gridLayout };

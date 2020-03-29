@@ -8,13 +8,15 @@ import pick from 'lodash/pick';
 import { Component, ComponentText, createComponent, putComponent } from 'interfaces/Components';
 import { getPages } from 'interfaces/Pages';
 import { componentContext } from '../../context/component';
+import { dragContext } from '../../context/drag';
 import { Container } from './styles';
-import { COMPONENT } from '../../constants';
+import { COMPONENT, gridLayout } from '../../constants';
 import { IsolateComponent } from './components/IsolateComponent';
 
 const Editor = () => {
   const [updateComponent] = putComponent();
   const { toggleItem } = React.useContext(componentContext);
+  const { elementDrag } = React.useContext(dragContext);
   const { id } = useParams<{ id: string }>();
   const [insertComponent] = createComponent();
   const { data, status, error } = getPages(id);
@@ -63,6 +65,13 @@ const Editor = () => {
           type: COMPONENT.textField.type
         };
         break;
+      case COMPONENT.table.type:
+        params = {
+          name: COMPONENT.table.type,
+          position,
+          type: COMPONENT.table.type
+        };
+        break;
     }
     if (params) {
       addCells(params);
@@ -89,6 +98,16 @@ const Editor = () => {
     e.stopPropagation();
     toggleItem(component);
   };
+  const props: {
+    droppingItem?: {
+      i: string;
+      w: number;
+      h: number;
+    };
+  } = {};
+  if (elementDrag) {
+    props.droppingItem = { ...elementDrag, i: 'toto' };
+  }
   return (
     <Container>
       {status === 'error' && error && (
@@ -98,14 +117,14 @@ const Editor = () => {
       <div className="layout" onClick={handleClick}>
         <GridLayout
           className="card content-edit"
-          cols={12}
-          rowHeight={40}
+          {...gridLayout}
           width={1200}
           autoSize={false}
           compactType={null}
           isDroppable={true}
           onDrop={handleDrop}
           onLayoutChange={handleChangeLayout}
+          {...props}
         >
           {data &&
             data.data.components.map(comp => {

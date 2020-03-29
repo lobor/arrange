@@ -27,6 +27,8 @@ const Container = styled.div`
     opacity: 0.5;
   }
   .react-grid-item:not(.react-grid-placeholder) {
+    display: flex;
+    align-items: center;
     &:hover {
       background-color: grey;
       .react-resizable-handle {

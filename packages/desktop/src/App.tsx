@@ -14,49 +14,52 @@ import { QueryProvider } from './pages/PageEditor/context/query';
 import { ComponentProvider } from './pages/PageEditor/context/component';
 import { NavBarProvider } from './pages/PageEditor/context/navBar';
 import { ScopeProvider } from './pages/PageEditor/context/scope';
+import { DragProvider } from './pages/PageEditor/context/drag';
 
 const { Content } = Layout;
 
 function App() {
   return (
-    <ComponentProvider>
-      <QueryProvider>
-        <NavBarProvider>
-          <ScopeProvider>
-            {React.useMemo(
-              () => (
-                <Router>
-                  <Layout>
-                    <NavBar />
-                    {/* <Sider>left sidebar</Sider> */}
-                    <Content>
-                      <Switch>
-                        <Route exact path="/pages">
-                          <Pages />
-                        </Route>
-                        <Route exact path="/pages/editor/:id">
-                          <DndProvider backend={Backend}>
-                            <PageEditor />
-                          </DndProvider>
-                        </Route>
-                        <Route exact path="/datasources">
-                          <DataSources />
-                        </Route>
-                        <Route exact path="/datasources/create">
-                          <DataSourceCreate />
-                        </Route>
-                      </Switch>
-                    </Content>
-                    {/* <Sider>right sidebar</Sider> */}
-                  </Layout>
-                </Router>
-              ),
-              []
-            )}
-          </ScopeProvider>
-        </NavBarProvider>
-      </QueryProvider>
-    </ComponentProvider>
+    <NavBarProvider>
+      <ScopeProvider>
+        {React.useMemo(
+          () => (
+            <Router>
+              <Layout>
+                <NavBar />
+                {/* <Sider>left sidebar</Sider> */}
+                <Content>
+                  <Switch>
+                    <Route exact path="/pages">
+                      <Pages />
+                    </Route>
+                    <Route exact path="/pages/editor/:id">
+                      <DndProvider backend={Backend}>
+                        <ComponentProvider>
+                          <QueryProvider>
+                            <DragProvider>
+                              <PageEditor />
+                            </DragProvider>
+                          </QueryProvider>
+                        </ComponentProvider>
+                      </DndProvider>
+                    </Route>
+                    <Route exact path="/datasources">
+                      <DataSources />
+                    </Route>
+                    <Route exact path="/datasources/create">
+                      <DataSourceCreate />
+                    </Route>
+                  </Switch>
+                </Content>
+                {/* <Sider>right sidebar</Sider> */}
+              </Layout>
+            </Router>
+          ),
+          []
+        )}
+      </ScopeProvider>
+    </NavBarProvider>
   );
 }
 

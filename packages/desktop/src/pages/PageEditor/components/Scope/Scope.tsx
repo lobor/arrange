@@ -1,8 +1,20 @@
 import * as React from 'react';
 import JSONTree from 'react-json-tree';
+import { ResizableBox } from 'react-resizable';
 import { Card, Collapse } from 'antd';
+import styled from 'styled-components'
 
 import { scopeContext } from '../../context/scope';
+
+const Rezise = styled.div`
+  background-color: #d9d9d9;
+  width: 2px;
+  position: absolute;
+  cursor: col-resize;
+  left: 0;
+  top: 0;
+  bottom: 0;
+`;
 
 const theme = {
   scheme: 'default',
@@ -31,9 +43,19 @@ const Scope = () => {
   if (!open) return null;
 
   return (
+    <ResizableBox
+      className="resizeBox"
+      handle={<Rezise />}
+      axis="x"
+      resizeHandles={['w']}
+      width={300}
+      height={200}
+      minConstraints={[300, 100]}
+      maxConstraints={[500, 300]}
+    >
     <Card
       bordered={false}
-      style={{ display: 'flex', flexDirection: 'column' }}
+      style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
       bodyStyle={{ flex: 1, overflow: 'auto', padding: 0 }}
     >
       <Collapse defaultActiveKey={['Components']} bordered={false}>
@@ -46,6 +68,7 @@ const Scope = () => {
         </Collapse.Panel>
       </Collapse>
     </Card>
+    </ResizableBox>
   );
 };
 
