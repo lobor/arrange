@@ -1,5 +1,4 @@
 import React, { createContext } from 'react';
-import keyBy from 'lodash/keyBy';
 import omit from 'lodash/omit';
 
 import { Component } from 'interfaces/Components';

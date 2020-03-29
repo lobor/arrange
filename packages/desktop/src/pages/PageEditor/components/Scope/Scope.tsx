@@ -1,6 +1,6 @@
 import * as React from 'react';
 import JSONTree from 'react-json-tree';
-import { Collapse } from 'antd';
+import { Card, Collapse } from 'antd';
 
 import { scopeContext } from '../../context/scope';
 
@@ -31,15 +31,21 @@ const Scope = () => {
   if (!open) return null;
 
   return (
-    <Collapse defaultActiveKey={['Components']}>
-      <Collapse.Panel header="Components" key="Components">
-        {Object.keys(scopes).map((name, i) => {
-          const scope = scopes[name];
-          if (!scope) return null;
-          return <JSONTree key={`${name}-${i}`} keyPath={[name]} data={scope} theme={theme} />;
-        })}
-      </Collapse.Panel>
-    </Collapse>
+    <Card
+      bordered={false}
+      style={{ display: 'flex', flexDirection: 'column' }}
+      bodyStyle={{ flex: 1, overflow: 'auto', padding: 0 }}
+    >
+      <Collapse defaultActiveKey={['Components']} bordered={false}>
+        <Collapse.Panel header="Components" key="Components">
+          {Object.keys(scopes).map((name, i) => {
+            const scope = scopes[name];
+            if (!scope) return null;
+            return <JSONTree key={`${name}-${i}`} keyPath={[name]} data={scope} theme={theme} />;
+          })}
+        </Collapse.Panel>
+      </Collapse>
+    </Card>
   );
 };
 

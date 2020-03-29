@@ -9,7 +9,7 @@ interface QueryProviderProps {
   children: React.ReactNode;
 }
 const QueryProvider: React.FC<QueryProviderProps> = ({ children }) => {
-  const [open, setOpen] = React.useState<boolean>(false);
+  const [open, setOpen] = React.useState<boolean>(true);
   const toggle = React.useCallback(() => {
     setOpen(!open);
   }, [open]);

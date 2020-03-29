@@ -1,9 +1,14 @@
 import mongoose from 'mongoose';
 
-const Queries = mongoose.model(
+interface QueriesMongo extends mongoose.Document {
+  name: string;
+  page: string;
+}
+const Queries = mongoose.model<QueriesMongo>(
   'Queries',
   new mongoose.Schema({
-    name: String
+    name: String,
+    page: { type: mongoose.Schema.Types.ObjectId, ref: 'Pages' }
   })
 );
 

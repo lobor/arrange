@@ -80,7 +80,7 @@ const Pages = () => {
           <PageHeader
             title="Pages"
             extra={[
-              <Button onClick={handleClickOpen} type="link" icon={<PlusOutlined />}>
+              <Button key="new" onClick={handleClickOpen} type="link" icon={<PlusOutlined />}>
                 New pages
               </Button>
             ]}

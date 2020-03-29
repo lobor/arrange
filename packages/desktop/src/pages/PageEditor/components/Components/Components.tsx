@@ -40,7 +40,14 @@ const Components = () => {
   if (!open) return null;
 
   return (
-    <Card bordered={false} tabList={tabListNoTitle} activeTabKey={tabIndex} onTabChange={toggleTab}>
+    <Card
+      bordered={false}
+      tabList={tabListNoTitle}
+      activeTabKey={tabIndex}
+      onTabChange={toggleTab}
+      style={{ display: 'flex', flexDirection: 'column' }}
+      bodyStyle={{ flex: 1, overflow: 'auto' }}
+    >
       {contentList[tabIndex]}
     </Card>
   );

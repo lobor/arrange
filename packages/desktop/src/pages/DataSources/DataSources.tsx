@@ -21,7 +21,7 @@ const DataSources = () => {
           <PageHeader
             title="Data sources"
             extra={[
-              <Button type="link" icon={<PlusOutlined />}>
+              <Button key="new" type="link" icon={<PlusOutlined />}>
                 <Link to={`/datasources/create`}>New data sources</Link>
               </Button>
             ]}

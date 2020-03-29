@@ -8,12 +8,6 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { Component as Item, deleteComponent, putComponent } from 'interfaces/Components';
 import { componentContext } from '../../../../context/component';
 
-const Container = styled.div`
-  .MuiFormControl-root {
-    width: 100%;
-  }
-`;
-
 const EditComponent = () => {
   const { item, toggleItem } = React.useContext(componentContext);
   const [values, setValue] = React.useState<Item | undefined>(item);
@@ -66,7 +60,7 @@ const EditComponent = () => {
   if (!values || !item) return null;
   console.log(values);
   return (
-    <Container>
+    <div>
       <Form layout="vertical" initialValues={values}>
         <Form.Item label="Name" name="name" rules={[{ required: true }]}>
           <Input.Search
@@ -130,7 +124,7 @@ const EditComponent = () => {
           </Collapse.Panel>
         </Collapse>
       </Form>
-    </Container>
+    </div>
   );
 };
 

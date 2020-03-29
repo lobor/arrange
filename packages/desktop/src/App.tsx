@@ -15,7 +15,7 @@ import { ComponentProvider } from './pages/PageEditor/context/component';
 import { NavBarProvider } from './pages/PageEditor/context/navBar';
 import { ScopeProvider } from './pages/PageEditor/context/scope';
 
-const { Sider, Content, Footer } = Layout;
+const { Content } = Layout;
 
 function App() {
   return (

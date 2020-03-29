@@ -102,7 +102,7 @@ const Editor = () => {
           rowHeight={40}
           width={1200}
           autoSize={false}
-          verticalCompact={false}
+          compactType={null}
           isDroppable={true}
           onDrop={handleDrop}
           onLayoutChange={handleChangeLayout}

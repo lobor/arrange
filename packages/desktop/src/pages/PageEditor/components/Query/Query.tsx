@@ -1,9 +1,28 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Card, Row, Alert, Select, Button, Form, Menu, Input, Spin, PageHeader } from 'antd';
+import {
+  Popconfirm,
+  Card,
+  Row,
+  Alert,
+  Select,
+  Button,
+  Form,
+  Menu,
+  Input,
+  Spin,
+  PageHeader
+} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
-import { Method, Queries, createQueries, queries } from 'interfaces/Queries';
+import {
+  Method,
+  Queries,
+  deleteQueries,
+  updateQueries,
+  createQueries,
+  queries
+} from 'interfaces/Queries';
 import { getDataSources } from 'interfaces/DataSources';
 import { queryContext } from '../../context/query';
 
@@ -27,10 +46,10 @@ const CardContentSettingsQuery = styled.div`
   flex-direction: column;
 `;
 
-const CardContentStyled = styled.div`
-  overflow: auto;
-  max-height: 100%;
-`;
+const layout = {
+  labelCol: { offset: 4, span: 2 },
+  wrapperCol: { span: 13 }
+};
 
 const Query = () => {
   const { open } = React.useContext(queryContext);
@@ -44,6 +63,8 @@ const Query = () => {
   } = getDataSources();
   const { data, status, error } = queries();
   const [createQuery] = createQueries();
+  const [updateQuery] = updateQueries();
+  const [deleteQuery, { status: statusDeleteQuery }] = deleteQueries();
 
   const handleNew = () => {
     createQuery({ name: 'query' });
@@ -53,7 +74,18 @@ const Query = () => {
     setMethod(value);
   };
 
-  const handleSelectQuery = (query: Queries) => () => setQuerySelected(query);
+  const handleSubmit = (data: {}) => {
+    querySelected && updateQuery({ ...(data as Queries), _id: querySelected._id });
+  };
+  const handleSelectQuery = React.useCallback(
+    (query: Queries) => () => {
+      setQuerySelected(query);
+    },
+    []
+  );
+  const handleDeleteQuery = async () => {
+    querySelected && (await deleteQuery({ _id: querySelected._id }));
+  };
 
   React.useEffect(() => {
     if (!querySelected && data && data.data[0]) {
@@ -69,7 +101,7 @@ const Query = () => {
         <PageHeader
           title="Query"
           extra={[
-            <Button type="link" size="small" onClick={handleNew} icon={<PlusOutlined />}>
+            <Button key="new" type="link" size="small" onClick={handleNew} icon={<PlusOutlined />}>
               New
             </Button>
           ]}
@@ -79,11 +111,11 @@ const Query = () => {
         {statusDataSources === 'error' && errorDatasources && errorDatasources.toString()}
         <div style={{ flex: 1, overflow: 'auto' }}>
           {data && (
-            <Menu mode="inline" defaultSelectedKeys={['0']}>
+            <Menu mode="inline" defaultSelectedKeys={[data.data[0]._id]}>
               {data.data.map((query, i) => {
                 const { name } = query;
                 return (
-                  <Menu.Item key={`${name}-${i}`} onClick={handleSelectQuery(query)}>
+                  <Menu.Item key={`${query._id}`} onClick={handleSelectQuery(query)}>
                     {name}
                   </Menu.Item>
                 );
@@ -106,11 +138,17 @@ const Query = () => {
             />
           )}
           {querySelected && (
-            <Form layout="horizontal" initialValues={querySelected} style={{ width: '100%' }}>
+            <Form
+              {...layout}
+              layout="horizontal"
+              initialValues={querySelected}
+              style={{ width: '100%' }}
+              onFinish={handleSubmit}
+            >
               <Form.Item label="Name" name="name" rules={[{ required: true }]}>
                 <Input />
               </Form.Item>
-              <Form.Item label="Datasources" name="datasources" rules={[{ required: true }]}>
+              <Form.Item label="Datasources" name="datasources">
                 <Select>
                   {dataSources &&
                     dataSources.data.map(({ _id, name }) => (
@@ -120,12 +158,12 @@ const Query = () => {
                     ))}
                 </Select>
               </Form.Item>
-              <Form.Item label="Collections" name="collections" rules={[{ required: true }]}>
+              <Form.Item label="Collections" name="collections">
                 <Select>
                   <Select.Option value={'name'}>name</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="Action type" name="method" rules={[{ required: true }]}>
+              <Form.Item label="Action type" name="method">
                 <Select onChange={handleChangeType}>
                   <Select.Option value="find">find</Select.Option>
                   <Select.Option value="findOne">findOne</Select.Option>
@@ -140,7 +178,7 @@ const Query = () => {
               </Form.Item>
               {method === 'find' && (
                 <>
-                  <Form.Item label="Query" name="query" rules={[{ required: true }]}>
+                  <Form.Item label="Query" name="query">
                     <Input />
                   </Form.Item>
                   <Form.Item label="Projection" name="projection">
@@ -229,6 +267,21 @@ const Query = () => {
                   </Form.Item>
                 </>
               )}
+              <Form.Item wrapperCol={{ span: 13, offset: 6 }} style={{ textAlign: 'right' }}>
+                <Popconfirm
+                  title="Are you sure delete this query?"
+                  onConfirm={handleDeleteQuery}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button danger loading={statusDeleteQuery === 'loading'}>
+                    Delete
+                  </Button>
+                </Popconfirm>
+                <Button type="primary" htmlType="submit">
+                  Save
+                </Button>
+              </Form.Item>
             </Form>
           )}
         </Row>
