@@ -1,14 +1,21 @@
 import { useMutation, useQuery, queryCache } from 'react-query';
 import { client } from 'interfaces/Fetch';
 
-export interface DataSource {
+export interface DataSourceBase {
   _id: string;
   name: string;
+  type: string;
+}
+export interface DataSource extends DataSourceBase {
   dbHost: string;
   dbPort: number;
   dbName: string;
   dbUsername: string;
   dbPassword: string;
+}
+
+export interface DataSourceRest extends DataSourceBase {
+  url: string;
 }
 
 function getDataSources() {

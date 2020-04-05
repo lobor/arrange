@@ -1,8 +1,12 @@
 import { Component } from '../Components';
+import { Queries } from '../Queries';
 import omit from 'lodash/omit';
 
 export interface Scope extends Omit<Component, '_id' | 'page' | '__v' | 'type'>{
   value?: Component["defaultValue"];
+}
+
+export interface ScopeQueries extends Omit<Queries, '_id' | 'page' | '__v' | 'type'>{
 }
 
 declare global {

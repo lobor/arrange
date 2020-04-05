@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { ResizableBox } from 'react-resizable';
+import { useParams } from 'react-router-dom';
 import {
   Popconfirm,
   Card,
@@ -18,15 +19,17 @@ import {
 import { PlusOutlined } from '@ant-design/icons';
 
 import {
-  Method,
   Queries,
+  QueriesRest,
   deleteQueries,
   updateQueries,
   createQueries,
   queries
 } from 'interfaces/Queries';
-import { getDataSources } from 'interfaces/DataSources';
+import { DataSource, getDataSources } from 'interfaces/DataSources';
 import { queryContext } from '../../context/query';
+import { FormMongo } from './components/FormMongo';
+import { FormRest } from './components/FormRest';
 
 const Rezise = styled.div`
   background-color: #d9d9d9;
@@ -59,13 +62,15 @@ const CardContentSettingsQuery = styled.div`
 `;
 
 const layout = {
-  labelCol: { offset: 4, span: 2 },
+  labelCol: { span: 6 },
   wrapperCol: { span: 13 }
 };
 
 const Query = () => {
+  const [form] = Form.useForm();
+  const { id } = useParams();
   const { open } = React.useContext(queryContext);
-  const [method, setMethod] = React.useState<Method>('find');
+  const [datasourceSelected, setDatasourceSelected] = React.useState<DataSource>();
   const [querySelected, setQuerySelected] = React.useState<Queries>();
 
   const {
@@ -79,11 +84,7 @@ const Query = () => {
   const [deleteQuery, { status: statusDeleteQuery }] = deleteQueries();
 
   const handleNew = () => {
-    createQuery({ name: 'query' });
-  };
-
-  const handleChangeType = (value: Method) => {
-    setMethod(value);
+    createQuery({ name: 'query', page: id! });
   };
 
   const handleSubmit = (data: {}) => {
@@ -100,12 +101,23 @@ const Query = () => {
   };
 
   React.useEffect(() => {
-    if (!querySelected && data && data.data[0]) {
+    if (!querySelected && data && data.data[0] && dataSources) {
       setQuerySelected(data.data[0]);
+      setDatasourceSelected(dataSources.data.find(({ _id }) => _id === data.data[0].datasource));
     }
-  }, [querySelected, data]);
+    if (querySelected) {
+      form.resetFields();
+      form.setFieldsValue(querySelected);
+    }
+  }, [form, querySelected, data, dataSources]);
 
   if (!open) return null;
+
+  const handleChangeDatasources = (value: string) => {
+    if (dataSources && dataSources.data) {
+      setDatasourceSelected(dataSources.data.find(({ _id }) => _id === value));
+    }
+  };
 
   return (
     <ResizableBox
@@ -116,7 +128,7 @@ const Query = () => {
       width={300}
       height={200}
       minConstraints={[300, 100]}
-      maxConstraints={[500, 300]}
+      maxConstraints={[500, 500]}
     >
       <CardStyled bordered={false} bodyStyle={{ display: 'flex', padding: 0, flex: 1 }}>
         <CardContentQuery>
@@ -170,16 +182,16 @@ const Query = () => {
             {querySelected && (
               <Form
                 {...layout}
+                form={form}
                 layout="horizontal"
-                initialValues={querySelected}
                 style={{ width: '100%' }}
                 onFinish={handleSubmit}
               >
                 <Form.Item label="Name" name="name" rules={[{ required: true }]}>
                   <Input />
                 </Form.Item>
-                <Form.Item label="Datasources" name="datasources">
-                  <Select>
+                <Form.Item label="Datasource" name="datasource" rules={[{ required: true }]}>
+                  <Select onChange={handleChangeDatasources}>
                     {dataSources &&
                       dataSources.data.map(({ _id, name }) => (
                         <Select.Option key={_id} value={_id}>
@@ -188,115 +200,11 @@ const Query = () => {
                       ))}
                   </Select>
                 </Form.Item>
-                <Form.Item label="Collections" name="collections">
-                  <Select>
-                    <Select.Option value={'name'}>name</Select.Option>
-                  </Select>
-                </Form.Item>
-                <Form.Item label="Action type" name="method">
-                  <Select onChange={handleChangeType}>
-                    <Select.Option value="find">find</Select.Option>
-                    <Select.Option value="findOne">findOne</Select.Option>
-                    <Select.Option value="count">count</Select.Option>
-                    <Select.Option value="distinct">distinct</Select.Option>
-                    <Select.Option value="aggregate">aggregate</Select.Option>
-                    <Select.Option value="insertOne">insertOne</Select.Option>
-                    <Select.Option value="updateOne">updateOne</Select.Option>
-                    <Select.Option value="deleteOne">deleteOne</Select.Option>
-                    <Select.Option value="updateMany">updateMany</Select.Option>
-                  </Select>
-                </Form.Item>
-                {method === 'find' && (
-                  <>
-                    <Form.Item label="Query" name="query">
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Projection" name="projection">
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Sort by" name="sortBy">
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Limit" name="limit">
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Skip" name="skip">
-                      <Input />
-                    </Form.Item>
-                  </>
+                {datasourceSelected && datasourceSelected.type === 'mongo' && <FormMongo />}
+                {datasourceSelected && datasourceSelected.type === 'rest' && (
+                  <FormRest url={((querySelected as unknown) as QueriesRest).url} />
                 )}
-                {method === 'findOne' && (
-                  <>
-                    <Form.Item label="Query" name="query" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Projection" name="projection">
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Skip" name="skip">
-                      <Input />
-                    </Form.Item>
-                  </>
-                )}
-                {method === 'count' && (
-                  <Form.Item label="Query" name="query" rules={[{ required: true }]}>
-                    <Input />
-                  </Form.Item>
-                )}
-                {method === 'distinct' && (
-                  <>
-                    <Form.Item label="Query" name="query" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Field" name="field" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Options" name="options" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                  </>
-                )}
-                {method === 'aggregate' && (
-                  <Form.Item label="Aggregation" name="aggregation" rules={[{ required: true }]}>
-                    <Input />
-                  </Form.Item>
-                )}
-                {method === 'insertOne' && (
-                  <Form.Item label="Insert" name="insert" rules={[{ required: true }]}>
-                    <Input />
-                  </Form.Item>
-                )}
-                {method === 'updateOne' && (
-                  <>
-                    <Form.Item label="Query" name="query" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Update" name="update" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Options" name="option">
-                      <Input />
-                    </Form.Item>
-                  </>
-                )}
-                {method === 'deleteOne' && (
-                  <Form.Item label="Query" name="query" rules={[{ required: true }]}>
-                    <Input />
-                  </Form.Item>
-                )}
-                {method === 'updateMany' && (
-                  <>
-                    <Form.Item label="Query" name="query" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Update" name="update" rules={[{ required: true }]}>
-                      <Input />
-                    </Form.Item>
-                    <Form.Item label="Options" name="option">
-                      <Input />
-                    </Form.Item>
-                  </>
-                )}
+
                 <Form.Item wrapperCol={{ span: 13, offset: 6 }} style={{ textAlign: 'right' }}>
                   <Popconfirm
                     title="Are you sure delete this query?"

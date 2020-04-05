@@ -37,7 +37,6 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
 
   if (!position) return null;
 
-  var templateValue = Handlebars.compile(component.defaultValue || '');
   const { height, width } = calcGridItemPosition(
     gridLayout,
     position.x,
@@ -45,6 +44,13 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
     position.w,
     position.h
   );
+  let value
+  try {
+    const templateValue = Handlebars.compile(component.defaultValue || '');
+    value = templateValue({ ...scopes.components, ...scopes.queries })
+  } catch (e) {
+    console.log(e)
+  }
   return (
     <>
       {type === COMPONENT.textField.type && (
@@ -59,13 +65,13 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 updateScope(component.name, { ...component, value: e.currentTarget.value })
               }
-              value={templateValue(scopes) || undefined}
+              value={value || undefined}
             />
           </Form.Item>
         </Form>
       )}
       {type === COMPONENT.text.type && (
-        <Typography>{templateValue(scopes) || 'Loading...'}</Typography>
+        <Typography>{value || 'Loading...'}</Typography>
       )}
       {type === COMPONENT.table.type && (
         <Table style={{ width }} size="small" scroll={{ y: `${height - 39 - 56}px` }} dataSource={dataSource} columns={columns} />

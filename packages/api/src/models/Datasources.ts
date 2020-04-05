@@ -8,19 +8,55 @@ export interface DatasourceType extends mongoose.Document {
   dbUsername: string;
   dbPassword: string;
   type: string;
+  kind: string;
 }
+export interface DatasourceRest extends mongoose.Document {
+  name: string;
+  url: string;
+  kind: string;
+}
+
+const options = { discriminatorKey: 'kind' };
 
 const Datasources = mongoose.model<DatasourceType>(
   'Datasources',
-  new mongoose.Schema({
-    name: String,
-    dbHost: String,
-    dbPort: Number,
-    dbName: String,
-    dbUsername: String,
-    dbPassword: String,
-    type: String
-  })
+  new mongoose.Schema(
+    {
+      name: String,
+      type: String
+    },
+    options
+  )
 );
 
-export { Datasources as default, Datasources };
+const DatasourcesMongo = Datasources.discriminator(
+  'DatasourcesMongo',
+  new mongoose.Schema(
+    {
+      dbHost: String,
+      dbPort: Number,
+      dbName: String,
+      dbUsername: String,
+      dbPassword: String
+    },
+    options
+  )
+);
+
+const DatasourcesRest = Datasources.discriminator<DatasourceRest>(
+  'DatasourcesRest',
+  new mongoose.Schema(
+    {
+      url: String,
+      headers: [
+        {
+          name: String,
+          value: String
+        }
+      ]
+    },
+    options
+  )
+);
+
+export { Datasources as default, DatasourcesMongo, DatasourcesRest, Datasources };
