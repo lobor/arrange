@@ -5,7 +5,9 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 
-import { NavBar } from './components/NavBar';
+import { NavBar } from 'components/NavBar';
+import { Page404 } from './pages/404';
+import { Home } from './pages/Home';
 import { DataSources } from './pages/DataSources';
 import { DataSourceCreate } from './pages/DataSourceCreate';
 import { Pages } from './pages/Pages';
@@ -46,6 +48,12 @@ function App() {
                           </Route>
                           <Route exact path="/datasources/create">
                             <DataSourceCreate />
+                          </Route>
+                          <Route exact path="/">
+                            <Home />
+                          </Route>
+                          <Route path="*">
+                            <Page404 />
                           </Route>
                         </Switch>
                       </Content>

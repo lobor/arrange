@@ -23,6 +23,7 @@ const Components = mongoose.model<ComponentMongo>(
     validation: Boolean,
     whenHide: String,
     name: String,
+    data: String,
     style: {},
     position: {
       x: Number,

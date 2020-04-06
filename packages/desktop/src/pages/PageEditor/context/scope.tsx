@@ -1,21 +1,28 @@
 import React, { createContext } from 'react';
+import axios from 'axios';
 import omit from 'lodash/omit';
 
 import { Component } from 'interfaces/Components';
-import { Scope } from 'interfaces/Scopes';
+import { Queries, QueriesRest } from 'interfaces/Queries';
+import { Scope, ScopeQueries } from 'interfaces/Scopes';
 
 interface ScopeProviderProps {
   children: React.ReactNode;
 }
 
 interface ScopeState {
-  [name: string]: Scope;
+  components?: {
+    [name: string]: Scope;
+  };
+  queries?: {
+    [name: string]: ScopeQueries;
+  };
 }
 
 const scopeContext = createContext<{
   open: boolean;
   toggle: () => void;
-  addScopes: (scopes: Component[]) => void;
+  addScopes: (scopes: (Component | Queries)[], type?: 'queries') => void;
   removeScope: (nameParams: string) => void;
   updateScope: (scopeName: string, scopesParam: Component & { value?: string | number }) => void;
   scopes: ScopeState;
@@ -33,26 +40,40 @@ const formatComponentToScope = (comp: Component) => {
   scope.value = scope.value || scope.defaultValue || '';
   return scope;
 };
+const formatQueriesToScope = (comp: Queries) => {
+  const scope = omit<ScopeQueries>(comp, ['_id', 'name']) as ScopeQueries;
+  return scope;
+};
 
 const ScopeProvider: React.FC<ScopeProviderProps> = ({ children }) => {
   const [open, setOpen] = React.useState<boolean>(true);
-  const [scopes, setScopes] = React.useState<ScopeState>({});
+  const [scopes, setScopes] = React.useState<ScopeState>({ components: {}, queries: {} });
 
   const toggle = () => setOpen(!open);
   const removeScope = (nameParams: string) => {
     const scopesTmp: ScopeState = {};
-    Object.keys(scopes).forEach(name => {
-      if (name !== nameParams) {
-        scopesTmp[name] = scopes[name];
-      }
-    });
-    console.log(scopesTmp);
+    if (scopes.components) {
+      Object.keys(scopes.components).forEach(name => {
+        if (name !== nameParams) {
+          if (!scopesTmp.components) scopesTmp.components = {};
+          scopesTmp.components[name] = scopes.components![name];
+        }
+      });
+    }
     setScopes(scopesTmp);
   };
-  const addScopes = (scopesParam: Component[]) => {
+  const addScopes = async (scopesParam: (Component | Queries)[], type?: 'queries') => {
     const scopesToAdd: ScopeState = {};
     for (const scope of scopesParam) {
-      scopesToAdd[scope.name] = formatComponentToScope(scope);
+      if (type && type === 'queries') {
+        if (!scopesToAdd.queries) scopesToAdd.queries = {};
+        const { url, path } = (scope as unknown) as QueriesRest;
+        const { data } = await axios.get(`${url}${path}`);
+        scopesToAdd.queries[scope.name] = formatQueriesToScope(data as Queries);
+      } else {
+        if (!scopesToAdd.components) scopesToAdd.components = {};
+        scopesToAdd.components[scope.name] = formatComponentToScope(scope as Component);
+      }
     }
     setScopes({ ...scopes, ...scopesToAdd });
   };

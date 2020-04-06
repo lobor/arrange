@@ -1,22 +1,44 @@
 import * as React from 'react';
-import omit from 'lodash/omit';
-import { useHistory } from 'react-router-dom';
+import { Alert, Button, Select, Row, Col, Form, PageHeader } from 'antd';
+import { Redirect } from 'react-router-dom';
+import { createDataSources } from 'interfaces/DataSources';
 
-import { DataSource, createDataSources, checkConnexion } from 'interfaces/DataSources';
-import { Button, Input, Row, Col, Form, PageHeader } from 'antd';
+import { FormMongo } from './components/FormMongo';
+import { FormRest } from './components/FormRest';
+
+const layout = {
+  labelCol: { span: 6 },
+  layout: 'horizontal',
+  wrapperCol: { span: 13 }
+};
 
 const DataSourceCreate = () => {
-  const history = useHistory();
+  const [formSelected, setFormSelected] = React.useState<string>();
   const [form] = Form.useForm();
-  const [insertDatasource, { status: loadingCreate }] = createDataSources();
+  const [insertDatasource, { status: loadingCreate, error, data }] = createDataSources();
   const onSubmit = async (data: {}) => {
-    await insertDatasource(data);
-    history.push('/datasources');
+    insertDatasource(data)
   };
-  const [connectionCheck, { status: statusCheckConnexion }] = checkConnexion();
-  const onTest = () => {
-    connectionCheck(omit(form.getFieldsValue() as DataSource, ['name']));
+
+  const handleChangeRessource = (value: string) => {
+    setFormSelected(value);
   };
+
+  React.useEffect(() => {
+    switch (formSelected) {
+      case 'mongo':
+        form.setFieldsValue({ dbPort: 27017 })
+        break;
+      case 'rest':
+        form.setFieldsValue({ headers: [] })
+        break;
+      default:
+        break;
+    }
+  }, [formSelected, form])
+
+  if (loadingCreate !== 'loading' && data && !error) return <Redirect to="/datasources" />
+
   return (
     <>
       <Row>
@@ -24,39 +46,24 @@ const DataSourceCreate = () => {
           <PageHeader title="New datasources" />
         </Col>
       </Row>
+      {error && <Alert message="Error" description={error.toString()} type="error" showIcon />}
       <Row>
         <Col span="12" offset="6">
           <Form
+            {...layout}
             layout="horizontal"
             onFinish={onSubmit}
-            initialValues={{ dbPort: 27017 }}
             form={form}
           >
-            <Form.Item label="Name" name="name" rules={[{ required: true }]}>
-              <Input
-                autoFocus
-                placeholder='i.e. "Production DB (readonly)" or "Internal Admin API"'
-              />
+            <Form.Item label="Select ressources" name="type" rules={[{ required: true }]}>
+              <Select onChange={handleChangeRessource}>
+                <Select.Option value="rest">REST api</Select.Option>
+                <Select.Option value="mongo">MongoDb</Select.Option>
+              </Select>
             </Form.Item>
-            <Form.Item label="Host" name="dbHost" rules={[{ required: true }]}>
-              <Input placeholder="IP address or hostname of your database" />
-            </Form.Item>
-            <Form.Item label="Port" name="dbPort" rules={[{ required: true }]}>
-              <Input type="number" />
-            </Form.Item>
-            <Form.Item label="Database name" name="dbName" rules={[{ required: true }]}>
-              <Input placeholder="leopole" />
-            </Form.Item>
-            <Form.Item label="Database username" name="dbUsername">
-              <Input placeholder="user1" />
-            </Form.Item>
-            <Form.Item label="Database password" name="dbPassword">
-              <Input type="password" placeholder="user1" />
-            </Form.Item>
+            {formSelected === 'mongo' && <FormMongo form={form} />}
+            {formSelected === 'rest' && <FormRest />}
             <Form.Item>
-              <Button onClick={onTest} loading={statusCheckConnexion === 'loading'}>
-                Test connexion
-              </Button>
               <Button
                 type="primary"
                 htmlType="submit"
