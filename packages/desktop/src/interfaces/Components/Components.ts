@@ -5,7 +5,7 @@ import omit from 'lodash/omit';
 
 import { scopeContext } from '../../pages/PageEditor/context/scope';
 
-export type ScopeType = 'textField' | 'text' | 'table';
+export type ScopeType = 'textField' | 'text' | 'table';
 export type InputType = 'text' | 'password' | 'number';
 export interface Component {
   _id?: string;
@@ -27,6 +27,7 @@ export interface Component {
   type: ScopeType;
   validation: boolean;
   whenHide?: string;
+  data?: any;
 }
 
 export type ComponentText = Pick<

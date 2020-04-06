@@ -1,13 +1,19 @@
 import mongoose from 'mongoose';
 
-interface QueriesMongo extends mongoose.Document {
+export interface QueriesMongo extends mongoose.Document {
   name: string;
   page: string;
 }
 
+export interface QueriesRestMongo extends QueriesMongo {
+  method: string;
+  path: string;
+  url: string;
+}
+
 const options = { discriminatorKey: 'kind' };
 
-const Queries = mongoose.model<QueriesMongo>(
+const Queries = mongoose.model<QueriesMongo | QueriesRestMongo>(
   'Queries',
   new mongoose.Schema(
     {
@@ -19,7 +25,7 @@ const Queries = mongoose.model<QueriesMongo>(
   )
 );
 
-const QueriesRest = Queries.discriminator(
+const QueriesRest = Queries.discriminator<QueriesRestMongo>(
   'QueriesRest',
   new mongoose.Schema(
     {

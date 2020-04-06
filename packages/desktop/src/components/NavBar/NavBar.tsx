@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
-import { ArrowLeftOutlined } from '@ant-design/icons';
+import { HomeOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { navBarContext } from '../../pages/PageEditor/context/navBar';
 import { queryContext } from '../../pages/PageEditor/context/query';
 import { componentContext } from '../../pages/PageEditor/context/component';
@@ -14,7 +14,12 @@ const NavBar = () => {
   const { toggle: toggleScope } = React.useContext(scopeContext);
   return (
     <Layout.Header>
-      <Menu theme="dark" mode="horizontal" selectable={!edit} defaultSelectedKeys={['1']}>
+      <Menu theme="dark" mode="horizontal" selectable={!edit} defaultSelectedKeys={['home']}>
+        <Menu.Item key="home">
+          <Link to="/">
+            <HomeOutlined />
+          </Link>
+        </Menu.Item>
         {!edit && [
           <Menu.Item key="1">
             <Link to="/pages">Pages</Link>

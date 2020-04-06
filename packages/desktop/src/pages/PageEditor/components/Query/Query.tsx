@@ -119,6 +119,15 @@ const Query = () => {
     }
   };
 
+  const newButton =
+    dataSources && dataSources.data && dataSources.data.length > 0
+      ? [
+          <Button key="new" type="link" size="small" onClick={handleNew} icon={<PlusOutlined />}>
+            New
+          </Button>
+        ]
+      : [];
+
   return (
     <ResizableBox
       className="resizeQuery"
@@ -132,20 +141,7 @@ const Query = () => {
     >
       <CardStyled bordered={false} bodyStyle={{ display: 'flex', padding: 0, flex: 1 }}>
         <CardContentQuery>
-          <PageHeader
-            title="Query"
-            extra={[
-              <Button
-                key="new"
-                type="link"
-                size="small"
-                onClick={handleNew}
-                icon={<PlusOutlined />}
-              >
-                New
-              </Button>
-            ]}
-          />
+          <PageHeader title="Query" extra={newButton} />
           {(status === 'loading' || statusDataSources === 'loading') && <Spin size="large" />}
           {status === 'error' && error && error.toString()}
           {statusDataSources === 'error' && errorDatasources && errorDatasources.toString()}

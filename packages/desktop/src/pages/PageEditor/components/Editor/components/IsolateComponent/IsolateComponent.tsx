@@ -1,37 +1,18 @@
 import * as React from 'react';
 import Handlebars from 'handlebars';
-import { Table, Form, Input, Typography } from 'antd';
+import { Form, Input, Typography } from 'antd';
 // @ts-ignore
 import { calcGridItemPosition } from 'react-grid-layout/build/calculateUtils';
 
+import { Table } from 'components/Table';
 import { Component as Item } from 'interfaces/Components';
 import { scopeContext } from '../../../../context/scope';
 import { COMPONENT, gridLayout } from '../../../../constants';
 
-const dataSource: {}[] = [];
-
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name'
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age'
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address'
-  }
-];
-
 interface IsolateComponentProps {
   component: Item;
 }
-const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
+const IsolateComponent = ({ component }: IsolateComponentProps) => {
   const { position, type } = component;
   const { scopes, updateScope } = React.useContext(scopeContext);
 
@@ -44,16 +25,22 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
     position.w,
     position.h
   );
-  let value
+  let value;
+  const scope = { ...scopes.components, ...scopes.queries };
   try {
     const templateValue = Handlebars.compile(component.defaultValue || '');
-    value = templateValue({ ...scopes.components, ...scopes.queries })
+    value = templateValue(scopes.components);
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
-  return (
-    <>
-      {type === COMPONENT.textField.type && (
+
+  let Comp: React.ReactNode | null = <></>;
+  switch (type) {
+    case COMPONENT.text.type:
+      Comp = <Typography>{value || 'Loading...'}</Typography>;
+      break;
+    case COMPONENT.textField.type:
+      Comp = (
         <Form layout="horizontal">
           <Form.Item
             label={component.label}
@@ -69,15 +56,21 @@ const IsolateComponent: React.FC<IsolateComponentProps> = ({ component }) => {
             />
           </Form.Item>
         </Form>
-      )}
-      {type === COMPONENT.text.type && (
-        <Typography>{value || 'Loading...'}</Typography>
-      )}
-      {type === COMPONENT.table.type && (
-        <Table style={{ width }} size="small" scroll={{ y: `${height - 39 - 56}px` }} dataSource={dataSource} columns={columns} />
-      )}
-    </>
-  );
+      );
+      break;
+    case COMPONENT.table.type:
+      const toto = ((component.data || '') as string).replace(/[{}]/g, '');
+      Comp = (
+        <Table
+          component={component}
+          width={width}
+          height={height}
+          data={(scopes.queries as any)[toto] ? Object.values((scope as any)[toto] as any) : []}
+        />
+      );
+      break;
+  }
+  return <>{Comp}</>;
 };
 
 export { IsolateComponent };

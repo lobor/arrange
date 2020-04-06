@@ -27,9 +27,12 @@ const ComponentProvider: React.FC<ComponentProviderProps> = ({ children }) => {
     (itemToSelect?: Component) => {
       if (!itemToSelect || !item || itemToSelect._id !== item._id) {
         setItem(itemToSelect);
+        if (!open) {
+          setOpen(true);
+        }
       }
     },
-    [setItem, item]
+    [setItem, item, open]
   );
 
   return (

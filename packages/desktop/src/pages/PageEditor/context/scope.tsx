@@ -13,10 +13,10 @@ interface ScopeProviderProps {
 interface ScopeState {
   components?: {
     [name: string]: Scope;
-  },
+  };
   queries?: {
     [name: string]: ScopeQueries;
-  }
+  };
 }
 
 const scopeContext = createContext<{
@@ -66,12 +66,12 @@ const ScopeProvider: React.FC<ScopeProviderProps> = ({ children }) => {
     const scopesToAdd: ScopeState = {};
     for (const scope of scopesParam) {
       if (type && type === 'queries') {
-        if (!scopesToAdd.queries) scopesToAdd.queries = {}
+        if (!scopesToAdd.queries) scopesToAdd.queries = {};
         const { url, path } = (scope as unknown) as QueriesRest;
-        const { data } = await axios.get(`${url}${path}`)
+        const { data } = await axios.get(`${url}${path}`);
         scopesToAdd.queries[scope.name] = formatQueriesToScope(data as Queries);
       } else {
-        if (!scopesToAdd.components) scopesToAdd.components = {}
+        if (!scopesToAdd.components) scopesToAdd.components = {};
         scopesToAdd.components[scope.name] = formatComponentToScope(scope as Component);
       }
     }

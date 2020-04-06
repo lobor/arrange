@@ -2,7 +2,7 @@ import * as React from 'react';
 import JSONTree from 'react-json-tree';
 import { ResizableBox } from 'react-resizable';
 import { Empty, Card, Collapse } from 'antd';
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 import { scopeContext } from '../../context/scope';
 
@@ -42,8 +42,8 @@ const Scope = () => {
 
   if (!open) return null;
 
-  const componentsArray = Object.keys(scopes.components!);
-  const queriesArray = Object.keys(scopes.queries!);
+  const componentsArray = scopes.components ? Object.keys(scopes.components) : [];
+  const queriesArray = scopes.queries ? Object.keys(scopes.queries) : [];
   return (
     <ResizableBox
       className="resizeBox"
@@ -55,30 +55,38 @@ const Scope = () => {
       minConstraints={[300, 100]}
       maxConstraints={[500, 300]}
     >
-    <Card
-      bordered={false}
-      style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-      bodyStyle={{ flex: 1, overflow: 'auto', padding: 0 }}
-    >
-      <Collapse defaultActiveKey={['Components', 'Queries']} bordered={false}>
-        {scopes.components && <Collapse.Panel header="Components" key="Components">
-          {componentsArray.length === 0 && <Empty />}
-          {componentsArray.map((name, i) => {
-            const scope = scopes.components![name];
-            if (!scope) return null;
-            return <JSONTree key={`${name}-${i}`} keyPath={[name]} data={scope} theme={theme} />;
-          })}
-        </Collapse.Panel>}
-        {scopes.queries && <Collapse.Panel header="Queries" key="Queries">
-          {queriesArray.length === 0 && <Empty />}
-          {queriesArray.map((name, i) => {
-            const scope = scopes.queries![name];
-            if (!scope) return null;
-            return <JSONTree key={`${name}-${i}`} keyPath={[name]} data={scope} theme={theme} />;
-          })}
-        </Collapse.Panel>}
-      </Collapse>
-    </Card>
+      <Card
+        bordered={false}
+        style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+        bodyStyle={{ flex: 1, overflow: 'auto', padding: 0 }}
+      >
+        <Collapse defaultActiveKey={['Components', 'Queries']} bordered={false}>
+          {scopes.components && (
+            <Collapse.Panel header="Components" key="Components">
+              {componentsArray.length === 0 && <Empty />}
+              {componentsArray.map((name, i) => {
+                const scope = scopes.components![name];
+                if (!scope) return null;
+                return (
+                  <JSONTree key={`${name}-${i}`} keyPath={[name]} data={scope} theme={theme} />
+                );
+              })}
+            </Collapse.Panel>
+          )}
+          {scopes.queries && (
+            <Collapse.Panel header="Queries" key="Queries">
+              {queriesArray.length === 0 && <Empty />}
+              {queriesArray.map((name, i) => {
+                const scope = scopes.queries![name];
+                if (!scope) return null;
+                return (
+                  <JSONTree key={`${name}-${i}`} keyPath={[name]} data={scope} theme={theme} />
+                );
+              })}
+            </Collapse.Panel>
+          )}
+        </Collapse>
+      </Card>
     </ResizableBox>
   );
 };

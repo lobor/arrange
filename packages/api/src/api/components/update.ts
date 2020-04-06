@@ -22,6 +22,7 @@ router.put(
       style: Joi.object().optional(),
       id: Joi.string().required(),
       name: Joi.string().required(),
+      data: Joi.string().optional(),
       position: Joi.object()
         .keys({
           x: Joi.number().required(),
