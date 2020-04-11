@@ -24,16 +24,19 @@ const EditComponent = () => {
   }, [removeComponent, item, toggleItem]);
 
   const handleUpdateComponent = React.useCallback(() => {
-    console.log(form.getFieldsValue());
     updateComponent(
       omit<any>({ ...form.getFieldsValue(), id: item!._id, ...item }, ['_id', '__v', 'page'])
     );
   }, [updateComponent, item, form]);
 
   const handleChange = React.useCallback((changedValues: any, values: any) => {
-    console.log(changedValues, values);
     form.setFieldsValue(changedValues);
-    handleUpdateComponent();
+    // handleUpdateComponent();
+    console.log(form.getFieldsValue())
+    updateComponent(
+      omit<any>({ ...form.getFieldsValue(), id: item!._id, ...item }, ['_id', '__v', 'page'])
+    )
+    
     // const name = e.currentTarget.name ? e.currentTarget.name : 'inputType';
     // const value = e.currentTarget.value
     //   ? e.currentTarget.value
