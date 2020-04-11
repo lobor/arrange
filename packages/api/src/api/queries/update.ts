@@ -1,7 +1,7 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 
 import { Datasources } from '../../models/Datasources';
-import { Queries, QueriesRest } from '../../models/Queries';
+import { QueriesRest } from '../../models/Queries';
 import { router } from '../router';
 
 const model = Joi.object().keys({

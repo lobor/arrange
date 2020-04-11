@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+import { options } from './constants';
+
 export interface DatasourceType extends mongoose.Document {
   name: string;
   dbHost: string;
@@ -15,8 +17,6 @@ export interface DatasourceRest extends mongoose.Document {
   url: string;
   kind: string;
 }
-
-const options = { discriminatorKey: 'kind' };
 
 const Datasources = mongoose.model<DatasourceType>(
   'Datasources',

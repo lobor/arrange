@@ -1,7 +1,7 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 
 import { QueriesRest } from '../../models/Queries';
-import { Datasources, DatasourceRest } from '../../models/Datasources';
+import { Datasources } from '../../models/Datasources';
 import { Pages } from '../../models/Pages';
 import { router } from '../router';
 
@@ -29,7 +29,7 @@ router.post(
     switch (datasource.kind) {
       case 'DatasourcesRest':
         Model = QueriesRest;
-        modifer.url = ((datasource as unknown) as DatasourceRest).url;
+        modifer.url = ((datasource as unknown) as any).url;
         break;
       default:
     }

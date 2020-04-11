@@ -18,7 +18,7 @@ router.post(
         dbName: Joi.string().required(),
         dbUsername: Joi.string().allow(''),
         dbPassword: Joi.string().allow(''),
-        ressource: Joi.string().required(),
+        ressource: Joi.string().required()
       }),
       model.append({
         headers: Joi.array().items(Joi.object().keys({ name: Joi.string(), value: Joi.string() })),

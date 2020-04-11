@@ -41,7 +41,7 @@ const Scope = () => {
   const { scopes, open } = React.useContext(scopeContext);
 
   if (!open) return null;
-
+  // console.log(scopes);
   const componentsArray = scopes.components ? Object.keys(scopes.components) : [];
   const queriesArray = scopes.queries ? Object.keys(scopes.queries) : [];
   return (

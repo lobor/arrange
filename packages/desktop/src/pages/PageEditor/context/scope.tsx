@@ -6,6 +6,7 @@ import { Component } from 'interfaces/Components';
 import { Queries, QueriesRest } from 'interfaces/Queries';
 import { Scope, ScopeQueries } from 'interfaces/Scopes';
 
+type ScopeType = 'queries' | 'components';
 interface ScopeProviderProps {
   children: React.ReactNode;
 }
@@ -24,7 +25,11 @@ const scopeContext = createContext<{
   toggle: () => void;
   addScopes: (scopes: (Component | Queries)[], type?: 'queries') => void;
   removeScope: (nameParams: string) => void;
-  updateScope: (scopeName: string, scopesParam: Component & { value?: string | number }) => void;
+  updateScope: (
+    scopeName: string,
+    scopesParam: (Component | Queries) & { value?: string | number },
+    type: ScopeType
+  ) => void;
   scopes: ScopeState;
 }>({
   open: false,
@@ -46,7 +51,7 @@ const formatQueriesToScope = (comp: Queries) => {
 };
 
 const ScopeProvider: React.FC<ScopeProviderProps> = ({ children }) => {
-  const [open, setOpen] = React.useState<boolean>(true);
+  const [open, setOpen] = React.useState<boolean>(false);
   const [scopes, setScopes] = React.useState<ScopeState>({ components: {}, queries: {} });
 
   const toggle = () => setOpen(!open);
@@ -62,8 +67,8 @@ const ScopeProvider: React.FC<ScopeProviderProps> = ({ children }) => {
     }
     setScopes(scopesTmp);
   };
-  const addScopes = async (scopesParam: (Component | Queries)[], type?: 'queries') => {
-    const scopesToAdd: ScopeState = {};
+  const addScopes = async (scopesParam: (Component | Queries)[], type?: ScopeType) => {
+    const scopesToAdd: ScopeState = { ...scopes };
     for (const scope of scopesParam) {
       if (type && type === 'queries') {
         if (!scopesToAdd.queries) scopesToAdd.queries = {};
@@ -75,10 +80,23 @@ const ScopeProvider: React.FC<ScopeProviderProps> = ({ children }) => {
         scopesToAdd.components[scope.name] = formatComponentToScope(scope as Component);
       }
     }
-    setScopes({ ...scopes, ...scopesToAdd });
+    setScopes(scopesToAdd);
   };
-  const updateScope = (scopeName: string, scopesParam: Component & { value?: string | number }) => {
-    setScopes({ ...scopes, [scopeName]: formatComponentToScope(scopesParam) });
+  const updateScope = (scopeName: string, scopesParam: Component | Queries, type: ScopeType) => {
+    const scopesToModify: ScopeState = { ...scopes };
+    switch (type) {
+      case 'queries':
+        if (scopesToModify.queries![scopeName]) {
+          scopesToModify.queries![scopeName] = formatQueriesToScope(scopesParam as Queries);
+        }
+        break;
+      case 'components':
+        if (scopesToModify.components![scopeName]) {
+          scopesToModify.components![scopeName] = formatComponentToScope(scopesParam as Component);
+        }
+        break;
+    }
+    setScopes(scopesToModify);
   };
 
   return (

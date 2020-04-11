@@ -11,5 +11,5 @@ router.get('/fetch', async (req, res) => {
     return;
   }
   const response = await axios.get(`${data.url}${data.path}`);
-  console.log(response);
+  res.json(response.data);
 });

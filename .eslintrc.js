@@ -10,6 +10,7 @@ module.exports = {
   plugins: ['prettier', 'import', '@typescript-eslint'],
   parser: '@typescript-eslint/parser',
   rules: {
+    'no-console': 'error',
     'no-underscore-dangle': 0,
     'import/extensions': 0,
     'react-hooks/rules-of-hooks': 0,

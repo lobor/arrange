@@ -15,6 +15,12 @@ interface IsolateComponentProps {
 const IsolateComponent = ({ component }: IsolateComponentProps) => {
   const { position, type } = component;
   const { scopes, updateScope } = React.useContext(scopeContext);
+  const handleSelectedRow = React.useCallback(
+    (selectedRow: any) => {
+      updateScope(component.name, { ...component, selectedRow }, 'components');
+    },
+    [component, updateScope]
+  );
 
   if (!position) return null;
 
@@ -40,8 +46,9 @@ const IsolateComponent = ({ component }: IsolateComponentProps) => {
       Comp = <Typography>{value || 'Loading...'}</Typography>;
       break;
     case COMPONENT.textField.type:
+      console.log({ [component.name]: value });
       Comp = (
-        <Form layout="horizontal">
+        <Form layout="horizontal" initialValues={{ [component.name]: value }}>
           <Form.Item
             label={component.label}
             name={component.name}
@@ -50,22 +57,29 @@ const IsolateComponent = ({ component }: IsolateComponentProps) => {
             <Input
               placeholder={component.placeholder}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                updateScope(component.name, { ...component, value: e.currentTarget.value })
+                updateScope(
+                  component.name,
+                  { ...component, value: e.currentTarget.value },
+                  'components'
+                )
               }
-              value={value || undefined}
+              value={value}
             />
           </Form.Item>
         </Form>
       );
       break;
     case COMPONENT.table.type:
-      const toto = ((component.data || '') as string).replace(/[{}]/g, '');
+      const keyScope = ((component.data || '') as string).replace(/[{}]/g, '');
       Comp = (
         <Table
           component={component}
           width={width}
           height={height}
-          data={(scopes.queries as any)[toto] ? Object.values((scope as any)[toto] as any) : []}
+          onSelectedRow={handleSelectedRow}
+          data={
+            (scopes.queries as any)[keyScope] ? Object.values((scope as any)[keyScope] as any) : []
+          }
         />
       );
       break;

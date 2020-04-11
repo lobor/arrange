@@ -4,7 +4,7 @@ import { Popconfirm, Form, Input } from 'antd';
 // import { SelectValue } from 'antd/lib/select';
 import { DeleteOutlined } from '@ant-design/icons';
 
-import { Component as Item, deleteComponent, putComponent } from 'interfaces/Components';
+import { deleteComponent, putComponent } from 'interfaces/Components';
 import { COMPONENT } from '../../../../constants';
 import { componentContext } from '../../../../context/component';
 import { FormText } from './components/FormText';
@@ -25,47 +25,18 @@ const EditComponent = () => {
 
   const handleUpdateComponent = React.useCallback(() => {
     updateComponent(
-      omit<any>({ ...form.getFieldsValue(), id: item!._id, ...item }, ['_id', '__v', 'page'])
+      omit<any>({ ...item, ...form.getFieldsValue(), id: item!._id }, ['_id', '__v', 'page'])
     );
   }, [updateComponent, item, form]);
 
-  const handleChange = React.useCallback((changedValues: any, values: any) => {
-    form.setFieldsValue(changedValues);
-    // handleUpdateComponent();
-    console.log(form.getFieldsValue())
-    updateComponent(
-      omit<any>({ ...form.getFieldsValue(), id: item!._id, ...item }, ['_id', '__v', 'page'])
-    )
-    
-    // const name = e.currentTarget.name ? e.currentTarget.name : 'inputType';
-    // const value = e.currentTarget.value
-    //   ? e.currentTarget.value
-    //   : e.currentTarget.getAttribute('data-value');
-    // setValue({ ...values!, [name]: value || '' });
-  }, []);
-  // const handleChange = React.useCallback(
-  //   (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     const name = e.currentTarget.name ? e.currentTarget.name : 'inputType';
-  //     const value = e.currentTarget.value
-  //       ? e.currentTarget.value
-  //       : e.currentTarget.getAttribute('data-value');
-  //     setValue({ ...values!, [name]: value || '' });
-  //   },
-  //   [values]
-  // );
-
-  // const handleChangeInputType = React.useCallback(
-  //   (value: SelectValue) => setValue({ ...values!, inputType: value as Item['inputType'] }),
-  //   [values]
-  // );
-
-  // const handleChangeRequired = React.useCallback(
-  //   (checked: boolean) => {
-  //     setValue({ ...values!, required: checked });
-  //     handleUpdateComponent();
-  //   },
-  //   [values, handleUpdateComponent]
-  // );
+  const handleChange = React.useCallback(
+    (changedValues: any, values: any) => {
+      form.setFieldsValue(changedValues);
+      console.log(item, form.getFieldsValue());
+      handleUpdateComponent();
+    },
+    [item, form, handleUpdateComponent]
+  );
 
   React.useEffect(() => {
     if (item) {

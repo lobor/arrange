@@ -29,5 +29,6 @@ server.get('*', (req, res) => {
 server.use(errors());
 
 server.listen(port, () => {
+  // eslint-disable-next-line no-console
   console.log('server started');
 });

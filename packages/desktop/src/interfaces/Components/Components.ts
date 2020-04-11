@@ -15,6 +15,7 @@ export interface Component {
   inputType: InputType;
   name: string;
   onBlur?: string;
+  selectedRow: object;
   page: string;
   placeholder?: string;
   position: {

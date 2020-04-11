@@ -36,4 +36,14 @@ const Components = mongoose.model<ComponentMongo>(
   })
 );
 
+// const ComponentsTable = Components.discriminator(
+//   'ComponentsTable',
+//   new mongoose.Schema(
+//     {
+//       onRowSelected: String
+//     },
+//     options
+//   )
+// );
+
 export { Components };

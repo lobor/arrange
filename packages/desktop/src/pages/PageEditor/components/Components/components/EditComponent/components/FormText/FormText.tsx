@@ -1,13 +1,9 @@
 import * as React from 'react';
-import { Form, Input } from 'antd';
+
+import { AutoCompleteScope } from 'components/AutoCompleteScope';
 
 const FormText = () => {
-  console.log('toto')
-  return (
-      <Form.Item label="Default value" name="defaultValue">
-        <Input name="defaultValue" />
-      </Form.Item>
-  );
+  return <AutoCompleteScope formItemProps={{ label: 'Default value', name: 'defaultValue' }} />;
 };
 
 export { FormText };

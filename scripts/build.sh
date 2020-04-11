@@ -1,7 +1,7 @@
 #!/bin/bash
 
-export SERVER_URL=https://lobor-dnd-tool.herokuapp.com
-export CLIENT_URL=https://lobor-dnd-tool.herokuapp.com
+export SERVER_URL=https://lobor-arrange.herokuapp.com
+export CLIENT_URL=https://lobor-arrange.herokuapp.com
 
 lerna exec --scope desktop -- npm run build
 lerna exec --scope api -- npm run build

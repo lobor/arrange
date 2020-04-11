@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+import { options } from './constants';
+
 export interface QueriesMongo extends mongoose.Document {
   name: string;
   page: string;
@@ -10,8 +12,6 @@ export interface QueriesRestMongo extends QueriesMongo {
   path: string;
   url: string;
 }
-
-const options = { discriminatorKey: 'kind' };
 
 const Queries = mongoose.model<QueriesMongo | QueriesRestMongo>(
   'Queries',
