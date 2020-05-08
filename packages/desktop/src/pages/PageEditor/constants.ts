@@ -1,12 +1,12 @@
 import { ScopeType } from '../../interfaces/Components';
 
 interface PositionParams {
-  margin: [number, number],
-  containerPadding: [number, number],
-  containerWidth: number,
-  cols: number,
-  rowHeight: number,
-  maxRows: number
+  margin: [number, number];
+  containerPadding: [number, number];
+  containerWidth: number;
+  cols: number;
+  rowHeight: number;
+  maxRows: number;
 }
 
 const TYPE_DRAG = {
@@ -15,13 +15,15 @@ const TYPE_DRAG = {
 };
 
 const COMPONENT: {
+  form: { type: ScopeType };
   table: { type: ScopeType };
   textField: { type: ScopeType };
   text: { type: ScopeType };
 } = {
+  form: { type: 'form' },
   table: { type: 'table' },
   textField: { type: 'textField' },
-  text: { type: 'text' },
+  text: { type: 'text' }
 };
 
 const gridLayout: PositionParams = {
@@ -31,6 +33,6 @@ const gridLayout: PositionParams = {
   cols: 12,
   rowHeight: 40,
   maxRows: Infinity
-}
+};
 
 export { COMPONENT, TYPE_DRAG, gridLayout };

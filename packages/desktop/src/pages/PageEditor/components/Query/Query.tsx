@@ -105,7 +105,8 @@ const Query = () => {
       setQuerySelected(data.data[0]);
       setDatasourceSelected(dataSources.data.find(({ _id }) => _id === data.data[0].datasource));
     }
-    if (querySelected) {
+    if (querySelected && !form.isFieldsTouched()) {
+      console.log(form.getFieldsValue())
       form.resetFields();
       form.setFieldsValue(querySelected);
     }
@@ -196,7 +197,9 @@ const Query = () => {
                       ))}
                   </Select>
                 </Form.Item>
-                {datasourceSelected && datasourceSelected.type === 'mongo' && <FormMongo />}
+                {datasourceSelected && datasourceSelected.type === 'mongo' && (
+                  <FormMongo datasource={datasourceSelected} />
+                )}
                 {datasourceSelected && datasourceSelected.type === 'rest' && (
                   <FormRest url={((querySelected as unknown) as QueriesRest).url} />
                 )}

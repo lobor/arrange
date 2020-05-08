@@ -1,7 +1,7 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 
-import { Datasources } from '../../models/Datasources';
-import { QueriesRest } from '../../models/Queries';
+import { KIND as KINDDatasources, DatasourceMongo, Datasources } from '../../models/Datasources';
+import { Queries, QueriesMongo, KIND } from '../../models/Queries';
 import { router } from '../router';
 
 const model = Joi.object().keys({
@@ -22,6 +22,12 @@ router.put(
           .required()
           .allow('GET', 'POST', 'DELETE', 'PUT'),
         path: Joi.string().required()
+      }),
+      model.append({
+        collections: Joi.string(),
+        method: Joi.string(),
+        query: Joi.string(),
+        projection: Joi.string()
       })
     )
   }),
@@ -35,33 +41,50 @@ router.put(
       return;
     }
 
-    let Model;
+    let kind;
+    let update = {};
     switch (datasource.kind) {
-      case 'DatasourcesRest':
-        Model = QueriesRest;
+      case KINDDatasources.DatasourcesRest:
+        kind = KIND.KIND_QUERIES_REST;
+        update = {};
+        break;
+      case KINDDatasources.DatasourcesMongo:
+        update = {
+          dbHost: (datasource as DatasourceMongo).dbHost,
+          dbPort: (datasource as DatasourceMongo).dbPort,
+          dbName: (datasource as DatasourceMongo).dbName,
+          dbUsername: (datasource as DatasourceMongo).dbUsername,
+          dbPassword: (datasource as DatasourceMongo).dbPassword
+        };
+        kind = KIND.KIND_QUERIES_MONGO;
         break;
       default:
     }
 
-    if (!Model) {
+    if (!kind) {
       res
         .status(500)
         .json({
-          error: 'datasource have not kind'
+          error: 'kind not found'
         })
         .end();
       return;
     }
-
-    const update = await Model.findOneAndUpdate(
+    const updateDocument = await Queries.findOneAndUpdate(
       { _id: req.params.id },
-      { $set: req.body },
-      { new: true }
+      {
+        $set: {
+          ...req.body,
+          ...update,
+          kind
+        }
+      },
+      { new: true, strict: false }
     );
-    if (!update) {
-      res.status(500).end();
+    if (!updateDocument) {
+      res.status(500).json({ error: "Can't update" });
       return;
     }
-    res.json(update);
+    res.json(updateDocument);
   }
 );

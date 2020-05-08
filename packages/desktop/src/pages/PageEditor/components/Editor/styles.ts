@@ -32,13 +32,25 @@ const Container = styled.div`
     &:hover {
       background-color: grey;
       .react-resizable-handle {
-        width: 10px;
-        height: 10px;
-        background: black;
+        width: 20px;
+        height: 20px;
+        bottom: 0;
+        right: 0;
+        cursor: se-resize;
         display: block;
         position: absolute;
         bottom: 0;
         right: 0;
+        &:after {
+          content: "";
+          position: absolute;
+          right: 0px;
+          bottom: 0px;
+          width: 10px;
+          height: 10px;
+          border-right: 2px solid rgba(0, 0, 0, 0.4);
+          border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+        }
       }
     }
   }

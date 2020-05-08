@@ -2,23 +2,28 @@ import mongoose from 'mongoose';
 
 import { options } from './constants';
 
-export interface DatasourceType extends mongoose.Document {
+enum KIND {
+  DatasourcesMongo = 'DatasourcesMongo',
+  DatasourcesRest = 'DatasourcesRest'
+}
+
+export interface DatasourceBaseMongo extends mongoose.Document {
   name: string;
+  kind: KIND;
+}
+export interface DatasourceMongo extends DatasourceBaseMongo {
+  projection: string;
   dbHost: string;
   dbPort: number;
   dbName: string;
   dbUsername: string;
   dbPassword: string;
-  type: string;
-  kind: string;
 }
-export interface DatasourceRest extends mongoose.Document {
-  name: string;
+export interface DatasourceRest extends DatasourceBaseMongo {
   url: string;
-  kind: string;
 }
 
-const Datasources = mongoose.model<DatasourceType>(
+const Datasources = mongoose.model<DatasourceRest | DatasourceMongo>(
   'Datasources',
   new mongoose.Schema(
     {
@@ -29,10 +34,11 @@ const Datasources = mongoose.model<DatasourceType>(
   )
 );
 
-const DatasourcesMongo = Datasources.discriminator(
-  'DatasourcesMongo',
+const DatasourcesMongo = Datasources.discriminator<DatasourceMongo>(
+  KIND.DatasourcesMongo,
   new mongoose.Schema(
     {
+      projection: String,
       dbHost: String,
       dbPort: Number,
       dbName: String,
@@ -44,7 +50,7 @@ const DatasourcesMongo = Datasources.discriminator(
 );
 
 const DatasourcesRest = Datasources.discriminator<DatasourceRest>(
-  'DatasourcesRest',
+  KIND.DatasourcesRest,
   new mongoose.Schema(
     {
       url: String,
@@ -59,4 +65,4 @@ const DatasourcesRest = Datasources.discriminator<DatasourceRest>(
   )
 );
 
-export { Datasources as default, DatasourcesMongo, DatasourcesRest, Datasources };
+export { KIND, Datasources as default, DatasourcesMongo, DatasourcesRest, Datasources };

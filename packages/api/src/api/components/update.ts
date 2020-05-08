@@ -12,6 +12,7 @@ router.put(
         .optional(),
       disableWhen: Joi.string().optional(),
       label: Joi.string(),
+      onChange: Joi.string().optional(),
       onBlur: Joi.string().optional(),
       placeholder: Joi.string()
         .allow('')
@@ -31,6 +32,19 @@ router.put(
           w: Joi.number().required()
         })
         .required(),
+      items: Joi.array().items(
+        Joi.object().keys({
+          _id: Joi.string(),
+          name: Joi.string().required(),
+          type: Joi.string().required(),
+          defaultValue: Joi.string()
+            .allow('')
+            .optional(),
+          label: Joi.string()
+            .allow('')
+            .optional()
+        })
+      ),
       inputType: Joi.string().optional()
     })
   }),

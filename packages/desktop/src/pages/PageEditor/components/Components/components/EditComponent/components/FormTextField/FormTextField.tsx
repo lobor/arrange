@@ -38,6 +38,7 @@ const FormTextField = () => {
       </Form.Item>
       {/* </Collapse.Panel> */}
       {/* <Collapse.Panel header="Advanced" key="Advanced"> */}
+      <AutoCompleteScope formItemProps={{ label: 'On change run (query)', name: 'onChange' }} />
       <Form.Item label="On blur run (query)">
         <Input name="onBlur" />
         {/* <Input onChange={handleChange} name="onBlur" onBlur={handleUpdateComponent} /> */}

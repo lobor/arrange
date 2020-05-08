@@ -25,25 +25,23 @@ const Table: React.FC<TableProps> = ({ onSelectedRow, width, height, data }) => 
     return acc;
   }, {});
 
-  const handleSelectRow = React.useCallback(
-    (record: any & { id: string }) => {
-      const id = (record as { id: string }).id;
-      setSelectedRow(id);
-      onSelectedRow && onSelectedRow(record);
-    },
-    [onSelectedRow]
-  );
   const [selectedRows, setSelectedRow] = React.useState<string>();
+  const handleSelectRow = React.useCallback((record: any & { _id: string }) => {
+    setSelectedRow(record._id);
+    onSelectedRow && onSelectedRow(record);
+  }, []);
+  const [firstData] = data;
   React.useEffect(() => {
-    if (!selectedRows && data[0]) {
-      handleSelectRow(data[0] as { id: string });
+    if (!selectedRows && firstData) {
+      console.log('handleSelectRow')
+      handleSelectRow(firstData as { _id: string });
     }
-  }, [handleSelectRow, selectedRows, data]);
+  }, [handleSelectRow, selectedRows, firstData]);
   return (
     <TableAntd
-      style={{ width }}
+      style={{ height, width }}
       size="small"
-      rowKey={({ id }: any) => id}
+      rowKey={({ _id }: any) => _id}
       scroll={{ y: `${height - 39 - 56}px` }}
       dataSource={data}
       onRow={record => ({

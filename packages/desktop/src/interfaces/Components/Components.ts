@@ -5,14 +5,22 @@ import omit from 'lodash/omit';
 
 import { scopeContext } from '../../pages/PageEditor/context/scope';
 
-export type ScopeType = 'textField' | 'text' | 'table';
+export type ScopeType = 'textField' | 'text' | 'table' | 'form';
 export type InputType = 'text' | 'password' | 'number';
+export enum ItemType {
+  text = 'text',
+  number = 'number'
+}
+export interface Item extends Omit<Component, 'type'> {
+  type: ItemType;
+}
 export interface Component {
   _id?: string;
   defaultValue?: string | number;
   disableWhen?: string;
   label?: string;
   inputType: InputType;
+  items?: Item[];
   name: string;
   onBlur?: string;
   selectedRow: object;

@@ -38,12 +38,12 @@ const theme = {
 };
 
 const Scope = () => {
-  const { scopes, open } = React.useContext(scopeContext);
+  const { scopes, queries, open } = React.useContext(scopeContext);
 
   if (!open) return null;
   // console.log(scopes);
   const componentsArray = scopes.components ? Object.keys(scopes.components) : [];
-  const queriesArray = scopes.queries ? Object.keys(scopes.queries) : [];
+  const queriesArray = queries ? Object.keys(queries) : [];
   return (
     <ResizableBox
       className="resizeBox"
@@ -73,11 +73,11 @@ const Scope = () => {
               })}
             </Collapse.Panel>
           )}
-          {scopes.queries && (
+          {queries && (
             <Collapse.Panel header="Queries" key="Queries">
               {queriesArray.length === 0 && <Empty />}
               {queriesArray.map((name, i) => {
-                const scope = scopes.queries![name];
+                const scope = queries[name];
                 if (!scope) return null;
                 return (
                   <JSONTree key={`${name}-${i}`} keyPath={[name]} data={scope} theme={theme} />

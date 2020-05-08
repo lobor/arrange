@@ -6,7 +6,7 @@ import { Component } from '../Components';
 import { scopeContext } from '../../pages/PageEditor/context/scope';
 import { AxiosResponse } from 'axios';
 
-interface Page {
+export interface Page {
   _id: string;
   name: string;
   components: Component[];

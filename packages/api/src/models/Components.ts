@@ -17,6 +17,7 @@ const Components = mongoose.model<ComponentMongo>(
     disableWhen: String,
     label: String,
     inputType: String,
+    onChange: String,
     onBlur: String,
     placeholder: String,
     required: Boolean,
@@ -31,6 +32,16 @@ const Components = mongoose.model<ComponentMongo>(
       h: Number,
       w: Number
     },
+    items: [
+      {
+        defaultValue: String,
+        label: String,
+        name: String,
+        type: {
+          type: String
+        }
+      }
+    ],
     page: { type: mongoose.Schema.Types.ObjectId, ref: 'Pages' },
     type: String
   })

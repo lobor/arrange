@@ -1,6 +1,6 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 
-import { QueriesRest } from '../../models/Queries';
+import { Queries } from '../../models/Queries';
 import { Datasources } from '../../models/Datasources';
 import { Pages } from '../../models/Pages';
 import { router } from '../router';
@@ -24,15 +24,15 @@ router.post(
         .end();
       return;
     }
-    let Model;
+    const Model = Queries;
     const modifer: { url?: string } = {};
-    switch (datasource.kind) {
-      case 'DatasourcesRest':
-        Model = QueriesRest;
-        modifer.url = ((datasource as unknown) as any).url;
-        break;
-      default:
-    }
+    // switch (datasource.kind) {
+    //   case 'DatasourcesRest':
+    //     Model = QueriesRest;
+    //     modifer.url = ((datasource as unknown) as any).url;
+    //     break;
+    //   default:
+    // }
     if (!Model) {
       res
         .status(500)
@@ -48,7 +48,7 @@ router.post(
       page: req.body.page,
       ...modifer
     });
-    await query.save();
+    await (query as any).save();
     await Pages.findByIdAndUpdate(req.body.page, { $push: { queries: query._id } });
     res.json(query);
   }

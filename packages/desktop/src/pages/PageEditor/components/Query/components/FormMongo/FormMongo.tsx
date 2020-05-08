@@ -1,9 +1,14 @@
 import * as React from 'react';
 import { Form, Select, Input } from 'antd';
 
+import { DataSource } from 'interfaces/DataSources';
 import { Method } from 'interfaces/Queries';
 
-const FormMongo = () => {
+interface FormMongoProps {
+  datasource: DataSource & { collections?: string[] };
+}
+
+const FormMongo: React.FC<FormMongoProps> = ({ datasource }) => {
   const [method, setMethod] = React.useState<Method>('find');
 
   const handleChangeType = (value: Method) => {
@@ -13,7 +18,11 @@ const FormMongo = () => {
     <>
       <Form.Item label="Collections" name="collections">
         <Select>
-          <Select.Option value={'name'}>name</Select.Option>
+          {(datasource.collections || []).map((value: string) => (
+            <Select.Option key={value} value={value}>
+              {value}
+            </Select.Option>
+          ))}
         </Select>
       </Form.Item>
       <Form.Item label="Action type" name="method">

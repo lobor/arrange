@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, AutoComplete } from 'antd';
+import { Form, AutoComplete, Mentions } from 'antd';
 import { AutoCompleteProps } from 'antd/lib/auto-complete/index.d';
 import { FormItemProps } from 'antd/lib/form/index.d';
 import fuzzy from 'fuzzy';
@@ -24,7 +24,7 @@ const AutoCompleteScope: React.FC<AutoCompleteScopeProps> = ({
   const optionsParsed = React.useMemo(
     () =>
       Object.keys(flat(mergeScope, { safe: true })).map(key => ({
-        value: `{{${key}}}`
+        value: `${key}}}`
       })),
     [mergeScope]
   );
@@ -35,11 +35,10 @@ const AutoCompleteScope: React.FC<AutoCompleteScopeProps> = ({
       var matches = results.reduce<{ value: string }[]>(function(acc, el) {
         const element = Object.keys(mergeScope).find(key => key === el.string);
         if (element) {
-          acc.push({ value: `{{${el.string}}}` });
+          acc.push({ value: `${el.string}}}` });
         }
         return acc;
       }, []);
-      console.log(matches);
       setOptions(matches);
     },
     [mergeScope]
@@ -47,7 +46,16 @@ const AutoCompleteScope: React.FC<AutoCompleteScopeProps> = ({
   return (
     <>
       <Form.Item {...formItemProps}>
-        <AutoComplete options={options} onSearch={filterOption} {...autoCompleteProps} />
+        <Mentions
+          style={{ width: '100%' }}
+          prefix="{{"
+        >
+          {options.map(({ value }) => (
+            <Mentions.Option key={value} value={value}>
+              {`{{${value}`}
+            </Mentions.Option>
+          ))}
+        </Mentions>
       </Form.Item>
     </>
   );

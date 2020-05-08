@@ -14,11 +14,14 @@ router.post(
     [Segments.BODY]: Joi.alternatives().try(
       model.append({
         dbHost: Joi.string().required(),
-        dbPort: Joi.number().required(),
         dbName: Joi.string().required(),
-        dbUsername: Joi.string().allow(''),
-        dbPassword: Joi.string().allow(''),
-        ressource: Joi.string().required()
+        dbPassword: Joi.string()
+          .optional()
+          .allow(''),
+        dbPort: Joi.number().required(),
+        dbUsername: Joi.string()
+          .allow('')
+          .optional()
       }),
       model.append({
         headers: Joi.array().items(Joi.object().keys({ name: Joi.string(), value: Joi.string() })),
@@ -42,7 +45,7 @@ router.post(
     if (!toSave) {
       res.status(500);
     } else {
-      await toSave.save();
+      await (toSave as any).save();
       res.json(toSave);
     }
   }
