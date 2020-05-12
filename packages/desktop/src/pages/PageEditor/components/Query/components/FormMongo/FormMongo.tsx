@@ -3,17 +3,22 @@ import { Form, Select, Input } from 'antd';
 
 import { DataSource } from 'interfaces/DataSources';
 import { Method } from 'interfaces/Queries';
+import { FormInstance } from 'antd/lib/form';
 
 interface FormMongoProps {
   datasource: DataSource & { collections?: string[] };
+  form: FormInstance;
 }
 
-const FormMongo: React.FC<FormMongoProps> = ({ datasource }) => {
+const FormMongo: React.FC<FormMongoProps> = ({ datasource, form }) => {
   const [method, setMethod] = React.useState<Method>('find');
-
   const handleChangeType = (value: Method) => {
     setMethod(value);
   };
+
+  React.useEffect(() => {
+    setMethod(form.getFieldValue('method'));
+  }, [form.getFieldValue('method')]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <>
       <Form.Item label="Collections" name="collections">

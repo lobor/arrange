@@ -119,7 +119,7 @@ const Pages = () => {
                     </Popconfirm>
                   ]}
                 >
-                  <Link to={`/pages/editor/${_id}`}>{name}</Link>
+                  <Link to={`/pages/${_id}`}>{name}</Link>
                 </List.Item>
               )}
             />

@@ -6,7 +6,8 @@ import { router } from '../router';
 
 const model = Joi.object().keys({
   name: Joi.string().required(),
-  datasource: Joi.string().required()
+  datasource: Joi.string().required(),
+  onLoad: Joi.boolean().optional()
 });
 
 router.put(
@@ -27,6 +28,7 @@ router.put(
         collections: Joi.string(),
         method: Joi.string(),
         query: Joi.string(),
+        update: Joi.string(),
         projection: Joi.string()
       })
     )

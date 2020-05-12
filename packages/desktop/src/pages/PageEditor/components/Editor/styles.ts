@@ -2,16 +2,18 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   position: relative;
-  display: flex;
+  // display: flex;
   flex: 1;
-  overflow: auto;
+  // overflow: auto;
   .content-edit {
     background-color: transparent;
   }
   justify-content: center;
   .layout {
-    background-color: white;
-    width: 1200px;
+    //   position: fixed;
+    overflow: auto;
+    height: 100%;
+    // width: 1200px;
     box-shadow: 0px 0px 10px #b1b1b1;
     margin-left: auto;
     margin-right: auto;
@@ -19,40 +21,16 @@ const Container = styled.div`
   }
 
   .react-grid-layout {
+    position: relative;
+    margin: auto;
+    width: 1200px;
     min-height: 100%;
+    background-color: white;
   }
 
   .react-draggable-dragging,
   .resizing {
     opacity: 0.5;
-  }
-  .react-grid-item:not(.react-grid-placeholder) {
-    display: flex;
-    align-items: center;
-    &:hover {
-      background-color: grey;
-      .react-resizable-handle {
-        width: 20px;
-        height: 20px;
-        bottom: 0;
-        right: 0;
-        cursor: se-resize;
-        display: block;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        &:after {
-          content: "";
-          position: absolute;
-          right: 0px;
-          bottom: 0px;
-          width: 10px;
-          height: 10px;
-          border-right: 2px solid rgba(0, 0, 0, 0.4);
-          border-bottom: 2px solid rgba(0, 0, 0, 0.4);
-        }
-      }
-    }
   }
 `;
 

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import omit from 'lodash/omit';
-import { Popconfirm, Form, Input, Divider } from 'antd';
-// import { SelectValue } from 'antd/lib/select';
+import { Empty, Popconfirm, Form, Input, Divider } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 
 import { deleteComponent, putComponent } from 'interfaces/Components';
@@ -32,7 +31,7 @@ const EditComponent = () => {
 
   const handleChange = React.useCallback(() => {
     handleUpdateComponent();
-  }, [item, form, handleUpdateComponent]);
+  }, [handleUpdateComponent]);
 
   React.useEffect(() => {
     if (item) {
@@ -41,17 +40,16 @@ const EditComponent = () => {
     }
   }, [item, form]);
 
-  if (!item) return null;
-  // console.log(item)
+  if (!item) return <Empty description="Select one component" />;
   return (
     <div>
       <Form form={form} layout="vertical" onValuesChange={handleChange}>
         <Divider orientation="left">Basic</Divider>
-        <Form.Item label="Name" name="name" rules={[{ required: true }]}>
-          <Input.Search
+        <Form.Item name="name" rules={[{ required: true }]}>
+          <Input
             onBlur={handleUpdateComponent}
-            onSearch={handleDelete}
-            enterButton={
+            size="large"
+            addonAfter={
               <Popconfirm
                 title="Are you sure delete this component?"
                 onConfirm={handleDelete}
@@ -63,14 +61,10 @@ const EditComponent = () => {
             }
           />
         </Form.Item>
-        {/* <Collapse defaultActiveKey={['Basic']} bordered={false}>
-          <Collapse.Panel header="Basic" key="Basic"> */}
         {item.type === COMPONENT.table.type && <FormTable />}
         {item.type === COMPONENT.text.type && <FormText />}
         {item.type === COMPONENT.textField.type && <FormTextField />}
         {item.type === COMPONENT.form.type && <FormForm initialValues={item} />}
-        {/* </Collapse.Panel>
-        </Collapse> */}
       </Form>
     </div>
   );

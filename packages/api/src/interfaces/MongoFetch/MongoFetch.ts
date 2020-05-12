@@ -9,20 +9,12 @@ class MongoFetchInterface {
   private scope: object;
 
   constructor(query: QueriesMongoMongo, scope: object) {
-    this.query = query;
+    this.query = query.toObject();
     this.scope = scope;
   }
 
-  async call() {
-    const {
-      dbHost,
-      dbName,
-      dbUsername,
-      dbPassword,
-      query,
-      collections,
-      projection
-    } = this.query.toObject();
+  private async connect() {
+    const { dbHost, dbName, dbUsername, dbPassword } = this.query;
     const config: {
       dbName: string;
       useNewUrlParser: boolean;
@@ -40,30 +32,64 @@ class MongoFetchInterface {
     if (dbPassword) {
       config.pass = dbPassword;
     }
-    let data = [];
+    return mongoose.createConnection(dbHost, config);
+  }
+
+  async call() {
+    const { method } = this.query;
+    let data: object | [] | undefined;
     let error;
     try {
-      const con = await mongoose.createConnection(dbHost, config);
-      const configQuery: { projection?: object } = {};
-      if (projection) {
-        configQuery.projection = JSON.parse(projection);
+      if (method === 'find') {
+        data = await this.find();
+      } else if (method === 'updateOne') {
+        data = await this.updateOne();
       }
-      let value: string = '';
-      try {
-        const templateValue = Handlebars.compile(query || '');
-        value = templateValue(this.scope);
-      } catch (e) {
-        console.log('ERROR:', e.toString());
-      }
-      data = await con
-        .collection(collections)
-        .find(JSON.parse(value), configQuery)
-        .toArray();
     } catch (e) {
       error = e.toString();
       console.log(error);
     }
-    return { data, error };
+    return { ...(data ? { data } : {}), error };
+  }
+
+  private async find() {
+    const { query, collections, projection } = this.query;
+    const con = await this.connect();
+    const configQuery: { projection?: object } = {};
+    if (projection) {
+      configQuery.projection = JSON.parse(projection);
+    }
+    let value: string = '';
+    try {
+      const templateValue = Handlebars.compile(query || '');
+      value = templateValue(this.scope);
+    } catch (e) {
+      console.log('ERROR:', e.toString());
+    }
+    return con
+      .collection(collections)
+      .find(JSON.parse(value), configQuery)
+      .toArray();
+  }
+
+  private async updateOne() {
+    const { collections, query, update } = this.query;
+    const con = await this.connect();
+    let queryToParse: string = '';
+    let updateToParse: string = '';
+    try {
+      const templateUpdate = Handlebars.compile(update || '');
+      const templateQuery = Handlebars.compile(query || '');
+      queryToParse = templateQuery(this.scope);
+      updateToParse = templateUpdate(this.scope);
+    } catch (e) {
+      console.log('ERROR:', e.toString());
+    }
+    return con
+      .collection(collections)
+      .findOneAndUpdate(JSON.parse(queryToParse), JSON.parse(updateToParse), {
+        returnOriginal: false
+      });
   }
 }
 

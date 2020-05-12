@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import {
   Popconfirm,
   Card,
-  Row,
+  Switch,
   Alert,
   Select,
   Button,
@@ -39,6 +39,11 @@ const Rezise = styled.div`
   right: 0;
   left: 0;
   top: 0;
+`;
+
+const ContainerForm = styled.div`
+  flex: 1;
+  overflow: auto;
 `;
 
 const CardStyled = styled(Card)`
@@ -93,8 +98,10 @@ const Query = () => {
   const handleSelectQuery = React.useCallback(
     (query: Queries) => () => {
       setQuerySelected(query);
+      form.resetFields();
+      form.setFieldsValue(query);
     },
-    []
+    [] // eslint-disable-line react-hooks/exhaustive-deps
   );
   const handleDeleteQuery = async () => {
     querySelected && (await deleteQuery({ _id: querySelected._id }));
@@ -106,7 +113,6 @@ const Query = () => {
       setDatasourceSelected(dataSources.data.find(({ _id }) => _id === data.data[0].datasource));
     }
     if (querySelected && !form.isFieldsTouched()) {
-      console.log(form.getFieldsValue())
       form.resetFields();
       form.setFieldsValue(querySelected);
     }
@@ -163,10 +169,47 @@ const Query = () => {
           </div>
         </CardContentQuery>
         <CardContentSettingsQuery>
-          <Row>
-            <PageHeader title="Settings" />
-          </Row>
-          <Row style={{ display: 'flex', flex: 1, overflow: 'auto' }}>
+          <Form
+            {...layout}
+            form={form}
+            layout="horizontal"
+            style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}
+            onFinish={handleSubmit}
+          >
+            <PageHeader
+              title="Settings"
+              extra={
+                querySelected
+                  ? [
+                      <Form.Item
+                        key="onLoad"
+                        label="Call on load"
+                        name="onLoad"
+                        labelCol={{ span: 19 }}
+                        wrapperCol={{ span: 5 }}
+                        valuePropName="checked"
+                        style={{ display: 'inline-flex', margin: 0, verticalAlign: 'baseline' }}
+                      >
+                        <Switch size="small" />
+                      </Form.Item>,
+                      <Popconfirm
+                        title="Are you sure delete this query?"
+                        onConfirm={handleDeleteQuery}
+                        okText="Yes"
+                        cancelText="No"
+                        key="delete"
+                      >
+                        <Button danger loading={statusDeleteQuery === 'loading'}>
+                          Delete
+                        </Button>
+                      </Popconfirm>,
+                      <Button type="primary" htmlType="submit" key="save">
+                        Save
+                      </Button>
+                    ]
+                  : []
+              }
+            />
             {!querySelected && (
               <Alert
                 message="Info"
@@ -177,13 +220,7 @@ const Query = () => {
               />
             )}
             {querySelected && (
-              <Form
-                {...layout}
-                form={form}
-                layout="horizontal"
-                style={{ width: '100%' }}
-                onFinish={handleSubmit}
-              >
+              <ContainerForm>
                 <Form.Item label="Name" name="name" rules={[{ required: true }]}>
                   <Input />
                 </Form.Item>
@@ -198,30 +235,14 @@ const Query = () => {
                   </Select>
                 </Form.Item>
                 {datasourceSelected && datasourceSelected.type === 'mongo' && (
-                  <FormMongo datasource={datasourceSelected} />
+                  <FormMongo datasource={datasourceSelected} form={form} />
                 )}
                 {datasourceSelected && datasourceSelected.type === 'rest' && (
                   <FormRest url={((querySelected as unknown) as QueriesRest).url} />
                 )}
-
-                <Form.Item wrapperCol={{ span: 13, offset: 6 }} style={{ textAlign: 'right' }}>
-                  <Popconfirm
-                    title="Are you sure delete this query?"
-                    onConfirm={handleDeleteQuery}
-                    okText="Yes"
-                    cancelText="No"
-                  >
-                    <Button danger loading={statusDeleteQuery === 'loading'}>
-                      Delete
-                    </Button>
-                  </Popconfirm>
-                  <Button type="primary" htmlType="submit">
-                    Save
-                  </Button>
-                </Form.Item>
-              </Form>
+              </ContainerForm>
             )}
-          </Row>
+          </Form>
         </CardContentSettingsQuery>
       </CardStyled>
     </ResizableBox>

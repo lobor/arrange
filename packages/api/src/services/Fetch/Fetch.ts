@@ -1,4 +1,5 @@
-import { KIND, QueriesMongoMongo, QueriesRestMongo } from '../../models/Queries';
+import { KIND } from '../../models/Queries';
+import type { QueriesMongoMongo, QueriesRestMongo } from '../../models/Queries';
 import { MongoFetchInterface } from '../../interfaces/MongoFetch';
 import { RestFetchInterface } from '../../interfaces/RestFetch';
 

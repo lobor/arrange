@@ -11,11 +11,12 @@ interface TextFieldProps {
 
 const TextField: React.FC<TextFieldProps> = ({ component, onChange, value }) => {
   return (
-    <Form layout="horizontal" initialValues={{ [component.name]: value }}>
+    <Form layout="horizontal" initialValues={{ [component.name]: value }} style={{ width: '100%' }}>
       <Form.Item
         label={component.label}
         name={component.name}
         rules={[{ required: component.required }]}
+        style={{ margin: 0 }}
       >
         <Input placeholder={component.placeholder} onChange={onChange} />
       </Form.Item>

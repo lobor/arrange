@@ -1,9 +1,8 @@
 import React, { createContext } from 'react';
-import axios from 'axios';
 import omit from 'lodash/omit';
 
 import { Component } from 'interfaces/Components';
-import { Queries, QueriesRest } from 'interfaces/Queries';
+import { Queries } from 'interfaces/Queries';
 import { Scope, ScopeQueries } from 'interfaces/Scopes';
 import { client } from 'interfaces/Fetch';
 
@@ -26,6 +25,12 @@ const scopeContext = createContext<{
   toggle: () => void;
   addScopes: (scopes: (Component | Queries)[], type?: 'queries') => void;
   removeScope: (nameParams: string) => void;
+  callFetch: (
+    queryId: string,
+    scope: {
+      [name: string]: Scope;
+    }
+  ) => Promise<ScopeQueries>;
   updateScope: (
     scopeName: string,
     scopesParam: (Component | Queries) & { value?: string | number },
@@ -39,6 +44,7 @@ const scopeContext = createContext<{
   addScopes: () => {},
   removeScope: () => {},
   updateScope: () => {},
+  callFetch: () => Promise.resolve({} as ScopeQueries),
   scopes: {},
   queries: {}
 });
@@ -111,6 +117,18 @@ const ScopeProvider: React.FC<ScopeProviderProps> = ({ children }) => {
     setScopes(scopesToModify);
   };
 
+  const callFetch = async (
+    queryId: string,
+    scope: {
+      [name: string]: Scope;
+    }
+  ) => {
+    const { data } = await client.get(`/fetch`, {
+      params: { queryId, scope }
+    });
+    return data;
+  };
+
   React.useEffect(() => {
     (async function() {
       const keys = Object.keys(scopes.queries || {});
@@ -118,10 +136,10 @@ const ScopeProvider: React.FC<ScopeProviderProps> = ({ children }) => {
       for (const key of keys) {
         if (scopes.queries && scopes.queries[key]) {
           const query = scopes.queries[key];
-          const { data } = await client.get(`/fetch`, {
-            params: { queryId: query._id, scope: scopes.components }
-          });
-          queries[key] = data;
+          if (query.onLoad) {
+            const data = await callFetch(query._id, scopes.components || {});
+            queries[key] = data;
+          }
         }
       }
       setQueries(queries);
@@ -129,7 +147,9 @@ const ScopeProvider: React.FC<ScopeProviderProps> = ({ children }) => {
   }, [setQueries, scopes]);
 
   return (
-    <scopeContext.Provider value={{ open, toggle, queries, scopes, removeScope, addScopes, updateScope }}>
+    <scopeContext.Provider
+      value={{ open, toggle, queries, scopes, removeScope, addScopes, updateScope, callFetch }}
+    >
       {React.useMemo(() => children, [children])}
     </scopeContext.Provider>
   );

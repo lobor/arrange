@@ -1,5 +1,16 @@
 import * as React from 'react';
 import { Table as TableAntd } from 'antd';
+import styled from 'styled-components';
+
+const TableStyled = styled(TableAntd)`
+  .ant-table-tbody {
+    & > tr.ant-table-row-selected {
+      & > td {
+        background-color: #c4d7ed;
+      }
+    }
+  }
+`;
 
 interface TableProps {
   component: any;
@@ -13,7 +24,7 @@ const Table: React.FC<TableProps> = ({ onSelectedRow, width, height, data }) => 
   const columns = data.reduce<{ [key: string]: any }>((acc, el) => {
     const keys = Object.keys(el);
     for (const key of keys) {
-      if (!acc[key]) {
+      if (!acc[key] && typeof el[key] !== 'object' && !Array.isArray(el[key])) {
         acc[key] = {
           title: key.charAt(0).toUpperCase() + key.slice(1),
           dataIndex: key,
@@ -29,16 +40,15 @@ const Table: React.FC<TableProps> = ({ onSelectedRow, width, height, data }) => 
   const handleSelectRow = React.useCallback((record: any & { _id: string }) => {
     setSelectedRow(record._id);
     onSelectedRow && onSelectedRow(record);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const [firstData] = data;
   React.useEffect(() => {
     if (!selectedRows && firstData) {
-      console.log('handleSelectRow')
       handleSelectRow(firstData as { _id: string });
     }
   }, [handleSelectRow, selectedRows, firstData]);
   return (
-    <TableAntd
+    <TableStyled
       style={{ height, width }}
       size="small"
       rowKey={({ _id }: any) => _id}

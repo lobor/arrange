@@ -14,6 +14,7 @@ router.put(
       label: Joi.string(),
       onChange: Joi.string().optional(),
       onBlur: Joi.string().optional(),
+      onSubmit: Joi.string().optional(),
       placeholder: Joi.string()
         .allow('')
         .optional(),
@@ -24,6 +25,9 @@ router.put(
       id: Joi.string().required(),
       name: Joi.string().required(),
       data: Joi.string().optional(),
+      underline: Joi.boolean().optional(),
+      format: Joi.string().optional(),
+      strong: Joi.boolean().optional(),
       position: Joi.object()
         .keys({
           x: Joi.number().required(),

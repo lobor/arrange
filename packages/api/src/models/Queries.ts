@@ -11,6 +11,7 @@ enum KIND {
 interface QueriesBaseMongo extends mongoose.Document {
   name: string;
   page: string;
+  onLoad: boolean;
 }
 export interface QueriesMongoMongo
   extends QueriesBaseMongo,
@@ -19,6 +20,7 @@ export interface QueriesMongoMongo
   collections: string;
   method: string;
   query: string;
+  projection: string;
 }
 
 export interface QueriesRestMongo extends QueriesBaseMongo {
@@ -33,6 +35,7 @@ const Queries = mongoose.model<QueriesMongoMongo | QueriesRestMongo>(
   new mongoose.Schema({
     name: { type: String, required: true },
     datasource: { type: mongoose.Schema.Types.ObjectId, ref: 'Datasources', required: true },
+    onLoad: { type: Boolean, default: false },
     page: { type: mongoose.Schema.Types.ObjectId, ref: 'Pages', required: true }
   })
 );

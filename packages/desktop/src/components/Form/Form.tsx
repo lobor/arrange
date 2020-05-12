@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Form as FormAntd, Button, InputNumber, Input, Row, Col, Divider } from 'antd';
+import { FormProps as FormPropsAntd } from 'rc-field-form/lib/Form';
 import styled from 'styled-components';
 import Handlebars from 'handlebars';
 
@@ -10,6 +11,7 @@ import { scopeContext } from '../../pages/PageEditor/context/scope';
 const FormAntdStyled = styled(FormAntd)`
   width: 100%;
   display: inline-block;
+  height: 100%;
   .ant-input-number {
     width: 100%;
   }
@@ -17,12 +19,17 @@ const FormAntdStyled = styled(FormAntd)`
 
 interface FormProps {
   component: Component;
+  onSubmit: FormPropsAntd['onFinish'];
 }
 
-const Form: React.FC<FormProps> = ({ component }) => {
-  const { scopes, queries } = React.useContext(scopeContext);
+const Form: React.FC<FormProps> = ({ component, onSubmit }) => {
+  const { updateScope, scopes, queries } = React.useContext(scopeContext);
   const [form] = FormAntdStyled.useForm();
-  React.useEffect(() => {
+  const handleChange = () => {
+    updateScope(component.name, { ...component, values: form.getFieldsValue() }, 'components');
+  };
+
+  const initialValues = React.useMemo(() => {
     const initialValues: { [key: string]: any } = {};
     for (const item of component.items || []) {
       let value;
@@ -34,10 +41,15 @@ const Form: React.FC<FormProps> = ({ component }) => {
       }
       initialValues[item.name] = value;
     }
+    return initialValues;
+  }, [component.items, queries]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  React.useEffect(() => {
     form.setFieldsValue(initialValues);
-  }, [form, component, scopes]);
+  }, [JSON.stringify(initialValues), form]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
-    <FormAntdStyled form={form}>
+    <FormAntdStyled form={form} onFieldsChange={handleChange} onFinish={onSubmit}>
       {(component.items || []).map((formElement, i) => {
         let content = null;
         switch (formElement.type) {

@@ -21,6 +21,7 @@ export interface QueriesBase {
   name: string;
   datasource: string;
   page: string;
+  onLoad: boolean;
 }
 export interface Queries extends QueriesBase {
   method: Method;

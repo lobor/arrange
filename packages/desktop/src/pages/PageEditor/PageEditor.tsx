@@ -8,7 +8,7 @@ import { Editor } from './components/Editor';
 import { Scope } from './components/Scope';
 
 const PageEditor = () => {
-  const { toggle: toggleNavBar, edit } = React.useContext(navBarContext);
+  const { toggleEdit: toggleNavBar, edit } = React.useContext(navBarContext);
 
   React.useEffect(() => {
     if (!edit) {
@@ -25,7 +25,7 @@ const PageEditor = () => {
     <Container>
       <Components />
       <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
-        <Editor />
+        <Editor isDraggable />
         <Query />
       </div>
       <Scope />

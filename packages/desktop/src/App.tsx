@@ -17,6 +17,7 @@ import { ComponentProvider } from './pages/PageEditor/context/component';
 import { NavBarProvider } from './pages/PageEditor/context/navBar';
 import { ScopeProvider } from './pages/PageEditor/context/scope';
 import { DragProvider } from './pages/PageEditor/context/drag';
+import { PageView } from './pages/PageView';
 
 const { Content } = Layout;
 
@@ -27,42 +28,40 @@ function App() {
         <DragProvider>
           <NavBarProvider>
             <ScopeProvider>
-              {React.useMemo(
-                () => (
-                  <Router>
-                    <Layout>
-                      <NavBar />
-                      {/* <Sider>left sidebar</Sider> */}
-                      <Content>
-                        <Switch>
-                          <Route exact path="/pages">
-                            <Pages />
-                          </Route>
-                          <Route exact path="/pages/editor/:id">
-                            <DndProvider backend={Backend}>
-                              <PageEditor />
-                            </DndProvider>
-                          </Route>
-                          <Route exact path="/datasources">
-                            <DataSources />
-                          </Route>
-                          <Route exact path="/datasources/create">
-                            <DataSourceCreate />
-                          </Route>
-                          <Route exact path="/">
-                            <Home />
-                          </Route>
-                          <Route path="*">
-                            <Page404 />
-                          </Route>
-                        </Switch>
-                      </Content>
-                      {/* <Sider>right sidebar</Sider> */}
-                    </Layout>
-                  </Router>
-                ),
-                []
-              )}
+              <Router>
+                <Layout>
+                  <NavBar />
+                  {/* <Sider>left sidebar</Sider> */}
+                  <Content>
+                    <Switch>
+                      <Route exact path="/pages">
+                        <Pages />
+                      </Route>
+                      <Route exact path="/pages/:id">
+                        <PageView />
+                      </Route>
+                      <Route exact path="/pages/editor/:id">
+                        <DndProvider backend={Backend}>
+                          <PageEditor />
+                        </DndProvider>
+                      </Route>
+                      <Route exact path="/datasources">
+                        <DataSources />
+                      </Route>
+                      <Route exact path="/datasources/create">
+                        <DataSourceCreate />
+                      </Route>
+                      <Route exact path="/">
+                        <Home />
+                      </Route>
+                      <Route path="*">
+                        <Page404 />
+                      </Route>
+                    </Switch>
+                  </Content>
+                  {/* <Sider>right sidebar</Sider> */}
+                </Layout>
+              </Router>
             </ScopeProvider>
           </NavBarProvider>
         </DragProvider>

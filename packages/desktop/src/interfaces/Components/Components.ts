@@ -16,6 +16,7 @@ export interface Item extends Omit<Component, 'type'> {
 }
 export interface Component {
   _id?: string;
+  format?: string;
   defaultValue?: string | number;
   disableWhen?: string;
   label?: string;
@@ -23,7 +24,10 @@ export interface Component {
   items?: Item[];
   name: string;
   onBlur?: string;
+  onSubmit?: string;
   selectedRow: object;
+  underline?: boolean;
+  strong?: boolean;
   page: string;
   placeholder?: string;
   position: {
@@ -37,6 +41,7 @@ export interface Component {
   validation: boolean;
   whenHide?: string;
   data?: any;
+  values?: any;
 }
 
 export type ComponentText = Pick<

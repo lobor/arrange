@@ -6,6 +6,7 @@ import GridLayout, { Layout } from 'react-grid-layout';
 import pick from 'lodash/pick';
 import omit from 'lodash/omit';
 import styled from 'styled-components';
+import classnames from 'classnames';
 
 import { Component, ComponentText, createComponent, putComponent } from 'interfaces/Components';
 
@@ -14,27 +15,88 @@ import { componentContext } from '../../pages/PageEditor/context/component';
 import { dragContext } from '../../pages/PageEditor/context/drag';
 
 const Container = styled.div`
-  .containerHover {
+  &.isDraggable {
+    .react-grid-item.react-grid-placeholder {
+      background: #c4d7ed;
+      opacity: 0.2;
+      transition-duration: 100ms;
+      z-index: 2;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      -o-user-select: none;
+      user-select: none;
+    }
+    .react-grid-item:not(.react-grid-placeholder) {
+      display: flex;
+      align-items: center;
+      &:hover {
+        .react-resizable-handle {
+          width: 20px;
+          height: 20px;
+          bottom: 0;
+          right: 0;
+          cursor: se-resize;
+          display: block;
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          &:after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            bottom: -5px;
+            width: 10px;
+            height: 10px;
+            border-right: 2px solid rgba(0, 0, 0, 0.4);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+          }
+        }
+      }
+    }
+  }
+`;
+
+const ContainerComponent = styled.div`
+  .containerAction {
     display: none;
     position: absolute;
-    top: 5px;
-    left: 5px;
+    top: 50%;
+    left: 50%;
     z-index: 100;
+    margin-left: -16px;
+    margin-top: -16px;
   }
-  &:hover {
-    .containerHover {
-      display: block;
+  .container {
+    display: none;
+    top: -5px;
+    bottom: -5px;
+    left: -5px;
+    right: -5px;
+    background-color: #c4d7ed;
+    position: absolute;
+    z-index: 0;
+  }
+  &.isDraggable {
+    &:hover {
+      .containerAction {
+        display: block;
+      }
+      .container {
+        display: block;
+      }
     }
   }
 `;
 
 interface DragProps {
+  isDraggable?: boolean;
   components: Component[];
   elementRender: (params: { component: Component }) => React.ReactNode;
   width?: number;
 }
 
-const Drag: React.FC<DragProps> = ({ components, elementRender, width }) => {
+const Drag: React.FC<DragProps> = ({ components, isDraggable, elementRender, width }) => {
   const { id } = useParams<{ id: string }>();
   const { toggleItem } = React.useContext(componentContext);
   const { elementDrag } = React.useContext(dragContext);
@@ -84,7 +146,6 @@ const Drag: React.FC<DragProps> = ({ components, elementRender, width }) => {
       e: { componentType },
       ...position
     } = e;
-    // console.log(e);
     let params: Omit<Component, 'page'> | Omit<ComponentText, 'page'> | undefined;
     switch (componentType) {
       case COMPONENT.text.type:
@@ -131,12 +192,15 @@ const Drag: React.FC<DragProps> = ({ components, elementRender, width }) => {
       w: number;
       h: number;
     };
-  } = {};
+    isDraggable?: boolean;
+  } = {
+    isDraggable
+  };
   if (elementDrag) {
     props.droppingItem = { ...elementDrag, i: 'toto' };
   }
   return (
-    <div className="layout" onClick={handleClick}>
+    <Container className={classnames('layout', { isDraggable })} onClick={handleClick}>
       <GridLayout
         className="card content-edit"
         {...gridLayout}
@@ -144,7 +208,8 @@ const Drag: React.FC<DragProps> = ({ components, elementRender, width }) => {
         draggableHandle=".buttonHandleDrag"
         autoSize={false}
         compactType={null}
-        isDroppable={true}
+        isDroppable={isDraggable}
+        isResizable={isDraggable}
         onDrop={handleDrop}
         onLayoutChange={handleChangeLayout}
         {...props}
@@ -152,16 +217,26 @@ const Drag: React.FC<DragProps> = ({ components, elementRender, width }) => {
         {components &&
           components.map(comp => {
             return (
-              <Container key={comp._id} onClick={handleClickItem(comp)} data-grid={comp.position}>
-                <div className="containerHover">
-                  <Button type="dashed" className="buttonHandleDrag" icon={<DragOutlined />} />
-                </div>
+              <ContainerComponent
+                className={classnames({ isDraggable })}
+                key={comp._id}
+                onClick={handleClickItem(comp)}
+                data-grid={comp.position}
+              >
+                {isDraggable && (
+                  <>
+                    <div className="containerAction">
+                      <Button type="dashed" className="buttonHandleDrag" icon={<DragOutlined />} />
+                    </div>
+                    <div className="container" />
+                  </>
+                )}
                 {elementRender({ component: comp })}
-              </Container>
+              </ContainerComponent>
             );
           })}
       </GridLayout>
-    </div>
+    </Container>
   );
 };
 
