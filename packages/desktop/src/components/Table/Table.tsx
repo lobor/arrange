@@ -29,7 +29,8 @@ const Table: React.FC<TableProps> = ({ onSelectedRow, width, height, data }) => 
           title: key.charAt(0).toUpperCase() + key.slice(1),
           dataIndex: key,
           key: key,
-          ellipsis: true
+          ellipsis: true,
+          width: '100px'
         };
       }
     }
@@ -46,7 +47,7 @@ const Table: React.FC<TableProps> = ({ onSelectedRow, width, height, data }) => 
     if (!selectedRows && firstData) {
       handleSelectRow(firstData as { _id: string });
     }
-  }, [handleSelectRow, selectedRows, firstData]);
+  }, [selectedRows, firstData]);
   return (
     <TableStyled
       style={{ height, width }}

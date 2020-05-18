@@ -2,34 +2,14 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { ResizableBox } from 'react-resizable';
 import { useParams } from 'react-router-dom';
-import {
-  Popconfirm,
-  Card,
-  Switch,
-  Alert,
-  Select,
-  Button,
-  Form,
-  Menu,
-  Input,
-  Spin,
-  PageHeader,
-  Empty
-} from 'antd';
+import { Card, Button, Form as FormAntd, Menu, Spin, PageHeader, Empty } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
-import {
-  Queries,
-  QueriesRest,
-  deleteQueries,
-  updateQueries,
-  createQueries,
-  queries
-} from 'interfaces/Queries';
-import { DataSource, getDataSources } from 'interfaces/DataSources';
+import { Queries, updateQueries, createQueries, queries } from 'interfaces/Queries';
+import { getDataSources } from 'interfaces/DataSources';
 import { queryContext } from '../../context/query';
-import { FormMongo } from './components/FormMongo';
-import { FormRest } from './components/FormRest';
+
+import { Form } from './components/Form';
 
 const Rezise = styled.div`
   background-color: #d9d9d9;
@@ -39,11 +19,6 @@ const Rezise = styled.div`
   right: 0;
   left: 0;
   top: 0;
-`;
-
-const ContainerForm = styled.div`
-  flex: 1;
-  overflow: auto;
 `;
 
 const CardStyled = styled(Card)`
@@ -60,22 +35,10 @@ const CardContentQuery = styled.div`
   flex-direction: column;
 `;
 
-const CardContentSettingsQuery = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-`;
-
-const layout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 13 }
-};
-
 const Query = () => {
-  const [form] = Form.useForm();
+  const [form] = FormAntd.useForm();
   const { id } = useParams();
   const { open } = React.useContext(queryContext);
-  const [datasourceSelected, setDatasourceSelected] = React.useState<DataSource>();
   const [querySelected, setQuerySelected] = React.useState<Queries>();
 
   const {
@@ -86,14 +49,13 @@ const Query = () => {
   const { data, status, error } = queries();
   const [createQuery] = createQueries();
   const [updateQuery] = updateQueries();
-  const [deleteQuery, { status: statusDeleteQuery }] = deleteQueries();
 
   const handleNew = () => {
     createQuery({ name: 'query', page: id! });
   };
 
   const handleSubmit = (data: {}) => {
-    querySelected && updateQuery({ ...(data as Queries), _id: querySelected._id });
+    updateQuery({ ...(data as Queries), _id: querySelected!._id });
   };
   const handleSelectQuery = React.useCallback(
     (query: Queries) => () => {
@@ -103,28 +65,14 @@ const Query = () => {
     },
     [] // eslint-disable-line react-hooks/exhaustive-deps
   );
-  const handleDeleteQuery = async () => {
-    querySelected && (await deleteQuery({ _id: querySelected._id }));
-  };
 
   React.useEffect(() => {
-    if (!querySelected && data && data.data[0] && dataSources) {
+    if (!querySelected && data && data.data) {
       setQuerySelected(data.data[0]);
-      setDatasourceSelected(dataSources.data.find(({ _id }) => _id === data.data[0].datasource));
     }
-    if (querySelected && !form.isFieldsTouched()) {
-      form.resetFields();
-      form.setFieldsValue(querySelected);
-    }
-  }, [form, querySelected, data, dataSources]);
+  }, [querySelected, data]);
 
   if (!open) return null;
-
-  const handleChangeDatasources = (value: string) => {
-    if (dataSources && dataSources.data) {
-      setDatasourceSelected(dataSources.data.find(({ _id }) => _id === value));
-    }
-  };
 
   const newButton =
     dataSources && dataSources.data && dataSources.data.length > 0
@@ -134,7 +82,6 @@ const Query = () => {
           </Button>
         ]
       : [];
-
   return (
     <ResizableBox
       className="resizeQuery"
@@ -142,7 +89,7 @@ const Query = () => {
       axis="y"
       resizeHandles={['n']}
       width={300}
-      height={200}
+      height={300}
       minConstraints={[300, 100]}
       maxConstraints={[500, 500]}
     >
@@ -168,82 +115,7 @@ const Query = () => {
             )}
           </div>
         </CardContentQuery>
-        <CardContentSettingsQuery>
-          <Form
-            {...layout}
-            form={form}
-            layout="horizontal"
-            style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}
-            onFinish={handleSubmit}
-          >
-            <PageHeader
-              title="Settings"
-              extra={
-                querySelected
-                  ? [
-                      <Form.Item
-                        key="onLoad"
-                        label="Call on load"
-                        name="onLoad"
-                        labelCol={{ span: 19 }}
-                        wrapperCol={{ span: 5 }}
-                        valuePropName="checked"
-                        style={{ display: 'inline-flex', margin: 0, verticalAlign: 'baseline' }}
-                      >
-                        <Switch size="small" />
-                      </Form.Item>,
-                      <Popconfirm
-                        title="Are you sure delete this query?"
-                        onConfirm={handleDeleteQuery}
-                        okText="Yes"
-                        cancelText="No"
-                        key="delete"
-                      >
-                        <Button danger loading={statusDeleteQuery === 'loading'}>
-                          Delete
-                        </Button>
-                      </Popconfirm>,
-                      <Button type="primary" htmlType="submit" key="save">
-                        Save
-                      </Button>
-                    ]
-                  : []
-              }
-            />
-            {!querySelected && (
-              <Alert
-                message="Info"
-                description="You should select one query for modify it"
-                type="info"
-                showIcon
-                style={{ width: '100%' }}
-              />
-            )}
-            {querySelected && (
-              <ContainerForm>
-                <Form.Item label="Name" name="name" rules={[{ required: true }]}>
-                  <Input />
-                </Form.Item>
-                <Form.Item label="Datasource" name="datasource" rules={[{ required: true }]}>
-                  <Select onChange={handleChangeDatasources}>
-                    {dataSources &&
-                      dataSources.data.map(({ _id, name }) => (
-                        <Select.Option key={_id} value={_id}>
-                          {name}
-                        </Select.Option>
-                      ))}
-                  </Select>
-                </Form.Item>
-                {datasourceSelected && datasourceSelected.type === 'mongo' && (
-                  <FormMongo datasource={datasourceSelected} form={form} />
-                )}
-                {datasourceSelected && datasourceSelected.type === 'rest' && (
-                  <FormRest url={((querySelected as unknown) as QueriesRest).url} />
-                )}
-              </ContainerForm>
-            )}
-          </Form>
-        </CardContentSettingsQuery>
+        <Form onSubmit={handleSubmit} form={form} querySelected={querySelected} />
       </CardStyled>
     </ResizableBox>
   );

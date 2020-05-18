@@ -42,14 +42,15 @@ const Form: React.FC<FormProps> = ({ component, onSubmit }) => {
       initialValues[item.name] = value;
     }
     return initialValues;
-  }, [component.items, queries]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [scopes.components, component.items, queries]); // eslint-disable-line react-hooks/exhaustive-deps
 
   React.useEffect(() => {
     form.setFieldsValue(initialValues);
+    handleChange();
   }, [JSON.stringify(initialValues), form]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <FormAntdStyled form={form} onFieldsChange={handleChange} onFinish={onSubmit}>
+    <FormAntdStyled form={form} onChange={handleChange} onFinish={onSubmit}>
       {(component.items || []).map((formElement, i) => {
         let content = null;
         switch (formElement.type) {

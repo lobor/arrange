@@ -23,6 +23,11 @@ function getDataSources() {
   return useQuery<{ data: DataSource[] }, {}>('datasources', () => client.get('/datasources'));
 }
 
+function getDataSource(id: string) {
+  // eslint-disable-next-line
+  return useQuery<{ data: DataSource }, {}>(`datasource:${id}`, () => client.get(`/datasources/${id}`));
+}
+
 function checkConnexion() {
   // eslint-disable-next-line
   return useMutation<{ data: DataSource[] }, Omit<DataSource, '_id' | 'name'>>(
@@ -46,4 +51,4 @@ function createDataSources() {
   );
 }
 
-export { getDataSources, createDataSources, checkConnexion };
+export { getDataSource, getDataSources, createDataSources, checkConnexion };

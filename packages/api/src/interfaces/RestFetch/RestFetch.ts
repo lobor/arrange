@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, AxiosStatic } from 'axios';
 
 import { QueriesRestMongo } from '../../models/Queries';
 
@@ -6,16 +6,17 @@ class RestFetchInterface {
   private query: QueriesRestMongo;
 
   constructor(query: QueriesRestMongo) {
-    this.query = query;
+    this.query = query.toObject();
   }
 
   async call() {
     const { method, url } = this.query;
-    let response: any = [];
-    if (axios[method]) {
-      response = await (axios[method] as any)(url);
+    let data: any = [];
+    if (axios[method.toLowerCase() as 'get']) {
+      const response = await (axios[method.toLowerCase() as 'get'] as any)(url);
+      data = response.data;
     }
-    return { data: response };
+    return { data };
   }
 }
 

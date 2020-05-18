@@ -25,6 +25,7 @@ export interface Component {
   name: string;
   onBlur?: string;
   onSubmit?: string;
+  runAfter?: string;
   selectedRow: object;
   underline?: boolean;
   strong?: boolean;

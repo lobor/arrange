@@ -1,6 +1,6 @@
 import { celebrate, Joi, Segments } from 'celebrate';
 
-import { KIND as KINDDatasources, DatasourceMongo, Datasources } from '../../models/Datasources';
+import { KIND as KINDDatasources, DatasourceMongo, Datasources, DatasourceRest } from '../../models/Datasources';
 import { Queries, QueriesMongo, KIND } from '../../models/Queries';
 import { router } from '../router';
 
@@ -29,7 +29,8 @@ router.put(
         method: Joi.string(),
         query: Joi.string(),
         update: Joi.string(),
-        projection: Joi.string()
+        projection: Joi.string().allow(''),
+        runAfter: Joi.string().allow('')
       })
     )
   }),
@@ -48,7 +49,9 @@ router.put(
     switch (datasource.kind) {
       case KINDDatasources.DatasourcesRest:
         kind = KIND.KIND_QUERIES_REST;
-        update = {};
+        update = {
+          url: (datasource as DatasourceRest).url + req.body.path
+        };
         break;
       case KINDDatasources.DatasourcesMongo:
         update = {

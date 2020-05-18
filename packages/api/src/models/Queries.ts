@@ -63,7 +63,8 @@ const QueriesMongo = Queries.discriminator<QueriesMongoMongo>(
       dbName: String,
       dbPassword: String,
       dbPort: Number,
-      dbUsername: String
+      dbUsername: String,
+      runAfter: String
     },
     options
   )

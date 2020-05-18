@@ -35,12 +35,16 @@ class IsolateComponent extends React.PureComponent<IsolateComponentProps> {
     updateScope(component.name, { ...component, value: e.currentTarget.value }, 'components');
   };
 
-  onSubmit = () => {
+  onSubmit = async () => {
     const { component } = this.props;
     const { callFetch, scopes } = this.context;
     const nameQuery = (component.onSubmit || '').replace(/(\{\{|\}\})/g, '');
     if (scopes.queries[nameQuery]) {
-      callFetch(scopes.queries[nameQuery]._id, scopes.components);
+      await callFetch([nameQuery], false);
+      const runAfter = (scopes.queries[nameQuery].runAfter || '').replace(/(\{\{|\}\})/g, '');
+      if (runAfter && scopes.queries[runAfter]) {
+        await callFetch([runAfter]);
+      }
     }
   };
 

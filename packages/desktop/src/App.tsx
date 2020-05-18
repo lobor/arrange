@@ -12,6 +12,7 @@ import { DataSources } from './pages/DataSources';
 import { DataSourceCreate } from './pages/DataSourceCreate';
 import { Pages } from './pages/Pages';
 import { PageEditor } from './pages/PageEditor';
+import { DatasourceEdit } from './pages/DatasourceEdit';
 import { QueryProvider } from './pages/PageEditor/context/query';
 import { ComponentProvider } from './pages/PageEditor/context/component';
 import { NavBarProvider } from './pages/PageEditor/context/navBar';
@@ -47,6 +48,9 @@ function App() {
                       </Route>
                       <Route exact path="/datasources">
                         <DataSources />
+                      </Route>
+                      <Route exact path="/datasources/:id">
+                        <DatasourceEdit />
                       </Route>
                       <Route exact path="/datasources/create">
                         <DataSourceCreate />

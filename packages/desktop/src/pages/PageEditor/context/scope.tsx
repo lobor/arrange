@@ -25,12 +25,7 @@ const scopeContext = createContext<{
   toggle: () => void;
   addScopes: (scopes: (Component | Queries)[], type?: 'queries') => void;
   removeScope: (nameParams: string) => void;
-  callFetch: (
-    queryId: string,
-    scope: {
-      [name: string]: Scope;
-    }
-  ) => Promise<ScopeQueries>;
+  callFetch: (keys: string[]) => Promise<void>;
   updateScope: (
     scopeName: string,
     scopesParam: (Component | Queries) & { value?: string | number },
@@ -44,7 +39,7 @@ const scopeContext = createContext<{
   addScopes: () => {},
   removeScope: () => {},
   updateScope: () => {},
-  callFetch: () => Promise.resolve({} as ScopeQueries),
+  callFetch: async () => {},
   scopes: {},
   queries: {}
 });
@@ -61,94 +56,104 @@ const formatQueriesToScope = (comp: Queries) => {
 
 const ScopeProvider: React.FC<ScopeProviderProps> = ({ children }) => {
   const [open, setOpen] = React.useState<boolean>(false);
-  const [scopes, setScopes] = React.useState<ScopeState>({ components: {}, queries: {} });
+  const [scopeComponents, setScopeComponents] = React.useState<ScopeState['components']>({});
+  const [scopeQueries, setScopeQueries] = React.useState<ScopeState['queries']>({});
   const [queries, setQueries] = React.useState<{ [key: string]: ScopeQueries }>({});
 
   const toggle = () => setOpen(!open);
   const removeScope = (nameParams: string) => {
-    const scopesTmp: ScopeState = {};
-    if (scopes.components) {
-      Object.keys(scopes.components).forEach(name => {
+    const scopesTmp: ScopeState['components'] = {};
+    if (scopeComponents) {
+      Object.keys(scopeComponents).forEach(name => {
         if (name !== nameParams) {
-          if (!scopesTmp.components) scopesTmp.components = {};
-          scopesTmp.components[name] = scopes.components![name];
+          scopesTmp[name] = scopeComponents![name];
         }
       });
     }
-    setScopes(scopesTmp);
+    setScopeComponents(scopesTmp);
   };
   const addScopes = async (scopesParam: (Component | Queries)[], type?: ScopeType) => {
-    const scopesToAdd: ScopeState = { ...scopes };
+    const scopeComponentToAdd: ScopeState['components'] = { ...scopeComponents };
+    const scopequeriesToAdd: ScopeState['queries'] = { ...scopeQueries };
     for (const scope of scopesParam) {
       if (type && type === 'queries') {
-        if (!scopesToAdd.queries) scopesToAdd.queries = {};
-        scopesToAdd.queries[scope.name] = formatQueriesToScope(scope as Queries);
+        scopequeriesToAdd[scope.name] = formatQueriesToScope(scope as Queries);
       } else {
-        if (!scopesToAdd.components) scopesToAdd.components = {};
-        scopesToAdd.components![scope.name] = {
-          ...(scopesToAdd.components![scope.name] || {}),
+        scopeComponentToAdd![scope.name] = {
+          ...(scopeComponentToAdd[scope.name] || {}),
           ...formatComponentToScope(scope as Component)
         };
       }
     }
-    setScopes(scopesToAdd);
+    if (Object.keys(scopequeriesToAdd).length > 0) {
+      setScopeQueries(scopequeriesToAdd);
+    }
+    if (Object.keys(scopeComponentToAdd).length >0) {
+      setScopeComponents(scopeComponentToAdd);
+    }
   };
   const updateScope = async (
     scopeName: string,
     scopesParam: Component | Queries,
     type: ScopeType
   ) => {
-    const scopesToModify: ScopeState = { ...scopes };
+    const scopeComponentToAdd: ScopeState['components'] = { ...scopeComponents };
+    const scopequeriesToAdd: ScopeState['queries'] = { ...scopeQueries };
     switch (type) {
       case 'queries':
-        if (scopesToModify.queries![scopeName]) {
-          scopesToModify.queries![scopeName] = formatQueriesToScope(scopesParam as Queries);
+        if (scopequeriesToAdd[scopeName]) {
+          scopequeriesToAdd[scopeName] = formatQueriesToScope(scopesParam as Queries);
+          setScopeQueries(scopequeriesToAdd);
         }
         break;
       case 'components':
-        if (scopesToModify.components![scopeName]) {
-          scopesToModify.components![scopeName] = {
-            ...scopesToModify.components![scopeName],
+        if (scopeComponentToAdd[scopeName]) {
+          scopeComponentToAdd[scopeName] = {
+            ...scopeComponentToAdd[scopeName],
             ...formatComponentToScope(scopesParam as Component)
           };
+          setScopeComponents(scopeComponentToAdd);
         }
         break;
     }
-    setScopes(scopesToModify);
+
   };
 
-  const callFetch = async (
-    queryId: string,
-    scope: {
-      [name: string]: Scope;
+  const callFetch = async (keys: string[], autoSave = true) => {
+    const queriesTmp: { [key: string]: ScopeQueries } = { ...queries };
+    for (const key of keys) {
+      if (scopeQueries && scopeQueries[key]) {
+        const query = scopeQueries[key];
+        const { data } = await client.get(`/fetch`, {
+          params: { queryId: query._id, scope: scopeComponents || {} }
+        });
+        queriesTmp[key] = data;
+      }
     }
-  ) => {
-    const { data } = await client.get(`/fetch`, {
-      params: { queryId, scope }
-    });
-    return data;
-  };
+    if (autoSave) {
+      setQueries(queriesTmp);
+    }
+  }
 
   React.useEffect(() => {
-    (async function() {
-      const keys = Object.keys(scopes.queries || {});
-      const queries: { [key: string]: ScopeQueries } = {};
-      for (const key of keys) {
-        if (scopes.queries && scopes.queries[key]) {
-          const query = scopes.queries[key];
-          if (query.onLoad) {
-            const data = await callFetch(query._id, scopes.components || {});
-            queries[key] = data;
-          }
-        }
-      }
-      setQueries(queries);
-    })();
-  }, [setQueries, scopes]);
+    const keys = Object.keys(scopeQueries || {});
+    if (keys.length > 0) {
+      callFetch(keys.filter((key) => scopeQueries && scopeQueries[key] && scopeQueries[key].onLoad))
+    }
+  }, [scopeComponents, scopeQueries]);
 
   return (
     <scopeContext.Provider
-      value={{ open, toggle, queries, scopes, removeScope, addScopes, updateScope, callFetch }}
+      value={{
+        open,
+        toggle,
+        queries,
+        scopes: { components: scopeComponents, queries: scopeQueries },
+        removeScope,
+        addScopes,
+        updateScope,
+        callFetch
+      }}
     >
       {React.useMemo(() => children, [children])}
     </scopeContext.Provider>

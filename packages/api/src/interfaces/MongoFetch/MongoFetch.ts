@@ -63,6 +63,7 @@ class MongoFetchInterface {
     try {
       const templateValue = Handlebars.compile(query || '');
       value = templateValue(this.scope);
+      console.log(value)
     } catch (e) {
       console.log('ERROR:', e.toString());
     }
@@ -85,6 +86,7 @@ class MongoFetchInterface {
     } catch (e) {
       console.log('ERROR:', e.toString());
     }
+    console.log(queryToParse, updateToParse)
     return con
       .collection(collections)
       .findOneAndUpdate(JSON.parse(queryToParse), JSON.parse(updateToParse), {

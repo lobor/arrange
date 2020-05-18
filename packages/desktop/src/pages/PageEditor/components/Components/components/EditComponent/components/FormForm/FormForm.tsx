@@ -3,6 +3,7 @@ import { Select, Popconfirm, Form, Input, Button, Divider, Collapse } from 'antd
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { ItemType, Component } from 'interfaces/Components';
 
+import { Mentions } from 'components/Mentions';
 import { AutoCompleteScope } from 'components/AutoCompleteScope';
 
 interface FormFormProps {
@@ -13,14 +14,7 @@ const FormForm: React.FC<FormFormProps> = ({ initialValues }) => {
   const [formNew] = Form.useForm();
   return (
     <>
-      <AutoCompleteScope
-        formItemProps={{
-          label: 'Default value',
-          name: 'defaultValue',
-          validateTrigger: ['onChange', 'onBlur']
-        }}
-      />
-      <AutoCompleteScope
+      <Mentions
         formItemProps={{
           label: 'On submit form',
           name: 'onSubmit',
